@@ -178,20 +178,28 @@ function App() {
 
     const currentQ = questions.find(q => q.id === step);
     if (currentQ) {
-      setTimeout(() => {
-        setGuildMasterLog(prev => [...prev, { sender: 'system', text: currentQ.text }]);
-      }, 600);
+      // Prevent duplicate question logging
+      const alreadyAsked = guildMasterLog.some(log => log.text === currentQ.text);
+      if (!alreadyAsked) {
+        setTimeout(() => {
+          setGuildMasterLog(prev => [...prev, { sender: 'system', text: currentQ.text }]);
+        }, 600);
+      }
     }
 
     if (step === 'COMPLETE' && assignedClass) {
-      setTimeout(() => {
-        setGuildMasterLog(prev => [...prev, {
-          sender: 'system',
-          text: `INITIATION COMPLETE. CLASS ASSIGNED: ${assignedClass}. WELCOME TO THE GUILD.`
-        }]);
-      }, 600);
+      const completionText = `INITIATION COMPLETE. CLASS ASSIGNED: ${assignedClass}. WELCOME TO THE GUILD.`;
+      const alreadyCompleted = guildMasterLog.some(log => log.text === completionText);
+      if (!alreadyCompleted) {
+        setTimeout(() => {
+          setGuildMasterLog(prev => [...prev, {
+            sender: 'system',
+            text: completionText
+          }]);
+        }, 600);
+      }
     }
-  }, [step, assignedClass, questions, guildMasterLog.length, setGuildMasterLog]);
+  }, [step, assignedClass, questions, guildMasterLog, setGuildMasterLog]);
 
   // 2. 3D TILT EFFECT & SCROLL REVEAL
   useEffect(() => {

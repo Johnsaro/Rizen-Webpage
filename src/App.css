@@ -219,7 +219,8 @@ button {
   font-weight: 800;
   margin: 0;
   line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: -3px;
+  /* Stronger branding */
   background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -250,8 +251,10 @@ button {
   font-size: 1.2rem;
   color: var(--text-dim);
   max-width: 500px;
-  margin-bottom: 3rem;
-  line-height: 1.7;
+  margin-bottom: 4rem;
+  /* More breathing room */
+  line-height: 1.8;
+  letter-spacing: 0.3px;
 }
 
 @media (max-width: 1024px) {
@@ -291,8 +294,8 @@ button {
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2), 0 0 20px var(--accent-cyan-glow);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 228, 255, 0.3), 0 0 20px var(--accent-cyan-glow);
   background: var(--accent-cyan);
   color: #000;
 }
@@ -300,19 +303,24 @@ button {
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border: none;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: color 0.3s, text-shadow 0.3s;
   padding: 1rem;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  /* Prepare for hover border */
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-secondary:hover {
   color: var(--accent-cyan);
   text-shadow: 0 0 10px var(--accent-cyan-glow);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 /* Guild Master Terminal */
@@ -324,7 +332,8 @@ button {
   backdrop-filter: blur(10px);
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 228, 255, 0.05);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(0, 228, 255, 0.08);
+  /* Darker, deeper */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -379,7 +388,7 @@ button {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
   font-family: 'Fira Code', monospace;
   font-size: 0.85rem;
 }
@@ -396,6 +405,7 @@ button {
   display: flex;
   max-width: 90%;
   animation: fade-in-up 0.3s ease-out forwards;
+  line-height: 1.6;
 }
 
 @keyframes fade-in-up {
@@ -450,9 +460,14 @@ button {
 .terminal-input-form {
   display: flex;
   align-items: center;
+  /* background, padding, border-top moved to .terminal-footer */
+}
+
+/* New Terminal Footer */
+.terminal-footer {
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(0, 228, 255, 0.15);
   padding: 1rem 1.2rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .input-prefix {
@@ -498,6 +513,47 @@ button {
   border-color: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.2);
   cursor: not-allowed;
+}
+
+/* Quiz Options Redesign */
+.terminal-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.quiz-option-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 228, 255, 0.2);
+  color: var(--text-dim);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  text-align: left;
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quiz-option-btn:hover {
+  background: rgba(0, 228, 255, 0.08);
+  /* slight cyan tint */
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  transform: translateX(5px);
+  box-shadow: -5px 0 0 var(--accent-cyan);
+  /* premium peak-end rule micro interaction */
+}
+
+.quiz-option-prefix {
+  color: var(--accent-cyan);
+  font-weight: bold;
+}
+
+.quiz-option-text {
+  flex: 1;
 }
 
 /* ==========================================================================
@@ -812,14 +868,16 @@ button {
    SECTIONS & LAYOUT (STAKES, DISCIPLINES, RANKINGS, ARSENAL)
    ========================================================================== */
 .section-padding {
-  padding: 8rem 10%;
+  padding: 12rem 10%;
+  /* Increased from 8rem */
   max-width: 1600px;
   margin: 0 auto;
 }
 
 .centered-header {
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 6rem;
+  /* Increased from 5rem */
 }
 
 .title-large {
@@ -829,11 +887,12 @@ button {
 }
 
 .p-large {
-  font-size: 1.2rem;
-  color: var(--text-dim);
+  font-size: 1.15rem;
+  color: rgba(161, 161, 170, 0.8);
+  /* Softer than var(--text-dim) */
   max-width: 600px;
   margin: 1.5rem auto 0;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 /* Glass Cards */
@@ -847,7 +906,17 @@ button {
   backdrop-filter: var(--glass-blur);
   border-radius: 24px;
   padding: 3rem;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.4s;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.4s, background 0.4s;
+}
+
+/* Unified Premium Interactions (Peak-End) */
+.glass-card:hover,
+.bento-item.interactive-card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 228, 255, 0.05);
+  border-color: rgba(0, 228, 255, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+  z-index: 2;
 }
 
 /* 2. THE STAKES */
@@ -883,9 +952,12 @@ button {
 }
 
 .threat-visual-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(244, 63, 94, 0.05);
+  /* Override threat card with crimson interaction */
+  transform: translateY(-5px) scale(1.01);
+  border-color: rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.02);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(244, 63, 94, 0.1);
+  z-index: 2;
 }
 
 .stat-minus {
