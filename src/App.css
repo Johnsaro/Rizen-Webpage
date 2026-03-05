@@ -315,16 +315,21 @@ button {
   text-shadow: 0 0 10px var(--accent-cyan-glow);
 }
 
-/* Guild Master Terminal */
+/* Guild Master Terminal Redesign (Tactical HUD) */
 .guild-master-terminal {
   margin-top: 3rem;
-  background: rgba(10, 15, 25, 0.7);
-  border: 1px solid rgba(0, 228, 255, 0.2);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
+  background: rgba(2, 6, 23, 0.7);
+  /* bg-slate-950/70 */
+  backdrop-filter: blur(12px);
+  /* backdrop-blur-md */
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  /* border-cyan-400/20 */
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.08), 0 0 40px rgba(34, 211, 238, 0.06);
+  /* custom glow */
+  border-radius: 8px;
+  /* Slightly sharper corners */
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 228, 255, 0.05);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -340,23 +345,68 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 1.2rem;
-  background: rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid rgba(0, 228, 255, 0.1);
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
+  padding: 0.6rem 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  /* very subtle separation */
+}
+
+.terminal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .terminal-title {
-  color: var(--accent-cyan);
+  color: #94a3b8;
+  /* slate-400 muted title */
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.terminal-signal {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-emerald);
+  box-shadow: 0 0 8px var(--accent-emerald);
+  animation: pulse-dot-anim 2s infinite;
+}
+
+@keyframes pulse-dot-anim {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
 }
 
 .terminal-status {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.1);
   color: var(--accent-emerald);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .terminal-status.processing {
+  background: rgba(244, 63, 94, 0.1);
   color: var(--accent-crimson);
   animation: pulse 1.5s infinite;
 }
@@ -374,7 +424,8 @@ button {
 }
 
 .terminal-log {
-  height: 200px;
+  height: 240px;
+  /* Stable height */
   padding: 1.2rem;
   overflow-y: auto;
   display: flex;
@@ -388,20 +439,19 @@ button {
   width: 4px;
 }
 
-.terminal-log::-webkit-scrollbar-thumb {
-  background: rgba(0, 228, 255, 0.3);
+.terminal-log::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.log-entry {
-  display: flex;
-  max-width: 90%;
-  animation: fade-in-up 0.3s ease-out forwards;
+.terminal-log::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.2);
+  border-radius: 4px;
 }
 
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
 
   to {
@@ -410,92 +460,160 @@ button {
   }
 }
 
+.log-entry {
+  display: flex;
+  flex-direction: column;
+  max-width: 90%;
+  animation: fade-in-up 0.2s ease-out forwards;
+}
+
 .log-entry.system {
   align-self: flex-start;
-  color: var(--text-primary);
-  flex-direction: column;
+  color: rgba(148, 163, 184, 0.8);
+  /* slate-400 */
+}
+
+/* Make questions/prompts from the system stand out slightly */
+.log-entry.system.is-prompt {
+  color: #f1f5f9;
+  /* slate-100 */
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .log-entry.user {
   align-self: flex-end;
-  color: var(--text-dim);
+  color: #f1f5f9;
   text-align: right;
-  justify-content: flex-end;
-}
-
-.log-prefix {
-  color: var(--accent-cyan);
-  margin-right: 0.5rem;
-  font-weight: bold;
-}
-
-.log-entry.user .log-prefix {
-  margin-right: 0;
-  margin-left: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 4px;
 }
 
 .log-rewards {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.6rem;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 2px solid var(--accent-cyan);
+  align-self: flex-start;
 }
 
 .reward-xp {
   color: var(--accent-cyan);
-  font-weight: bold;
-  text-shadow: 0 0 5px var(--accent-cyan-glow);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.terminal-quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0 1.2rem 1.2rem 1.2rem;
+}
+
+@media (max-width: 480px) {
+  .terminal-quiz-options {
+    grid-template-columns: 1fr;
+    /* Stack on very small screens if necessary, though 2x2 usually fits 480px easily */
+  }
+}
+
+.quiz-chip {
+  background: rgba(15, 23, 42, 0.6);
+  /* slate-900 slightly transparent */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  /* slate-300 */
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quiz-chip-num {
+  color: var(--accent-cyan);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.quiz-chip:hover {
+  background: rgba(30, 41, 59, 1);
+  /* slate-800 */
+  border-color: rgba(34, 211, 238, 0.3);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.quiz-chip:active {
+  transform: translateY(0);
 }
 
 .terminal-input-form {
   display: flex;
   align-items: center;
-  padding: 1rem 1.2rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  /* very subtle top border */
 }
 
 .input-prefix {
   color: var(--accent-cyan);
   font-family: 'Fira Code', monospace;
-  margin-right: 0.8rem;
+  margin-right: 0.6rem;
   font-weight: bold;
+  opacity: 0.7;
 }
 
 .terminal-input {
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--text-primary);
+  color: #f8fafc;
+  /* slate-50 */
   font-family: 'Fira Code', monospace;
   font-size: 0.85rem;
   outline: none;
 }
 
 .terminal-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(148, 163, 184, 0.4);
 }
 
 .terminal-submit-btn {
   background: transparent;
-  border: 1px solid var(--accent-cyan);
+  border: 1px solid rgba(34, 211, 238, 0.5);
   color: var(--accent-cyan);
-  padding: 0.3rem 0.8rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  letter-spacing: 0.5px;
 }
 
 .terminal-submit-btn:hover:not(:disabled) {
-  background: var(--accent-cyan);
-  color: #000;
-  box-shadow: 0 0 10px var(--accent-cyan-glow);
+  background: rgba(34, 211, 238, 0.1);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
 }
 
 .terminal-submit-btn:disabled {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.2);
   cursor: not-allowed;
 }

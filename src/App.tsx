@@ -172,26 +172,47 @@ function App() {
 
   // Handle Quiz Progression in Terminal
   useEffect(() => {
-    if (step === 'Q1' && guildMasterLog.length === 1) {
-      setGuildMasterLog(prev => [...prev, { sender: 'system', text: "INITIATION PROTOCOL ACTIVATED. IDENTIFY YOUR STRENGTHS." }]);
+    if (step === 'IDLE') return;
+
+    if (step === 'Q1') {
+      setGuildMasterLog(prev => {
+        const hasIntro = prev.some(l => l.text.includes("IDENTIFY YOUR STRENGTHS"));
+        if (!hasIntro) {
+          return [...prev, { sender: 'system', text: "INITIATION PROTOCOL ACTIVATED. IDENTIFY YOUR STRENGTHS." }];
+        }
+        return prev;
+      });
     }
 
     const currentQ = questions.find(q => q.id === step);
     if (currentQ) {
-      setTimeout(() => {
-        setGuildMasterLog(prev => [...prev, { sender: 'system', text: currentQ.text }]);
+      const timer = setTimeout(() => {
+        setGuildMasterLog(prev => {
+          const hasQ = prev.some(l => l.text === currentQ.text);
+          if (hasQ) return prev;
+          return [...prev, { sender: 'system', text: currentQ.text }];
+        });
       }, 600);
+      return () => clearTimeout(timer);
     }
 
     if (step === 'COMPLETE' && assignedClass) {
-      setTimeout(() => {
-        setGuildMasterLog(prev => [...prev, {
-          sender: 'system',
-          text: `INITIATION COMPLETE. CLASS ASSIGNED: ${assignedClass}. WELCOME TO THE GUILD.`
-        }]);
+      const timer = setTimeout(() => {
+        setGuildMasterLog(prev => {
+          const completionText = `INITIATION COMPLETE. CLASS ASSIGNED: ${assignedClass}. WELCOME TO THE GUILD.`;
+          const hasComplete = prev.some(l => l.text === completionText);
+          if (hasComplete) return prev;
+          return [...prev, {
+            sender: 'system',
+            text: completionText,
+            rank: assignedClass.includes('RANK A') ? 'A' : assignedClass.includes('RANK B') ? 'B' : 'F',
+            xp: 150
+          }];
+        });
       }, 600);
+      return () => clearTimeout(timer);
     }
-  }, [step, assignedClass, questions, guildMasterLog.length, setGuildMasterLog]);
+  }, [step, assignedClass, questions, setGuildMasterLog]);
 
   // 2. 3D TILT EFFECT & SCROLL REVEAL
   useEffect(() => {
