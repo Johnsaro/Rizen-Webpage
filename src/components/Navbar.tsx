@@ -6,9 +6,12 @@ interface NavbarProps {
   setIsHovering: (hover: boolean) => void;
   currentView: 'home' | 'builds' | 'community';
   setCurrentView: (view: 'home' | 'builds' | 'community') => void;
+  isLoggedIn: boolean;
+  user: any;
+  onLogout: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView }) => {
+const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -40,7 +43,10 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
-    const sections = ['hero', 'stakes', 'disciplines', 'rankings', 'arsenal', 'manifesto'];
+    const sections = isLoggedIn
+      ? ['dashboard-home', 'dashboard-quests', 'dashboard-arsenal', 'dashboard-combat', 'dashboard-achievements', 'dashboard-leaderboard']
+      : ['hero', 'stakes', 'disciplines', 'rankings', 'arsenal', 'manifesto'];
+
     sections.forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
@@ -51,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, []);
+  }, [isLoggedIn]);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
@@ -94,7 +100,24 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
   const handleLogoClick = () => {
     setCurrentView('home');
+    if (isLoggedIn) {
+      setTimeout(() => {
+        const targetElement = document.getElementById('dashboard-home');
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentView('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    onLogout();
   };
 
   return (
@@ -113,15 +136,18 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
         </div>
 
         <div className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}>
+          {!isLoggedIn && (
+            <a
+              href="#hero"
+              className={`nav-item ${currentView === 'home' && activeSection === 'hero' ? 'active' : ''}`}
+              onClick={(e) => scrollToSection(e, 'hero')}
+            >MISSION</a>
+          )}
+
           <a
-            href="#hero"
-            className={`nav-item ${currentView === 'home' && activeSection === 'hero' ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, 'hero')}
-          >MISSION</a>
-          <a
-            href="#arsenal"
-            className={`nav-item ${currentView === 'home' && activeSection === 'arsenal' ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, 'arsenal')}
+            href={isLoggedIn ? "#dashboard-arsenal" : "#arsenal"}
+            className={`nav-item ${currentView === 'home' && (activeSection === 'arsenal' || activeSection === 'dashboard-arsenal') ? 'active' : ''}`}
+            onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-arsenal' : 'arsenal')}
           >ARSENAL</a>
 
           <a
@@ -137,17 +163,50 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
           >COMMUNITY</a>
 
           <a
-            href="#rankings"
-            className={`nav-item ${currentView === 'home' && activeSection === 'rankings' ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, 'rankings')}
+            href={isLoggedIn ? "#dashboard-leaderboard" : "#rankings"}
+            className={`nav-item ${currentView === 'home' && (activeSection === 'rankings' || activeSection === 'dashboard-leaderboard') ? 'active' : ''}`}
+            onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-leaderboard' : 'rankings')}
           >LEADERBOARD</a>
-          <a
-            href="#manifesto"
-            className={`nav-item ${currentView === 'home' && activeSection === 'manifesto' ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, 'manifesto')}
-          >MANIFESTO</a>
+
+          {!isLoggedIn && (
+            <a
+              href="#manifesto"
+              className={`nav-item ${currentView === 'home' && activeSection === 'manifesto' ? 'active' : ''}`}
+              onClick={(e) => scrollToSection(e, 'manifesto')}
+            >MANIFESTO</a>
+          )}
+
           <div className="nav-actions">
-            <button className="btn-nav-primary" onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }} onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>INITIALIZE</button>
+            {!isLoggedIn ? (
+              <button
+                className="btn-nav-primary"
+                onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
+                INITIALIZE
+              </button>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '0.4rem 1rem', borderRadius: '100px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--accent-cyan)', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 0 10px rgba(0, 228, 255, 0.2)' }}>
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="#000" strokeWidth="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  </div>
+                  <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.75rem', letterSpacing: '1px', color: 'var(--text-dim)', opacity: 0.8 }}>
+                    OPERATIVE: <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.85rem' }}>{user?.name || 'SHADOW-7'}</span>
+                  </span>
+                </div>
+                <button
+                  className="btn-nav-primary"
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-dim)', fontSize: '0.75rem', padding: '0.4rem 0.5rem', opacity: 0.6, transition: 'all 0.2s ease' }}
+                  onClick={handleLogout}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.opacity = '1'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.opacity = '0.6'; }}
+                >
+                  DISCONNECT
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

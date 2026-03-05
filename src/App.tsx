@@ -22,18 +22,32 @@ import { vaultContent } from './data/vaultContent'
 import type { VaultItem } from './data/vaultContent'
 import { builds } from './data/builds'
 import type { Build } from './data/builds'
+import { demoPlayer } from './data/demoPlayer'
+import Dashboard from './components/dashboard/Dashboard'
 
 function App() {
   const [scanned, setScanned] = useState(false);
   const [typedText, setTypedText] = useState("");
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
   const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const fullText = "Rise or Stagnate. The choice is yours, Recruit.";
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setCurrentView('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentView('home');
+  };
 
   // Simple Hash-based Router
   useEffect(() => {
@@ -207,7 +221,7 @@ function App() {
       observer.disconnect();
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [scanned, currentView]);
+  }, [scanned, currentView, isLoggedIn]);
 
   const upcomingBuild = builds.find(b => b.status === 'Upcoming') || builds[0];
 
@@ -225,12 +239,17 @@ function App() {
         setIsHovering={() => { }}
         currentView={currentView}
         setCurrentView={setCurrentView}
+        isLoggedIn={isLoggedIn}
+        user={demoPlayer}
+        onLogout={handleLogout}
       />
       <ParticlesBackground />
 
       {!scanned && <ScannerOverlay onScanComplete={onScanComplete} />}
 
-      {currentView === 'home' ? (
+      {isLoggedIn && currentView === 'home' ? (
+        <Dashboard user={demoPlayer} />
+      ) : currentView === 'home' ? (
         <>
           {/* 1. HERO SECTION */}
           <section className="hero" id="hero">
@@ -493,7 +512,11 @@ function App() {
         </div>
       </footer>
 
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
       <VaultReader item={selectedVaultItem} onClose={() => setSelectedVaultItem(null)} />
     </div >
   )
