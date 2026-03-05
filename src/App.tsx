@@ -32,7 +32,7 @@ function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
@@ -72,7 +72,7 @@ function App() {
         }
 
         if (subId === 'event') {
-          setCurrentView('community-event' as any);
+          setCurrentView('community-event' as unknown as 'home' | 'builds' | 'community');
         } else {
           setCurrentView('community');
           if (subId.startsWith('docs')) {
@@ -191,7 +191,7 @@ function App() {
         }]);
       }, 600);
     }
-  }, [step, assignedClass, questions]);
+  }, [step, assignedClass, questions, guildMasterLog.length, setGuildMasterLog]);
 
   // 2. 3D TILT EFFECT & SCROLL REVEAL
   useEffect(() => {
@@ -488,7 +488,7 @@ function App() {
             </div>
           </section >
         </>
-      ) : currentView === ('community-event' as any) ? (
+      ) : currentView === 'community-event' ? (
         <CommunityEvent />
       ) : currentView === 'community' ? (
         <Community subView={communitySubView} />

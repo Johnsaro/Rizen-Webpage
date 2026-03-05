@@ -13,7 +13,7 @@ const formatMarkdown = (text: string) => {
     formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
     // Italic: *text*
-    formattedText = formattedText.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+    formattedText = formattedText.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 
     // Code ticks: `text`
     formattedText = formattedText.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');

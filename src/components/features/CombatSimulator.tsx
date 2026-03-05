@@ -8,7 +8,7 @@ interface CombatSimulatorProps {
   message: string;
   isAnimating: boolean;
   shakeTarget: 'player' | 'monster' | null;
-  questions: any[];
+  questions: { q: string, options: string[], answer: string }[];
   onStart: () => void;
   onAnswer: (option: string) => void;
 }
@@ -47,11 +47,11 @@ const CombatSimulator = ({
             <div className={`combat-fighter ${shakeTarget === 'player' ? 'shake' : ''}`}>
               <div className="fighter-name">RECRUIT (YOU)</div>
               <div className="health-bar-container">
-                <div 
-                  className="health-bar-fill" 
-                  style={{ 
-                    width: `${playerHP}%`, 
-                    background: playerHP > 35 ? 'var(--accent-emerald)' : 'var(--accent-crimson)' 
+                <div
+                  className="health-bar-fill"
+                  style={{
+                    width: `${playerHP}%`,
+                    background: playerHP > 35 ? 'var(--accent-emerald)' : 'var(--accent-crimson)'
                   }}
                 ></div>
               </div>
@@ -64,11 +64,11 @@ const CombatSimulator = ({
             <div className={`combat-fighter ${shakeTarget === 'monster' ? 'shake' : ''}`}>
               <div className="fighter-name" style={{ color: 'var(--accent-crimson)' }}>TIME WRAITH</div>
               <div className="health-bar-container">
-                <div 
-                  className="health-bar-fill" 
-                  style={{ 
-                    width: `${monsterHP}%`, 
-                    background: monsterHP > 35 ? 'var(--accent-crimson)' : 'darkred' 
+                <div
+                  className="health-bar-fill"
+                  style={{
+                    width: `${monsterHP}%`,
+                    background: monsterHP > 35 ? 'var(--accent-crimson)' : 'darkred'
                   }}
                 ></div>
               </div>

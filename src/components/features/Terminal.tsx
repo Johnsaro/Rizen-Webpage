@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import type { LogEntry } from '../../hooks/useTerminal';
 import type { InitiationStep, InitiationQuestion } from '../../hooks/useInitiation';
 
@@ -24,7 +24,7 @@ const Terminal = ({
   onInitiationAnswer
 }: TerminalProps) => {
   const logEndRef = useRef<HTMLDivElement>(null);
-  const sessionID = useMemo(() => Math.floor(Math.random() * 90000) + 10000, []);
+  const [sessionID] = useState(() => Math.floor(Math.random() * 90000) + 10000);
 
   const currentQuizQuestion = initiationQuestions.find(q => q.id === initiationStep);
 

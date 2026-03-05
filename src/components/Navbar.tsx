@@ -4,10 +4,10 @@ import './Navbar.css';
 interface NavbarProps {
   setAuthModalOpen: (open: boolean) => void;
   setIsHovering: (hover: boolean) => void;
-  currentView: 'home' | 'builds' | 'community';
-  setCurrentView: (view: 'home' | 'builds' | 'community') => void;
+  currentView: 'home' | 'builds' | 'community' | 'community-event';
+  setCurrentView: (view: 'home' | 'builds' | 'community' | 'community-event') => void;
   isLoggedIn: boolean;
-  user: any;
+  user: unknown;
   onLogout: () => void;
 }
 
@@ -61,9 +61,11 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
+    setMobileMenuOpen(false);
+
     if (currentView !== 'home') {
-      setCurrentView('home');
-      // Small delay to allow home view to render before scrolling
+      // Set the hash to go "home" and target the section
+      window.location.hash = `#/${targetId}`;
       setTimeout(() => {
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
@@ -71,6 +73,8 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
         }
       }, 100);
     } else {
+      // Just update hash if already on home, or scroll directly
+      window.location.hash = `#/${targetId}`;
       const targetElement = document.getElementById(targetId);
       if (targetElement) {
         targetElement.scrollIntoView({
@@ -79,12 +83,10 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
         });
       }
     }
-    setMobileMenuOpen(false);
   };
 
   const handleBuildsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    setCurrentView('builds');
     setMobileMenuOpen(false);
     window.location.hash = '#/builds';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -92,14 +94,13 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
   const handleCommunityClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    setCurrentView('community');
     setMobileMenuOpen(false);
     window.location.hash = '#/community';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogoClick = () => {
-    setCurrentView('home');
+    window.location.hash = '#/';
     if (isLoggedIn) {
       setTimeout(() => {
         const targetElement = document.getElementById('dashboard-home');
@@ -193,7 +194,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
                     <svg viewBox="0 0 24 24" width="12" height="12" stroke="#000" strokeWidth="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                   </div>
                   <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.75rem', letterSpacing: '1px', color: 'var(--text-dim)', opacity: 0.8 }}>
-                    OPERATIVE: <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.85rem' }}>{user?.name || 'SHADOW-7'}</span>
+                    OPERATIVE: <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.85rem' }}>{((user as Record<string, unknown>)?.name as string) || 'SHADOW-7'}</span>
                   </span>
                 </div>
                 <button
