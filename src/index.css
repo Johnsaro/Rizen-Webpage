@@ -1,0 +1,60 @@
+:root {
+  font-family: 'Outfit', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+
+  /* Modern Sci-Fi / High-Tech RPG Palette */
+  --bg-color: #030407;
+  /* Deepest space blue/black */
+  --bg-gradient: radial-gradient(circle at top right, rgba(14, 25, 45, 1) 0%, rgba(3, 4, 7, 1) 100%);
+  --card-bg: rgba(15, 20, 35, 0.4);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --glass-blur: blur(20px);
+
+  --accent-cyan: #00E4FF;
+  --accent-cyan-glow: rgba(0, 228, 255, 0.2);
+  --accent-indigo: #6366f1;
+  --accent-purple: #8b5cf6;
+  --accent-emerald: #10b981;
+  --accent-crimson: #f43f5e;
+
+  --text-main: #f4f4f5;
+  --text-primary: #f4f4f5;
+  --text-dim: #a1a1aa;
+
+  /* Gradients */
+  --g-cyan-indigo: linear-gradient(135deg, #00E4FF, #6366f1);
+  --g-indigo-purple: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}

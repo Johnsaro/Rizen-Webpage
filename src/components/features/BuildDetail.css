@@ -1,0 +1,424 @@
+.build-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 4, 7, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 3000;
+  overflow-y: auto;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.build-detail-container {
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  animation: detail-slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes detail-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.build-detail-close {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  transition: color 0.3s;
+}
+
+.build-detail-close:hover {
+  color: var(--accent-cyan);
+}
+
+.close-icon {
+  font-size: 1.5rem;
+}
+
+/* ZONE 1: HEADER */
+.build-header {
+  margin-bottom: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 2rem;
+}
+
+.build-header__top {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.build-header__title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.build-header__summary {
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: var(--accent-cyan);
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 1.5rem;
+}
+
+.build-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.meta-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.meta-tag {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+/* CONTENT LAYOUT */
+.build-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.section-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ZONE 2: BRIEF */
+.brief-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem;
+}
+
+.brief-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+  margin-bottom: 3rem;
+}
+
+.intel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 600px) {
+  .intel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.intel-column h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.intel-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.intel-column li {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.intel-column li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--accent-cyan);
+  font-family: 'Fira Code', monospace;
+}
+
+.detail-actions {
+  margin-top: 3rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ZONE 3: MEDIA (REDESIGNED) */
+.media-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .media-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.media-card {
+  background: rgba(3, 4, 7, 0.6);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.media-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.media-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.05), inset 0 0 20px rgba(0, 240, 255, 0.02);
+  transform: translateY(-2px);
+}
+
+.media-card:hover::before {
+  opacity: 1;
+}
+
+.media-card-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-card-inner img,
+.media-card-inner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.9;
+}
+
+.media-card:hover .media-card-inner img,
+.media-card:hover .media-card-inner video {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+/* ── MONITOR FRAME EXPERIMENT (Bridgemind Style) ── */
+
+.monitor-frame {
+  background: rgba(4, 9, 14, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 0 4px rgba(25, 30, 35, 0.8),
+    0 0 0 5px rgba(0, 240, 255, 0.2),
+    0 15px 40px rgba(0, 0, 0, 0.7),
+    inset 0 0 30px rgba(0, 240, 255, 0.05);
+  border-radius: 8px;
+  /* Slightly sharper for hardware feel */
+  padding: 2px;
+  /* Inner bezel */
+}
+
+/* The glint/reflection on the top edge of the monitor bezel */
+.monitor-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      rgba(0, 240, 255, 0.8),
+      rgba(255, 255, 255, 0.4),
+      transparent);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Ensure the video itself looks like a screen (Slight inner shadow/ CRT curve hint) */
+.monitor-frame .media-card-inner {
+  border-radius: 4px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.monitor-frame .media-caption {
+  font-family: 'Fira Code', monospace;
+  /* More terminal-like for the monitor */
+  letter-spacing: 2px;
+  border-top: 1px dashed rgba(0, 240, 255, 0.2);
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+}
+
+.monitor-frame:hover {
+  border-color: rgba(0, 240, 255, 0.8);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 0 4px rgba(25, 30, 35, 0.9),
+    0 0 0 5px rgba(0, 240, 255, 0.5),
+    0 20px 50px rgba(0, 240, 255, 0.15),
+    inset 0 0 40px rgba(0, 240, 255, 0.1);
+  transform: translateY(-4px);
+}
+
+/* Primary Demo Styling */
+.primary-media-card {
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.primary-media-card::before {
+  opacity: 0.5;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+}
+
+.primary-media-card .media-card-inner {
+  aspect-ratio: 16 / 9;
+  /* Slightly wider for the main hero shot if desired, sticking to 16:9 */
+}
+
+.primary-media-card:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 240, 255, 0.05);
+  transform: translateY(-4px);
+}
+
+.media-caption {
+  padding: 1.2rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.5px;
+}
+
+.caption-icon {
+  color: var(--accent-cyan);
+  font-size: 0.8rem;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-card:hover .caption-icon {
+  opacity: 1;
+  text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.primary-media-card .media-caption {
+  font-size: 1rem;
+  padding: 1.5rem;
+  background: rgba(0, 240, 255, 0.02);
+}
+
+.media-placeholder {
+  height: 300px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-dim);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  transition: all 0.3s;
+}
+
+.media-placeholder:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.02);
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.media-placeholder:hover .placeholder-icon {
+  opacity: 1;
+  transform: scale(1.1);
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}

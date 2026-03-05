@@ -1,0 +1,388 @@
+.architecture-section {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 6rem;
+}
+
+.architecture-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4rem;
+    position: relative;
+    min-height: 500px;
+}
+
+/* Orbit System Wrapper */
+.orbit-system-wrapper {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orbit-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.orbit-circle {
+    fill: none;
+    stroke: rgba(0, 255, 255, 0.1);
+    stroke-width: 0.2;
+    stroke-dasharray: 1 2;
+}
+
+.orbit-spoke {
+    stroke: rgba(0, 255, 255, 0.4);
+    stroke-width: 0.3;
+    stroke-dasharray: 4 6;
+    animation: dash-flow 2s linear infinite;
+}
+
+@keyframes dash-flow {
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+.fade-pulse {
+    animation: pulse-opac 4s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-opac {
+    0% {
+        opacity: 0.2;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+.orbit-system {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.center-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 130px;
+    height: 130px;
+    background: radial-gradient(circle at center, rgba(0, 255, 255, 0.15) 0%, rgba(5, 5, 8, 0.9) 80%);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.center-node .core-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+    text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.center-node .core-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    text-align: center;
+}
+
+.center-node .core-subtitle {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.pulse-cyan {
+    animation: glow-pulse 3s infinite alternate;
+}
+
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), inset 0 0 10px rgba(0, 255, 255, 0.05);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        border-color: var(--accent-cyan);
+    }
+}
+
+.orbit-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* Total time to complete one revolution */
+    animation: orbit-spin 60s linear infinite;
+}
+
+/* Pause animation on orbit container hover */
+.orbit-system:hover .orbit-track {
+    animation-play-state: paused;
+}
+
+@keyframes orbit-spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.orbit-node-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* 
+   * Rotate container to the correct angle around the center, 
+   * then translate outward by the orbit radius (190px, tracking SVG orbit), 
+   * then counter-rotate so the node remains perfectly upright initially.
+   */
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-190px) rotate(calc(-1 * var(--angle)));
+    width: 80px;
+    height: 80px;
+    z-index: 5;
+}
+
+.orbit-node-anti-spin {
+    width: 100%;
+    height: 100%;
+    /* This exactly cancels out the .orbit-track spin to keep nodes visually upright over time */
+    animation: orbit-spin-reverse 60s linear infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orbit-system:hover .orbit-node-anti-spin {
+    animation-play-state: paused;
+}
+
+@keyframes orbit-spin-reverse {
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+.orbit-node {
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 12, 0.85);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.05);
+}
+
+.orbit-node::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--accent-cyan), transparent, var(--accent-violet));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.orbit-node:hover {
+    transform: scale(1.25);
+    border-color: var(--accent-cyan);
+    background: rgba(0, 20, 25, 0.95);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    z-index: 20;
+}
+
+.orbit-node:hover::before {
+    opacity: 0.6;
+}
+
+.node-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.node-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    transition: transform 0.3s;
+}
+
+.node-short-title {
+    font-size: 0.55rem;
+    color: var(--text-main);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    max-width: 60px;
+    line-height: 1.1;
+}
+
+.orbit-node:hover .node-icon {
+    transform: translateY(-2px) scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.node-info-card {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 15px);
+    width: 220px;
+    background: rgba(5, 5, 8, 0.95);
+    border: 1px solid var(--accent-cyan);
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 255, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 30;
+    backdrop-filter: blur(8px);
+    text-align: center;
+}
+
+/* Tooltip arrow */
+.node-info-card::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: rgba(5, 5, 8, 0.95);
+    border-left: 1px solid var(--accent-cyan);
+    border-top: 1px solid var(--accent-cyan);
+}
+
+.orbit-node:hover .node-info-card {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 25px);
+}
+
+.node-info-card .weapon-tag {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+}
+
+.node-desc {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Mobile Layout */
+.mobile-arch-stack {
+    display: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem;
+}
+
+.mobile-core-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, rgba(5, 5, 8, 0.8) 100%);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.mobile-core-block h3 {
+    margin: 1rem 0 0 0;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.mobile-nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mobile-node-card {
+    padding: 1.25rem 1.5rem;
+    background: rgba(10, 10, 12, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 8px;
+}
+
+.mobile-node-card:active,
+.mobile-node-card:hover {
+    background: rgba(20, 20, 25, 0.8);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.05);
+}
+
+@media (max-width: 1024px) {
+    .orbit-system-wrapper {
+        display: none;
+    }
+
+    .mobile-arch-stack {
+        display: flex;
+    }
+
+    .architecture-container {
+        min-height: auto;
+        margin-top: 2rem;
+    }
+}
+
+/* Tablet explicit semi-circle layout logic (optional if mobile stack preferred up to 1024px) 
+   Uncomment to try a semi-circle arch layout later if needed, but the current 
+   mobile stack up to 1024px provides a clean, predictable tablet experience 
+   without overlapping text. */
