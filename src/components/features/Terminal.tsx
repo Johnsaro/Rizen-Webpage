@@ -80,42 +80,43 @@ const Terminal = ({
         <div ref={logEndRef} />
       </div>
 
-      {currentQuizQuestion ? (
-        <div className="terminal-quiz-options">
-          {currentQuizQuestion.options.map((opt, i) => (
+      <div className="terminal-footer">
+        {currentQuizQuestion ? (
+          <div className="terminal-quiz-options">
+            {currentQuizQuestion.options.map((opt, i) => (
+              <button
+                key={i}
+                className="quiz-option-btn"
+                onClick={() => onInitiationAnswer(opt)}
+              >
+                <span className="quiz-option-prefix">[{i + 1}]</span>
+                <span className="quiz-option-text">{opt}</span>
+              </button>
+            ))}
+          </div>
+        ) : isInitiating ? (
+          <div className="terminal-input-form" style={{ minHeight: '38px' }} />
+        ) : (
+          <form className="terminal-input-form" onSubmit={onReportTask}>
+            <span className="input-prefix">&gt;</span>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="REPORT REAL-WORLD TASK..."
+              disabled={isProcessing}
+              className="terminal-input"
+            />
             <button
-              key={i}
-              className="quiz-chip"
-              onClick={() => onInitiationAnswer(opt)}
+              type="submit"
+              className="terminal-submit-btn"
+              disabled={isProcessing || !inputValue.trim()}
             >
-              <span className="quiz-chip-num">[{i + 1}]</span>
-              <span className="quiz-chip-text">{opt}</span>
+              SEND
             </button>
-          ))}
-        </div>
-      ) : isInitiating ? (
-        <div className="terminal-input-form" style={{ minHeight: '60px', background: 'transparent', borderTop: 'none' }}>
-        </div>
-      ) : (
-        <form className="terminal-input-form" onSubmit={onReportTask}>
-          <span className="input-prefix">&gt;</span>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="REPORT REAL-WORLD TASK..."
-            disabled={isProcessing}
-            className="terminal-input"
-          />
-          <button
-            type="submit"
-            className="terminal-submit-btn"
-            disabled={isProcessing || !inputValue.trim()}
-          >
-            SEND
-          </button>
-        </form>
-      )}
+          </form>
+        )}
+      </div>
     </div>
   );
 };
