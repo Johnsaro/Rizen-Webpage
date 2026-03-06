@@ -3,12 +3,21 @@ import { useState } from 'react';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLoginSuccess?: () => void;
 }
 
-const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'authenticating' | 'granted' | 'error'>('idle');
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    class: 'Security Analyst'
+  });
 
   const handleLogin = () => {
     if (isLoading) return;
@@ -21,9 +30,18 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       setTimeout(() => {
         setIsLoading(false);
         setStatus('idle');
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
         onClose();
+        // Reset form to login state when closed automatically
+        setTimeout(() => setMode('login'), 300);
       }, 1000);
     }, 1500);
+  };
+
+  const toggleMode = () => {
+    setMode(mode === 'login' ? 'register' : 'login');
   };
 
   return (
@@ -32,10 +50,31 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         <button className="close-modal" aria-label="Close Node Access" onClick={onClose}>
           <span className="close-icon-text">×</span>
         </button>
-        <div className="manifesto-glitch auth-title">NODE ACCESS</div>
+        <div className="manifesto-glitch auth-title">
+          {mode === 'login' ? 'NODE ACCESS' : 'REQUEST INVITATION'}
+        </div>
+
+        {mode === 'register' && (
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="DISPLAY NAME"
+              className="auth-input"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+            <div className="input-helper">ENTER PUBLIC HANDLE</div>
+          </div>
+        )}
 
         <div className="input-group">
-          <input type="email" placeholder="OPERATIVE DESIGNATION (EMAIL)" className="auth-input" />
+          <input
+            type="email"
+            placeholder="OPERATIVE DESIGNATION (EMAIL)"
+            className="auth-input"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
           <div className="input-helper">ENTER REGISTERED OPERATIVE IDENTIFIER</div>
         </div>
 
@@ -45,6 +84,8 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               type={showPassword ? "text" : "password"}
               placeholder="DECRYPTION KEY (PASSWORD)"
               className="auth-input"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
             <button
               type="button"
@@ -68,6 +109,23 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           <div className="input-helper">INPUT AUTHORIZED ACCESS KEY</div>
         </div>
 
+        {mode === 'register' && (
+          <div className="input-group" style={{ marginBottom: '1.5rem' }}>
+            <select
+              className="auth-input"
+              style={{ appearance: 'none', backgroundColor: 'rgba(0,0,0,0.5)', cursor: 'pointer' }}
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+            >
+              <option value="Security Analyst">Security Analyst</option>
+              <option value="Software Engineer">Software Engineer</option>
+              <option value="Web Developer">Web Developer</option>
+              <option value="Game Developer">Game Developer</option>
+            </select>
+            <div className="input-helper">INITIAL DISCIPLINE PREFERENCE</div>
+          </div>
+        )}
+
         <button
           className={`auth-btn ${status !== 'idle' ? 'loading' : ''} ${status === 'granted' ? 'success' : ''}`}
           onClick={handleLogin}
@@ -81,7 +139,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         <div className="auth-divider"></div>
 
         <div className="auth-secondary-link">
-          NEW RECRUIT? <span className="auth-link-text" onClick={onClose}>REQUEST INVITATION</span>
+          {mode === 'login' ? (
+            <>NEW RECRUIT? <span className="auth-link-text" onClick={toggleMode}>REQUEST INVITATION</span></>
+          ) : (
+            <>ALREADY REGISTERED? <span className="auth-link-text" onClick={toggleMode}>RETURN TO LOGIN</span></>
+          )}
         </div>
       </div>
     </div>

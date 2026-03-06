@@ -13,7 +13,8 @@ const orbitNodes = [
 const SystemArchitecture: React.FC = () => {
     const handleNodeClick = (path: string) => {
         if (path.startsWith('#/')) {
-            window.location.hash = path;
+            window.history.pushState(null, '', path);
+            window.dispatchEvent(new Event('hashchange'));
         } else {
             const el = document.querySelector(path);
             if (el) {

@@ -10,11 +10,19 @@ const VaultReader = ({ item, onClose }: VaultReaderProps) => {
   const [decrypting, setDecrypting] = useState(true);
 
   useEffect(() => {
+    let timer1: number;
+    let timer2: number;
+
     if (item) {
-      setDecrypting(true);
-      const timer = setTimeout(() => setDecrypting(false), 800);
-      return () => clearTimeout(timer);
+      // Defer state update to avoid 'set-state-in-effect' warning
+      timer1 = setTimeout(() => setDecrypting(true), 0);
+      timer2 = setTimeout(() => setDecrypting(false), 800);
     }
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, [item]);
 
   if (!item) return null;
@@ -62,7 +70,7 @@ const VaultReader = ({ item, onClose }: VaultReaderProps) => {
               <div className="intel-reveal animate-fade-in">
                 <h3 className="intel-title">{item.content.title}</h3>
                 <p className="intel-description">{item.content.description}</p>
-                
+
                 {item.content.codeBlock && (
                   <div className="intel-code-block">
                     <div className="code-header"><span>EXEC_TERMINAL</span></div>
@@ -80,7 +88,7 @@ const VaultReader = ({ item, onClose }: VaultReaderProps) => {
                     ))}
                   </div>
                 )}
-                
+
                 <div className="vault-footer-actions">
                   <button className="btn-secondary small-btn">DOWNLOAD_INTEL (PDF)</button>
                   <button className="btn-primary small-btn">INITIATE_UPGRADE</button>

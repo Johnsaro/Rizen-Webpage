@@ -134,6 +134,19 @@
   width: 100%;
 }
 
+.nav-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nav-item.disabled:hover {
+  color: var(--text-dim);
+}
+
+.nav-item.disabled:hover::after {
+  width: 0;
+}
+
 .btn-nav-primary {
   background: transparent;
   color: var(--accent-cyan);
