@@ -65,81 +65,52 @@ export interface DemoPlayer {
 }
 
 export const demoPlayer: DemoPlayer = {
-    id: 'usr_mock_001',
-    name: 'SHADOW-7',
+    id: 'usr_new_operative',
+    name: 'RECRUIT',
     class: 'Security Analyst',
-    level: 14,
+    level: 1,
     stats: {
         hp: {
-            current: 85,
+            current: 100,
             max: 100
         },
         xp: {
-            current: 2450,
-            max: 3000
+            current: 0,
+            max: 1000
         },
-        rep: 1240,
-        streak: 7,
+        rep: 0,
+        streak: 0,
         classXP: {
-            recon: 80,
-            exploitation: 40,
-            enumeration: 60
+            recon: 0,
+            exploitation: 0,
+            enumeration: 0
         }
     },
     quests: [
         {
-            id: 'q_001',
-            title: 'Deploy Nmap Scan on Target Network',
-            type: 'Daily',
-            timeRemaining: '4h remaining',
-            rewardXP: 120,
-            progress: 60
-        },
-        {
-            id: 'q_002',
-            title: 'Complete OWASP Top 10 Module',
+            id: 'q_init_001',
+            title: 'Initialize Guild Connection',
             type: 'Main Quest',
-            timeRemaining: '3 days remaining',
+            timeRemaining: 'No limit',
             rewardXP: 500,
-            progress: 30
-        },
-        {
-            id: 'q_003',
-            title: 'Review Burp Suite Intercept Logs',
-            type: 'Side Quest',
-            timeRemaining: '8h remaining',
-            rewardXP: 80,
-            progress: 90
+            progress: 10
         }
     ],
     arsenal: {
         equippedRow: [
-            { id: 'w_001', name: 'Recon Blade', isUnlocked: true, isEquipped: true },
-            { id: 'w_002', name: 'Debug Shield', isUnlocked: true, isEquipped: true }
+            { id: 'w_001', name: 'Recon Blade', isUnlocked: true, isEquipped: true }
         ],
         grid: [
-            { id: 'wg_001', name: 'Payload Injector', isUnlocked: true },
-            { id: 'wg_002', name: 'Network Sniffer', isUnlocked: true },
+            { id: 'wg_001', name: 'Payload Injector', isUnlocked: false },
+            { id: 'wg_002', name: 'Network Sniffer', isUnlocked: false },
             { id: 'wg_003', name: 'Kernel Exploit', isUnlocked: false },
             { id: 'wg_004', name: 'Zero-Day Module', isUnlocked: false }
         ],
-        consumables: [
-            { id: 'c_001', name: 'Health Potion', count: 3 },
-            { id: 'c_002', name: 'Shield Charge', count: 1 },
-            { id: 'c_003', name: 'Focus Boost', count: 1, isActive: true, timeRemaining: '1h 23m' }
-        ]
+        consumables: []
     },
     achievements: [
-        { id: 'a_001', name: 'First Blood', isUnlocked: true },
-        { id: 'a_002', name: 'Network Mapper', isUnlocked: true },
-        { id: 'a_003', name: 'Script Kiddie No More', isUnlocked: true },
-        { id: 'a_004', name: 'WEEK WARRIOR', isUnlocked: true },
-        { id: 'a_005', name: 'Vulnerability Found', isUnlocked: true },
-        { id: 'a_006', name: 'Social Engineer', isUnlocked: true },
-        { id: 'a_007', name: 'Root Access', isUnlocked: true },
-        { id: 'a_008', name: 'Defaced', isUnlocked: false },
-        { id: 'a_009', name: 'Ghost in the Machine', isUnlocked: false },
-        { id: 'a_010', name: 'Zero Trace', isUnlocked: false },
-        { id: 'a_011', name: 'Master Exploiter', isUnlocked: false },
+        { id: 'a_001', name: 'First Blood', isUnlocked: false },
+        { id: 'a_002', name: 'Network Mapper', isUnlocked: false },
+        { id: 'a_003', name: 'Script Kiddie No More', isUnlocked: false },
     ]
 };

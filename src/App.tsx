@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import AnnouncementBar from './components/AnnouncementBar'
@@ -15,6 +15,8 @@ import AgentNetwork from './components/features/AgentNetwork'
 import Builds from './pages/Builds'
 import Community from './pages/Community'
 import CommunityEvent from './pages/CommunityEvent'
+import AdminBountyConsole from './pages/AdminBountyConsole'
+import { useAuth } from './context/AuthContext'
 import { useCombatSim } from './hooks/useCombatSim'
 import { useTerminal } from './hooks/useTerminal'
 import { useInitiation } from './hooks/useInitiation'
@@ -26,26 +28,42 @@ import { demoPlayer } from './data/demoPlayer'
 import Dashboard from './components/dashboard/Dashboard'
 
 function App() {
+  const { user, signOut, loading: authLoading } = useAuth();
+  const isLoggedIn = !!user;
+
+  // Derive operative data from Supabase user metadata or fallback to level 1 defaults
+  const operativeData = useMemo(() => {
+    if (!user) return demoPlayer;
+
+    return {
+      ...demoPlayer,
+      id: user.id,
+      name: user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'RECRUIT',
+      class: user.user_metadata?.class || 'Security Analyst',
+      // For now, we keep the Level 1 stats from demoPlayer unless you want to fetch 
+      // full stats from a 'profiles' table.
+    };
+  }, [user]);
+
   const [scanned, setScanned] = useState(false);
   const [typedText, setTypedText] = useState("");
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event' | 'admin-console'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const fullText = "Rise or Stagnate. The choice is yours, Recruit.";
 
   const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setCurrentView('home');
+    setAuthModalOpen(false);
+    // Removed setCurrentView('home') to preserve user location
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    signOut();
     setCurrentView('home');
   };
 
@@ -53,7 +71,9 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#/builds/')) {
+      if (hash === '#/admin/bounty-console') {
+        setCurrentView('admin-console');
+      } else if (hash.startsWith('#/builds/')) {
         const buildId = hash.replace('#/builds/', '');
         const found = builds.find(b => b.id === buildId);
         if (found) {
@@ -72,7 +92,7 @@ function App() {
         }
 
         if (subId === 'event') {
-          setCurrentView('community-event' as unknown as 'home' | 'builds' | 'community');
+          setCurrentView('community-event' as any);
         } else {
           setCurrentView('community');
           if (subId.startsWith('docs')) {
@@ -170,6 +190,13 @@ function App() {
     }
   }, [scanned]);
 
+  // Global Auth Trigger
+  useEffect(() => {
+    const handleOpenAuth = () => setAuthModalOpen(true);
+    window.addEventListener('open-auth-modal', handleOpenAuth);
+    return () => window.removeEventListener('open-auth-modal', handleOpenAuth);
+  }, []);
+
   // Handle Quiz Progression in Terminal
   useEffect(() => {
     if (step === 'IDLE') return;
@@ -244,15 +271,15 @@ function App() {
     };
   }, [scanned, currentView, isLoggedIn]);
 
-  const upcomingBuild = builds.find(b => b.status === 'Upcoming') || builds[0];
+  const rizenMobile = builds.find(b => b.id === 'rizen-mobile') || builds[0];
 
   return (
     <div className="portal">
       <AnnouncementBar
-        label="UPCOMING"
-        message={upcomingBuild.title}
-        ctaText="Check It Out"
-        ctaLink={`#/builds/${upcomingBuild.id}`}
+        label="LATEST RELEASE"
+        message={`${rizenMobile.title} v1.0.0 is now Live`}
+        ctaText="View Intel"
+        ctaLink={`#/builds/${rizenMobile.id}`}
       />
 
       <Navbar
@@ -261,7 +288,7 @@ function App() {
         currentView={currentView}
         setCurrentView={setCurrentView}
         isLoggedIn={isLoggedIn}
-        user={demoPlayer}
+        user={operativeData}
         onLogout={handleLogout}
       />
       <ParticlesBackground />
@@ -269,7 +296,7 @@ function App() {
       {!scanned && <ScannerOverlay onScanComplete={onScanComplete} />}
 
       {isLoggedIn && currentView === 'home' ? (
-        <Dashboard user={demoPlayer} />
+        <Dashboard user={operativeData} />
       ) : currentView === 'home' ? (
         <>
           {/* 1. HERO SECTION */}
@@ -505,10 +532,12 @@ function App() {
             <div className="cta-content">
               <h2 className="title-large" style={{ marginBottom: '1rem' }}>THE GUILD IS WAITING</h2>
               <p style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', marginBottom: '3rem', fontFamily: 'Space Grotesk' }}>Your first quest begins at 08:00 AM. Will you be there?</p>
-              <button className="btn-primary large-btn" onClick={initiateDiscovery}>Initialize Onboarding</button>
+              <button className="btn-primary large-btn" onClick={() => setAuthModalOpen(true)}>Initialize Onboarding</button>
             </div>
           </section >
         </>
+      ) : currentView === 'admin-console' ? (
+        <AdminBountyConsole />
       ) : currentView === 'community-event' ? (
         <CommunityEvent />
       ) : currentView === 'community' ? (

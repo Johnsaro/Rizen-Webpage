@@ -12,6 +12,8 @@ export interface RizenEvent {
     endDate: string;
     rewards: string[]; // e.g., ["Elite Badge", "10,000 REP", "Discord Role"]
     rules: string[];
+    howItWorks?: { step: string; title: string; desc: string }[];
+    faqs?: { q: string; a: string }[];
     eligibility: string;
     submissionFields: string[]; // e.g., ["Title", "Description", "Steps to Reproduce", "Proof"]
     scoringRules: string;
@@ -40,21 +42,48 @@ export interface EventSubmission {
 
 export const rizenEvents: RizenEvent[] = [
     {
+        id: 'v1-launch',
+        slug: 'v1-launch-celebration',
+        title: 'v1.0.0 Launch Celebration',
+        tagline: 'The protocol is live. Secure your first quest to unlock the Launch Badge.',
+        description: 'Celebrating the official release of Rizen v1.0.0. All operatives who complete at least one S-rank quest during the launch window will receive exclusive rewards. The guild is open, the board is set, and the time for stagnation is over.',
+        status: 'live',
+        startDate: '2026-03-08T00:00:00Z',
+        endDate: '2026-03-15T23:59:59Z',
+        rewards: [
+            "v1.0.0 Founder Badge (Profile Cosmetic)",
+            "5,000 Bonus REP",
+            "1x Focus Boost (1.5x XP for 2 hours)"
+        ],
+        rules: [
+            "Quest must be assigned by the Guild Master AI.",
+            "Quest must be completed within the 24-hour window it was created.",
+            "Only one badge per Operative ID.",
+            "Must be on v1.0.0 or higher."
+        ],
+        eligibility: 'All registered Rizen operatives.',
+        submissionFields: [],
+        scoringRules: 'Automatic verification via operative system logs upon quest completion.',
+        featured: true,
+        icon: '🚀',
+        ctaLabel: 'Claim Your Quest',
+        createdAt: '2026-03-08T00:00:00Z'
+    },
+    {
         id: 'bb-v1',
         slug: 'bug-bounty-v1',
         title: 'Project Zero: Bug Bounty',
-        tagline: 'Help secure the Guild. Hunt bugs, earn Rep.',
+        tagline: 'SYSTEM STATUS: BOUNTY IS LIVE',
         description: 'The Rizen Guild network is expanding rapidly, and vulnerability testing is crucial. Participate in our first official bug bounty program to identify stability, calculation, or security issues within the Alpha release. Every confirmed bug strengthens the protocol. Help us secure the environment, and be richly rewarded.',
         status: 'live',
         startDate: '2026-03-01T00:00:00Z',
         endDate: '2026-04-01T00:00:00Z',
         rewards: [
-            "Bug Hunter Badge (Profile Cosmetic)",
-            "10,000 REP per Critical execution",
-            "5,000 REP per High",
-            "2,500 REP per Medium",
-            "1,000 REP per Low",
-            "'The Exterminator' Discord Role for Top 5"
+            "SSS-Tier (Critical): 15,000 REP",
+            "S-Tier (High): 7,500 REP",
+            "A-Tier (Medium): 3,500 REP",
+            "B-Tier (Low): 1,500 REP",
+            "Exclusive 'The Exterminator' Discord Role for top contributors"
         ],
         rules: [
             "Do not perform DDoS or automated brute-force attacks against the Supabase backend.",
@@ -63,9 +92,21 @@ export const rizenEvents: RizenEvent[] = [
             "Do not exfiltrate or manipulate data belonging to other operatives.",
             "Provide video or reproducible steps for UI bugs."
         ],
+        howItWorks: [
+            { step: '01', title: 'Identification', desc: 'Discover a bug, exploit, or visual inconsistency in the Rizen mobile app or showcase site.' },
+            { step: '02', title: 'Reproduction', desc: 'Document clear, step-by-step instructions to reproduce the issue reliably.' },
+            { step: '03', title: 'Transmission', desc: 'Submit your findings via the secure uplink on this page.' },
+            { step: '04', title: 'Validation', desc: 'Our core architects will review the report and assign a tier reward within 48 hours.' }
+        ],
+        faqs: [
+            { q: 'Who is eligible to participate?', a: 'Any registered operative with an active Rizen account can submit findings.' },
+            { q: 'How are rewards distributed?', a: 'Reputation (REP) is added directly to your Operative Profile once a finding is confirmed.' },
+            { q: 'Can I submit multiple bugs?', a: 'Yes, there is no limit to the number of unique findings an operative can report.' },
+            { q: 'What is considered a Critical (SSS-Tier) bug?', a: 'Anything involving unauthorized data access, reward calculation exploits, or server-side vulnerabilities.' }
+        ],
         eligibility: 'All registered Rizen Alpha users with an active Operative ID are eligible.',
         submissionFields: ['title', 'severity', 'affectedArea', 'description', 'stepsToReproduce', 'expected', 'actual', 'proofLinks'],
-        scoringRules: 'Submissions are graded by the core dev team within 48 hours. Severity is classified based on CVSS standard equivalence for web apps.',
+        scoringRules: 'Submissions are graded by the core dev team based on impact and complexity.',
         featured: true,
         icon: '🪲',
         ctaLabel: 'Enter the Hunt',

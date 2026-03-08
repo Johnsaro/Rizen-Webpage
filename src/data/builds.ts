@@ -33,21 +33,22 @@ export const builds: Build[] = [
     oneLineSummary: 'Cross-platform mobile system for real-world quest tracking.',
     description: 'The primary operative engagement interface for real-world quest tracking.',
     tags: ['Flutter', 'Supabase', 'Dart'],
-    status: 'Beta',
-    systemStatus: 'degraded',
+    status: 'Live',
+    systemStatus: 'online',
     image: '/assets/builds/rizen-mobile.png',
-    created_date: '2026-02-19',
+    created_date: '2026-03-08',
     intel: {
-      brief: 'A cross-platform mobile application built with Flutter that gamifies life. It uses Supabase for real-time data persistence and OpenAI for dynamic quest generation.',
+      brief: 'The official v1.0.0 release of the Rizen mobile operative interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI quest generation, and real-time synchronization.',
       patchNotes: [
+        'v1.0.0: Official production release. Stability pass and final asset integration.',
         'v0.4.0: Achievement system implemented.',
         'v0.3.5: Combat system Phase 1-4 completed.',
         'v0.3.0: Supabase migration for cloud profiles.'
       ],
       lessons: [
+        'Release cycles require rigorous APK validation across physical hardware.',
         'State management with ValueNotifier is highly efficient for small-to-medium RPG logic.',
-        'Supabase Row Level Security (RLS) is critical for multi-user data integrity.',
-        'Dynamic AI prompting requires strict output schema validation.'
+        'Supabase Row Level Security (RLS) is critical for multi-user data integrity.'
       ]
     },
     media: [

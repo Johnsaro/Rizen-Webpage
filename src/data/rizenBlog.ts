@@ -12,6 +12,45 @@ export interface BlogPost {
 
 export const rizenBlogPosts: BlogPost[] = [
     {
+        id: 'rizen-v1-release',
+        title: 'Rizen v1.0.0: The Protocol is Live',
+        summary: 'After 17 days and 37 sessions of intensive development, Rizen v1.0.0 has officially launched. The transition from prototype to production-ready operative interface is complete.',
+        content: `Today marks a major milestone. **Rizen v1.0.0 is officially live.**
+
+What started 17 days ago as a conceptual framework for gamifying life has evolved into a stable, feature-complete mobile application. We've moved past the "Beta" tag and into full operational status.
+
+### The Journey to v1.0.0
+Spanning 37 documented development sessions, the road to release involved:
+- **Core RPG Loop:** Implementing a Guild Master AI that translates real-life effort into game progress.
+- **Combat System:** A 4-phase build-out of a knowledge-based battle engine.
+- **Economy & Items:** A balanced system of consumables and buffs that drive strategic play.
+- **Architecture:** A clean, package-free state management system built on \`ValueNotifier\`.
+
+### What's New in the Release
+The v1.0.0 build focuses on **Stability and Finality**:
+1. **Physical Hardware Validation:** The app has been successfully deployed and tested on physical Android devices, moving beyond the emulator.
+2. **Asset Polishing:** Final UI refinements to the Neural Breach theme to ensure a cohesive "Cyber-Noir" experience.
+3. **Bug Squashing:** A final sweep of the QA_REPORT to resolve all high-priority blockers.
+
+### The Numbers
+- **17 Days** of development.
+- **37 Sessions** logged.
+- **1.0.0+1** Build version.
+- **Zero** third-party state management packages.
+
+### What's Next?
+The protocol is established, but the guild is just beginning. Post-launch focus will shift toward **Content Expansion**—new weapon classes, more complex encounter logic, and enhanced social features via the Showcase portal.
+
+The choice remains yours, Recruit. Rise or Stagnate.
+
+*The v1.0.0 APK is now distributed to core operatives.*`,
+        category: 'Update',
+        version: 'v1.0.0',
+        date: '2026-03-08',
+        icon: '🚀',
+        featured: true
+    },
+    {
         id: 'guild-master-ai',
         title: 'The Guild Master: How an AI Creates Your Quests',
         summary: 'Rizen\'s Guild Master is an AI-powered quest creator backed by OpenAI\'s gpt-4o-mini. Players describe their real-life activities, and the GM translates them into ranked quests with XP rewards, deadlines, and class routing.',
