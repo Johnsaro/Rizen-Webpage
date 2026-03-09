@@ -277,6 +277,52 @@ button {
   }
 }
 
+/* Hero quick-download link (SaaS style) */
+.hero-apk-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-family: 'Fira Code', monospace;
+  letter-spacing: 0.5px;
+  transition: color 0.25s;
+  width: fit-content;
+}
+
+.hero-apk-link svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent-cyan);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-apk-link:hover {
+  color: var(--text-primary);
+}
+
+.hero-apk-link:hover svg {
+  transform: translateY(3px);
+}
+
+.hero-apk-chip {
+  padding: 0.15rem 0.5rem;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  color: var(--accent-cyan);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 1024px) {
+  .hero-apk-link {
+    margin: 1.2rem auto 0;
+  }
+}
+
 .btn-primary {
   background: var(--text-primary);
   color: var(--bg-color);
@@ -450,6 +496,7 @@ button {
 .terminal-log::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
 }
+
 .terminal-log::-webkit-scrollbar-thumb {
   background: rgba(34, 211, 238, 0.2);
   border-radius: 4px;

@@ -26,9 +26,10 @@ import { builds } from './data/builds'
 import type { Build } from './data/builds'
 import { demoPlayer } from './data/demoPlayer'
 import Dashboard from './components/dashboard/Dashboard'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
-  const { user, signOut, loading: authLoading } = useAuth();
+  const { user, signOut } = useAuth();
   const isLoggedIn = !!user;
 
   // Derive operative data from Supabase user metadata or fallback to level 1 defaults
@@ -312,6 +313,20 @@ function App() {
                 <button className="btn-primary" onClick={initiateDiscovery}>Claim Your Class</button>
                 <button className="btn-secondary" onClick={() => setCurrentView('builds')}>View The Board</button>
               </div>
+              <a
+                className="hero-apk-link reveal"
+                href="https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Get the App
+                <span className="hero-apk-chip">APK · Android</span>
+              </a>
 
               <Terminal
                 log={guildMasterLog}
@@ -537,7 +552,9 @@ function App() {
           </section >
         </>
       ) : currentView === 'admin-console' ? (
-        <AdminBountyConsole />
+        <ProtectedRoute requireAdmin>
+          <AdminBountyConsole />
+        </ProtectedRoute>
       ) : currentView === 'community-event' ? (
         <CommunityEvent />
       ) : currentView === 'community' ? (

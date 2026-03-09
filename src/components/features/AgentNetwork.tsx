@@ -16,7 +16,7 @@ const agentsData: Agent[] = [
         name: 'Claude',
         role: 'Primary Reasoning / System Design',
         status: 'ACTIVE',
-        projects: ['PulseAgent 2.0', 'Rizen Mobile Protocol'],
+        projects: ['Rizen Mobile Launch', 'Rizen Mobile Protocol'],
         icon: (
             <svg viewBox="0 0 24 24" fill="#D97757" className="agent-icon" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6.5 17.5l4-3 4 3V6.5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v11z" />
