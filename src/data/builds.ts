@@ -23,6 +23,7 @@ export interface Build {
   links: {
     demo?: string;
     repo?: string;
+    download?: string;
   };
 }
 
@@ -53,10 +54,12 @@ export const builds: Build[] = [
     },
     media: [
       { type: 'image', url: '/assets/builds/rizen-ss1.png', caption: 'Character Profile & Stats' },
-      { type: 'image', url: '/assets/builds/rizen-ss2.png', caption: 'Real-time Quest Board' }
+      { type: 'image', url: '/assets/builds/rizen-ss2.png', caption: 'Real-time Quest Board' },
+      { type: 'image', url: '/assets/builds/rizen-ss3.png', caption: 'Neural Breach Combat Interface' },
+      { type: 'image', url: '/assets/builds/rizen-ss4.png', caption: 'Guild Arsenal & Loadout' }
     ],
     links: {
-      repo: 'https://github.com/example/rizen-app'
+      download: 'https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf'
     }
   },
   {

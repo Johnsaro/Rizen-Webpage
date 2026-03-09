@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CommunityEventDetail.css';
-import { rizenEvents, mockBugSubmissions } from '../data/rizenEvents';
+import { rizenEvents } from '../data/rizenEvents';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 

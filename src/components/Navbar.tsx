@@ -4,7 +4,7 @@ import './Navbar.css';
 interface NavbarProps {
   setAuthModalOpen: (open: boolean) => void;
   setIsHovering: (hover: boolean) => void;
-  currentView: 'home' | 'builds' | 'community' | 'community-event';
+  currentView: 'home' | 'builds' | 'community' | 'community-event' | 'admin-console';
   setCurrentView: (view: 'home' | 'builds' | 'community' | 'community-event') => void;
   isLoggedIn: boolean;
   user: unknown;

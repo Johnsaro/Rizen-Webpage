@@ -13,6 +13,7 @@ export interface PlayerProfile {
   hp: number;
   max_hp: number;
   onboarding_complete: boolean;
+  is_admin?: boolean;
 }
 
 export interface Quest {

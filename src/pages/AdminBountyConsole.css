@@ -647,3 +647,344 @@
     transform: translateY(0);
     box-shadow: none;
 }
+
+/* ── FIXED FILTER TAB ─────────────────────────────────────── */
+.abc-filter-btn.f-fixed.active {
+    color: var(--hk-green);
+    background: rgba(57, 217, 138, 0.1);
+    box-shadow: 0 0 10px rgba(57, 217, 138, 0.15);
+}
+
+/* ── PATCH INTEL PANEL (inside card) ──────────────────────── */
+.patch-intel-panel {
+    margin-top: 1.4rem;
+    border: 1px solid rgba(57, 217, 138, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(57, 217, 138, 0.03);
+}
+
+.patch-intel-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    background: rgba(57, 217, 138, 0.06);
+    border: none;
+    border-bottom: 1px solid rgba(57, 217, 138, 0.15);
+    color: var(--hk-green);
+    font-family: var(--hk-mono);
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+    text-transform: uppercase;
+}
+
+.patch-intel-toggle:hover {
+    background: rgba(57, 217, 138, 0.1);
+}
+
+.patch-version-chip {
+    padding: 0.15rem 0.55rem;
+    background: rgba(57, 217, 138, 0.12);
+    border: 1px solid rgba(57, 217, 138, 0.3);
+    border-radius: 3px;
+    font-size: 0.65rem;
+    color: var(--hk-green);
+}
+
+.patch-toggle-arrow {
+    margin-left: auto;
+    font-size: 0.6rem;
+    opacity: 0.6;
+}
+
+.patch-intel-body {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patch-meta-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.patch-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.patch-meta-label {
+    font-family: var(--hk-mono);
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: var(--hk-dim);
+    text-transform: uppercase;
+}
+
+.patch-meta-value {
+    font-family: var(--hk-mono);
+    font-size: 0.78rem;
+    color: var(--hk-text);
+}
+
+.patch-meta-value.hl {
+    color: var(--hk-green);
+}
+
+.patch-meta-value.sig {
+    color: var(--hk-cyan);
+    letter-spacing: 1px;
+}
+
+/* Pseudo terminal block for diff */
+.patch-code-block {
+    border: 1px solid rgba(57, 217, 138, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.patch-code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.9rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(57, 217, 138, 0.12);
+    font-family: var(--hk-mono);
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--hk-dim);
+}
+
+.patch-code-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.patch-code-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(57, 217, 138, 0.25);
+}
+
+.patch-code-body {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    font-family: var(--hk-mono);
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--hk-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.patch-code-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.patch-code-body::-webkit-scrollbar-thumb {
+    background: rgba(57, 217, 138, 0.3);
+    border-radius: 2px;
+}
+
+/* ── PATCH INTEL MODAL ─────────────────────────────────────── */
+.patch-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.patch-modal {
+    width: 100%;
+    max-width: 580px;
+    background: var(--hk-panel);
+    border: 1px solid rgba(57, 217, 138, 0.35);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(57, 217, 138, 0.1);
+    animation: patch-modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes patch-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.patch-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 1.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(57, 217, 138, 0.15);
+}
+
+.patch-modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.patch-modal-icon {
+    font-size: 1.4rem;
+}
+
+.patch-modal-label {
+    font-family: var(--hk-mono);
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    color: var(--hk-green);
+    margin-bottom: 0.2rem;
+}
+
+.patch-modal-title {
+    font-family: var(--hk-sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.patch-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--hk-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    transition: color 0.2s;
+}
+
+.patch-modal-close:hover {
+    color: #fff;
+}
+
+.patch-modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.patch-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.patch-label {
+    font-family: var(--hk-mono);
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--hk-dim);
+    text-transform: uppercase;
+}
+
+.patch-required {
+    color: var(--hk-red);
+}
+
+.patch-input,
+.patch-textarea {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--hk-border);
+    border-radius: 5px;
+    padding: 0.65rem 1rem;
+    color: var(--hk-text);
+    font-family: var(--hk-mono);
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.patch-input:focus,
+.patch-textarea:focus {
+    border-color: rgba(57, 217, 138, 0.5);
+    box-shadow: 0 0 12px rgba(57, 217, 138, 0.08);
+}
+
+.patch-textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.patch-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid var(--hk-border);
+}
+
+.patch-btn-ghost {
+    padding: 0.5rem 1.2rem;
+    background: transparent;
+    border: 1px solid var(--hk-border);
+    border-radius: 5px;
+    color: var(--hk-dim);
+    font-family: var(--hk-mono);
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.patch-btn-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.patch-btn-commit {
+    padding: 0.55rem 1.5rem;
+    background: rgba(57, 217, 138, 0.12);
+    border: 1px solid var(--hk-green);
+    border-radius: 5px;
+    color: var(--hk-green);
+    font-family: var(--hk-mono);
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.patch-btn-commit:hover:not(:disabled) {
+    background: rgba(57, 217, 138, 0.22);
+    box-shadow: 0 0 14px rgba(57, 217, 138, 0.25);
+    transform: translateY(-1px);
+}
+
+.patch-btn-commit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

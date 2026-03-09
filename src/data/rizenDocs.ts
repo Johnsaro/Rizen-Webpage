@@ -25,19 +25,20 @@ export const rizenDocs: DocSection[] = [
       {
         id: 'installation',
         title: 'Installation',
-        content: 'Rizen is currently available in closed alpha. To begin, clone the repository and install the required dependencies.',
-        code: `git clone https://github.com/rizen-guild/rizen.git\ncd rizen\nnpm install`,
+        content: 'Rizen v1.0.0 is distributed as an Android APK. Operatives must download the package and side-load it onto their mobile device.',
+        code: `// 1. Download the v1.0.0 APK from the Builds board\n// 2. Enable "Install Unknown Apps" in Android Settings\n// 3. Open the APK file to initiate installation`,
         language: 'bash',
         items: [
-          'Node.js 18+ required',
-          'Ensure you have access to the early-preview branch'
+          'Android 10+ recommended',
+          'Minimum 150MB free storage',
+          'Active data connection for profile sync'
         ]
       },
       {
         id: 'initialization',
         title: 'System Initialization',
-        content: 'After dependencies are installed, you must link your local environment to the Supabase backend.',
-        code: `npm run init:env\nnpm run dev`,
+        content: 'Upon first launch, you must authorize the application via the Guild Secure Uplink (Supabase Auth).',
+        code: `Step 1: Launch Rizen App\nStep 2: Select "INITIALIZE PROFILE"\nStep 3: Enter operative credentials`,
         language: 'bash'
       }
     ]
