@@ -22,7 +22,7 @@ export const useCombatSim = () => {
     setPlayerHP(100);
     setMonsterHP(100);
     setCurrentQuestionIndex(0);
-    setCombatMessage('TIME WRAITH ENGAGED. PREPARE FOR COMBAT.');
+    setCombatMessage('ENGAGEMENT_INITIALIZED: ANOMALY_DETECTED.');
   };
 
   const handleCombatAnswer = (selectedOption: string) => {
@@ -30,31 +30,33 @@ export const useCombatSim = () => {
     setIsCombatAnimating(true);
 
     const currentQ = combatQuestions[currentQuestionIndex];
-    if (selectedOption === currentQ.answer) {
+    const isCorrect = selectedOption === currentQ.answer;
+
+    if (isCorrect) {
       setMonsterHP(prev => Math.max(0, prev - 34));
-      setCombatMessage('CRITICAL HIT! ENEMY TAKES DAMAGE.');
+      setCombatMessage('VALIDATION_SUCCESSFUL: NEUTRALIZING_ANOMALY.');
       setShakeTarget('monster');
     } else {
       setPlayerHP(prev => Math.max(0, prev - 34));
-      setCombatMessage('ATTACK EVADED! YOU TAKE DAMAGE.');
+      setCombatMessage('VALIDATION_FAILED: INTEGRITY_COMPROMISED.');
       setShakeTarget('player');
     }
 
     setTimeout(() => {
       setShakeTarget(null);
-      if (selectedOption === currentQ.answer && monsterHP - 34 <= 0) {
+      if (isCorrect && monsterHP - 34 <= 0) {
         setCombatState('victory');
-        setCombatMessage('THREAT NEUTRALIZED. 500 XP GRANTED.');
-      } else if (selectedOption !== currentQ.answer && playerHP - 34 <= 0) {
+        setCombatMessage('ANOMALY_NEUTRALIZED: PROTOCOL_STABILIZED.');
+      } else if (!isCorrect && playerHP - 34 <= 0) {
         setCombatState('defeat');
-        setCombatMessage('COMBAT FAILED. SYSTEM COMPROMISED.');
+        setCombatMessage('CRITICAL_FAILURE: SYSTEM_RECOVERY_REQUIRED.');
       } else {
         if (currentQuestionIndex + 1 < combatQuestions.length) {
           setCurrentQuestionIndex(prev => prev + 1);
-          setCombatMessage('NEXT THREAT DETECTED...');
+          setCombatMessage('FETCHING_NEXT_QUERY...');
         } else {
           setCombatState('victory');
-          setCombatMessage('THREAT NEUTRALIZED. 500 XP GRANTED.');
+          setCombatMessage('ANOMALY_NEUTRALIZED: PROTOCOL_STABILIZED.');
         }
       }
       setIsCombatAnimating(false);

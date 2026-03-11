@@ -1,61 +1,106 @@
-import type { DemoPlayer } from '../../data/demoPlayer';
 
-const ArsenalGrid = ({ arsenal, delay = 0.3 }: { arsenal: DemoPlayer['arsenal'], delay?: number }) => {
+
+// Weapon Icon mapping based on app's internal logic
+const getWeaponIcon = (id: string) => {
+    const lowerId = id.toLowerCase();
+    if (lowerId.includes('blade') || lowerId.includes('sword')) return '⚔️';
+    if (lowerId.includes('shield')) return '🛡️';
+    if (lowerId.includes('script') || lowerId.includes('tool')) return '📜';
+    if (lowerId.includes('cloak')) return '🧥';
+    if (lowerId.includes('visor')) return '🥽';
+    return '🛠️';
+};
+
+const ArsenalGrid = ({ inventory = {}, equippedWeapon = '', delay = 0.3 }: { inventory?: Record<string, number>, equippedWeapon?: string, delay?: number }) => {
+
+    const inventoryItems = Object.entries(inventory).map(([id, count]) => ({
+        id,
+        name: id.replace(/_/g, ' ').toUpperCase(),
+        count,
+        icon: getWeaponIcon(id)
+    }));
+
+    const equippedItem = equippedWeapon ? {
+        id: equippedWeapon,
+        name: equippedWeapon.replace(/_/g, ' ').toUpperCase(),
+        icon: getWeaponIcon(equippedWeapon)
+    } : null;
+
     return (
-        <div id="dashboard-arsenal" className="dash-card arsenal-container fade-in-up" style={{ animationDelay: `${delay}s` }}>
+        <div id="dashboard-arsenal" className="dash-card arsenal-card fade-in-up" style={{ animationDelay: `${delay}s` }}>
             <div className="card-header">
-                <h3 className="card-title">ARSENAL / INVENTORY</h3>
-                <div className="header-action">LOADOUT</div>
+                <h3 className="card-title">GUILD_ARSENAL</h3>
+                <div className="header-action" onClick={() => window.location.hash = '#/arsenal'}>VIEW_FULL_VAULT</div>
             </div>
 
-            {/* Equipped Row */}
-            <div className="arsenal-section">
-                <div className="section-label">EQUIPPED</div>
-                <div className="equipped-row">
-                    {arsenal.equippedRow.map(item => (
-                        <div key={item.id} className={`equipped-item ${item.name === 'Recon Blade' ? 'signature-weapon pulse-border-faint' : ''}`}>
-                            <div className="item-icon-placeholder">
-                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none">
-                                    <path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2" />
-                                </svg>
-                            </div>
-                            <div className="item-info">
-                                <div className="item-name">{item.name}</div>
-                                <div className="equipped-badge">EQUIPPED</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Grid */}
-            <div className="arsenal-section">
-                <div className="section-label">MODULES</div>
-                <div className="item-grid">
-                    {arsenal.grid.map(item => (
-                        <div key={item.id} className={`grid-item ${item.isUnlocked ? 'unlocked premium-hover' : 'locked premium-locked'}`}>
-                            {!item.isUnlocked && <div className="locked-overlay"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>}
-                            <div className="grid-item-name">{item.name}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Consumables */}
-            <div className="arsenal-section">
-                <div className="section-label">CONSUMABLES</div>
-                <div className="consumables-row">
-                    {arsenal.consumables.map(item => (
-                        <div key={item.id} className={`consumable-item ${item.isActive ? 'active-consumable' : ''}`}>
-                            <div className="consumable-count">x{item.count}</div>
-                            <div className="consumable-name">{item.name}</div>
-                            {item.isActive && (
-                                <div className="consumable-active-badge">
-                                    ACTIVE • {item.timeRemaining}
+            <div className="arsenal-content">
+                <div className="arsenal-section">
+                    <div className="section-label">EQUIPPED_LOADOUT</div>
+                    <div className="equipped-row">
+                        {equippedItem ? (
+                            <div className="equipped-item pulse-border-faint premium-hover">
+                                <div className="item-icon-placeholder">{equippedItem.icon}</div>
+                                <div className="item-info">
+                                    <div className="item-name">{equippedItem.name}</div>
+                                    <div className="equipped-badge">PRIMARY_WEAPON</div>
                                 </div>
-                            )}
+                            </div>
+                        ) : (
+                            <div className="equipped-item locked" style={{ opacity: 0.5, borderStyle: 'dashed' }}>
+                                <div className="item-icon-placeholder">🚫</div>
+                                <div className="item-info">
+                                    <div className="item-name">NO_WEAPON_EQUIPPED</div>
+                                    <div className="equipped-badge">EMPTY_SLOT</div>
+                                </div>
+                            </div>
+                        )}
+                        <div className="equipped-item locked premium-locked">
+                            <div className="item-icon-placeholder">🔒</div>
+                            <div className="item-info">
+                                <div className="item-name">RECON_VISOR</div>
+                                <div className="equipped-badge">OFF_HAND [LOCKED]</div>
+                            </div>
                         </div>
-                    ))}
+                    </div>
+                </div>
+
+                <div className="arsenal-section">
+                    <div className="section-label">OWNED_INVENTORY</div>
+                    {inventoryItems.length === 0 ? (
+                        <div className="item-grid">
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className="grid-item locked premium-locked">
+                                    <div className="locked-overlay">?</div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="item-grid">
+                            {inventoryItems.map((item) => (
+                                <div key={item.id} className="grid-item unlocked premium-hover" title={`${item.name} (x${item.count})`}>
+                                    <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+                                    {item.count > 1 && <span className="item-count-badge" style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-cyan)', color: '#000', fontSize: '0.6rem', fontWeight: 'bold', padding: '2px 5px', borderRadius: '4px' }}>x{item.count}</span>}
+                                    <span className="grid-item-name">{item.name}</span>
+                                </div>
+                            ))}
+                            {inventoryItems.length < 4 && [...Array(4 - inventoryItems.length)].map((_, i) => (
+                                <div key={`empty-${i}`} className="grid-item locked premium-locked">
+                                    <div className="locked-overlay">?</div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="arsenal-section">
+                    <div className="section-label">ACTIVE_CONSUMABLES</div>
+                    <div className="consumables-row">
+                        <div className="consumable-item active-consumable premium-glow-gold">
+                            <span className="gold-text">⚡</span>
+                            <span className="gold-text" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>FOCUS_BOOST_ACTIVE</span>
+                            <div className="consumable-active-badge">2H_REMAINING</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

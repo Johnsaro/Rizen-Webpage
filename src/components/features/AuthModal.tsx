@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabase';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
   const [status, setStatus] = useState<'idle' | 'authenticating' | 'granted' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -22,35 +24,144 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
     class: 'Security Analyst'
   });
 
+  // Clear timeouts on unmount (W09)
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  // Reset form when modal opens/closes (W17)
+  useEffect(() => {
+    if (!isOpen) {
+      if (status !== 'granted') {
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          class: 'Security Analyst'
+        });
+        setErrorMessage('');
+        setStatus('idle');
+      }
+    }
+  }, [isOpen, status]);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    // Min 8 chars, at least 1 number or special char (W08)
+    const hasMinLength = password.length >= 8;
+    const hasSpecialOrNum = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
+    return hasMinLength && hasSpecialOrNum;
+  };
+
+  const getPasswordStrength = (password: string) => {
+    if (!password) return 0;
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
+    return strength;
+  };
+
+  const sanitizeInput = (text: string) => {
+    // Strip HTML/script tags (W02)
+    return text.replace(/<[^>]*>?/gm, '').trim();
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
+
+    const sanitizedName = sanitizeInput(formData.name);
+    
+    // Client-side validation
+    if (mode === 'register') {
+      if (!sanitizedName) {
+        setErrorMessage('DISPLAY NAME IS REQUIRED');
+        return;
+      }
+      if (sanitizedName.length > 50) {
+        setErrorMessage('DISPLAY NAME MUST BE UNDER 50 CHARACTERS');
+        return;
+      }
+    }
+
+    if (!validateEmail(formData.email)) {
+      setErrorMessage('INVALID EMAIL FORMAT');
+      return;
+    }
+
+    if (mode === 'register' && !validatePassword(formData.password)) {
+      setErrorMessage('PASSWORD MUST BE AT LEAST 8 CHARACTERS WITH 1 NUMBER OR SPECIAL CHAR');
+      return;
+    }
     
     setIsLoading(true);
     setStatus('authenticating');
     setErrorMessage('');
 
     try {
-      let result;
       if (mode === 'login') {
-        result = await signIn(formData.email, formData.password);
+        const result = await signIn(formData.email, formData.password);
+        if (result.error) throw result.error;
       } else {
-        result = await signUp(formData.email, formData.password, { 
-          full_name: formData.name,
-          class: formData.class 
+        const result = await signUp(formData.email, formData.password, {
+          full_name: sanitizedName,
+          class: formData.class
         });
-      }
+        if (result.error) throw result.error;
 
-      if (result.error) {
-        throw result.error;
+        // Create profile row so dashboard + Flutter app see real data immediately
+        if (result.user) {
+          await supabase.from('profiles').upsert({
+            user_id: result.user.id,
+            name: sanitizedName,
+            main_class: formData.class,
+            side_class: '',
+            level: 1,
+            current_xp: 0,
+            rep: 0,
+            class_xp: {},
+            class_level: {},
+            inventory: {},
+            streak: 0,
+            shields: 0,
+            title: '',
+            hp: 100,
+            max_hp: 100,
+            equipped_weapon: '',
+            active_buffs: {},
+            achievements: {},
+            featured_achievement: '',
+            quests_completed: 0,
+            monsters_killed: 0,
+            equipped_cosmetics: {},
+            onboarding_complete: false,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'user_id' });
+        }
       }
 
       setStatus('granted');
       
       // Success delay for animation
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setIsLoading(false);
         setStatus('idle');
+        
+        // Clear form on success (W17)
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          class: 'Security Analyst'
+        });
+
         if (onLoginSuccess) {
           onLoginSuccess();
         }
@@ -66,7 +177,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
       setIsLoading(false);
       
       // Reset status to idle after a few seconds so user can try again
-      setTimeout(() => setStatus('idle'), 3000);
+      timeoutRef.current = setTimeout(() => setStatus('idle'), 3000);
     }
   };
 
@@ -75,6 +186,8 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
     setErrorMessage('');
     setStatus('idle');
   };
+
+  const strength = getPasswordStrength(formData.password);
 
   return (
     <div className={`auth-overlay ${isOpen ? 'open' : ''}`}>
@@ -94,10 +207,11 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
                 required
                 placeholder="DISPLAY NAME"
                 className="auth-input"
+                maxLength={50}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
-              <div className="input-helper">ENTER PUBLIC HANDLE</div>
+              <div className="input-helper">ENTER PUBLIC HANDLE (MAX 50 CHARS)</div>
             </div>
           )}
 
@@ -142,7 +256,21 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
                 )}
               </button>
             </div>
-            <div className="input-helper">INPUT AUTHORIZED ACCESS KEY</div>
+            
+            {mode === 'register' && formData.password && (
+              <div className="password-strength-meter" style={{ height: '2px', background: 'rgba(255,255,255,0.1)', marginTop: '4px', position: 'relative' }}>
+                <div style={{ 
+                  height: '100%', 
+                  width: `${strength}%`, 
+                  background: strength < 50 ? 'var(--accent-crimson)' : strength < 100 ? 'var(--accent-yellow)' : 'var(--accent-cyan)',
+                  transition: 'all 0.3s ease'
+                }} />
+              </div>
+            )}
+            
+            <div className="input-helper">
+              {mode === 'register' ? 'MIN 8 CHARS + NUMBER/SPECIAL' : 'INPUT AUTHORIZED ACCESS KEY'}
+            </div>
           </div>
 
           {mode === 'register' && (

@@ -846,6 +846,7 @@
         transform: none !important;
     }
 }
+
 /* ==========================================================================
      PREMIUM SAAS REFINEMENTS
      ========================================================================== */
@@ -901,12 +902,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.2) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 100%);
     animation: shimmer 2.5s infinite linear;
     transform: translateX(-100%);
 }
@@ -937,8 +936,13 @@
 }
 
 @keyframes pulse-border-light {
-    0% { box-shadow: 0 0 0 0 rgba(0, 228, 255, 0.1), inset 0 0 10px rgba(0, 228, 255, 0.05); }
-    100% { box-shadow: 0 0 0 4px rgba(0, 228, 255, 0), inset 0 0 20px rgba(0, 228, 255, 0.1); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 228, 255, 0.1), inset 0 0 10px rgba(0, 228, 255, 0.05);
+    }
+
+    100% {
+        box-shadow: 0 0 0 4px rgba(0, 228, 255, 0), inset 0 0 20px rgba(0, 228, 255, 0.1);
+    }
 }
 
 /* Selected combat option */
@@ -950,12 +954,14 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
     .premium-hover,
     .fade-in-up,
     .fade-in-width {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
     }
+
     .progress-shimmer,
     .pulse-border-faint,
     .pulse-amber {
@@ -963,3 +969,316 @@
     }
 }
 
+/* ==========================================================================
+     ACTIVE INTEL MISSIONS (BOUNTY TRACKER)
+     ========================================================================== */
+
+.bounty-mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.bounty-mission-item {
+    background: var(--card-bg, rgba(255, 255, 255, 0.03));
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s;
+}
+
+.bounty-mission-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(0, 228, 255, 0.2);
+}
+
+.bounty-mission-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bounty-mission-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    color: var(--text-primary);
+}
+
+.bounty-mission-meta {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Fira Code', monospace;
+}
+
+.severity-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.severity-dot.critical {
+    background: var(--accent-crimson);
+    box-shadow: 0 0 5px var(--accent-crimson);
+}
+
+.severity-dot.high {
+    background: var(--accent-amber);
+}
+
+.severity-dot.medium {
+    background: var(--accent-indigo);
+}
+
+.severity-dot.low {
+    background: var(--text-dim);
+}
+
+.bounty-status-tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-dim);
+    margin-left: 0.5rem;
+    white-space: nowrap;
+}
+
+.bounty-status-tag.status-received {
+    color: var(--accent-amber);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.bounty-status-tag.status-confirmed {
+    color: var(--accent-indigo);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.bounty-status-tag.status-fixed {
+    color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.bounty-status-tag.status-rewarded {
+    color: var(--accent-cyan);
+    background: rgba(0, 228, 255, 0.1);
+    border: 1px solid rgba(0, 228, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 228, 255, 0.1);
+}
+
+.bounty-status-tag.status-rejected {
+    color: var(--accent-crimson);
+    opacity: 0.6;
+}
+
+.bounty-more-link {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    text-align: center;
+    color: var(--accent-cyan);
+    cursor: pointer;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.bounty-more-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+    .bounty-mission-title {
+        max-width: 150px;
+    }
+
+    /* ==========================================================================
+     SYSTEM LOG (OPERATIONAL LEDGER)
+     ========================================================================== */
+
+    .system-log-card {
+        background: rgba(4, 10, 20, 0.9) !important;
+        border: 1px inset rgba(0, 228, 255, 0.3) !important;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 228, 255, 0.1) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .system-log-card::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        z-index: 2;
+        background-size: 100% 2px, 3px 100%;
+        pointer-events: none;
+    }
+
+    .system-log-content {
+        height: 300px;
+        overflow-y: auto;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.8rem;
+        padding-right: 10px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .system-log-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .system-log-content::-webkit-scrollbar-track {
+        background: rgba(0, 228, 255, 0.05);
+        border-radius: 4px;
+    }
+
+    .system-log-content::-webkit-scrollbar-thumb {
+        background: rgba(0, 228, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    .log-entry-row {
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+        display: flex;
+        flex-wrap: wrap;
+        column-gap: 0.5rem;
+        opacity: 0;
+        animation: type-in 0.1s forwards;
+    }
+
+    @keyframes type-in {
+        to {
+            opacity: 1;
+        }
+    }
+
+    .log-timestamp {
+        color: rgba(0, 228, 255, 0.6);
+        flex-shrink: 0;
+    }
+
+    .log-type {
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .type-combat_victory {
+        color: var(--accent-emerald);
+        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+    }
+
+    .type-level_up {
+        color: #ffd700;
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    .type-achievement {
+        color: var(--accent-purple);
+        text-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+    }
+
+    .type-system {
+        color: var(--accent-cyan);
+        text-shadow: 0 0 5px rgba(0, 228, 255, 0.5);
+    }
+
+    .type-alert {
+        color: var(--accent-crimson);
+        text-shadow: 0 0 5px rgba(244, 63, 94, 0.5);
+        animation: blink 1s infinite;
+    }
+
+    .log-msg {
+        color: #e2e8f0;
+        flex-grow: 1;
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .log-footer {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 228, 255, 0.2);
+        position: relative;
+        z-index: 3;
+    }
+
+    .log-scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(0, 228, 255, 0.5);
+        box-shadow: 0 0 10px rgba(0, 228, 255, 1);
+        animation: scan 4s linear infinite;
+        pointer-events: none;
+        z-index: 4;
+    }
+
+    @keyframes scan {
+        0% {
+            top: -100px;
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        100% {
+            top: 100%;
+            opacity: 0;
+        }
+    }
+
+    .log-path {
+        font-family: 'Fira Code', monospace;
+        font-size: 0.7rem;
+        color: rgba(0, 228, 255, 0.5);
+        letter-spacing: 1px;
+    }
+
+    .log-empty-state {
+        color: var(--accent-cyan);
+        opacity: 0.7;
+        text-shadow: 0 0 5px rgba(0, 228, 255, 0.3);
+    }
+
+    .log-cursor {
+        animation: blink 1s step-end infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .log-scan-line,
+        .log-cursor,
+        .type-alert {
+            animation: none !important;
+        }
+    }
+}

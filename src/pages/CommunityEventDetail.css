@@ -1406,3 +1406,651 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+     DUAL-LANE REPORT MODES
+     ========================================================================== */
+
+.sm-mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+}
+
+.sm-mode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-dim);
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.sm-mode-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-main);
+}
+
+.sm-mode-btn.active {
+    background: rgba(0, 228, 255, 0.05);
+    border-color: rgba(0, 228, 255, 0.3);
+    color: var(--accent-cyan);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sm-mode-btn .mode-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    filter: grayscale(1);
+    transition: filter 0.3s;
+    opacity: 0.5;
+}
+
+.sm-mode-btn.active .mode-icon {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+.sm-mode-btn small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.65rem;
+    opacity: 0.6;
+    letter-spacing: 0.5px;
+    font-family: 'Fira Code', monospace;
+}
+
+.sm-mode-btn.active small {
+    opacity: 0.8;
+}
+
+.sm-meta-hint {
+    background: rgba(0, 228, 255, 0.03);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-cyan);
+    line-height: 1.5;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+    .sm-mode-toggle {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   MODERN BUG BOUNTY THEME EXTENSIONS
+   ========================================================================== */
+
+.bug-bounty-theme {
+    max-width: 1200px;
+}
+
+/* Hero Section */
+.bb-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5% 5rem;
+    position: relative;
+    overflow: hidden;
+    gap: 4rem;
+    margin-bottom: 2rem;
+}
+
+.bb-hero-content {
+    flex: 1;
+    z-index: 2;
+}
+
+.bb-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 210, 224, 0.1);
+    border: 1px solid rgba(0, 210, 224, 0.3);
+    border-radius: 4px;
+    color: var(--accent-cyan);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+}
+
+.bb-pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-cyan);
+    border-radius: 50%;
+    animation: livePulse 2s infinite;
+}
+
+.bb-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1;
+    margin: 0 0 1.5rem;
+    color: #fff;
+    letter-spacing: -2px;
+}
+
+.bb-title span {
+    color: var(--accent-cyan);
+    font-family: 'Fira Code', monospace;
+    font-weight: 400;
+    font-size: 0.5em;
+    display: block;
+    letter-spacing: 0;
+    margin-top: 0.5rem;
+}
+
+.bb-tagline {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.bb-stats-grid {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.bb-stat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.bb-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bb-stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.bb-hero-btn {
+    padding: 1rem 2.5rem;
+    background: var(--accent-cyan);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(0, 210, 224, 0.3);
+}
+
+.bb-hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0, 210, 224, 0.5);
+}
+
+.bb-active-status {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.bb-operative-pill {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bb-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-cyan);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.bb-op-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.bb-op-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+}
+
+.bb-op-name {
+    font-weight: 700;
+    color: #fff;
+}
+
+.bb-submit-btn {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    border-radius: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.bb-submit-btn:hover {
+    background: var(--accent-cyan);
+    color: #000;
+}
+
+/* Visual Side */
+.bb-hero-visual {
+    flex: 0.8;
+    height: 400px;
+    background: rgba(0, 210, 224, 0.03);
+    border: 1px solid rgba(0, 210, 224, 0.1);
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bb-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0, 210, 224, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 210, 224, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+.bb-scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 15px var(--accent-cyan);
+    opacity: 0.5;
+    animation: bbScan 4s linear infinite;
+}
+
+@keyframes bbScan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+.bb-hacker-icon {
+    font-size: 8rem;
+    z-index: 2;
+    filter: drop-shadow(0 0 20px rgba(0, 210, 224, 0.4));
+}
+
+/* Main Layout */
+.bb-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 4rem;
+    padding: 0 5%;
+}
+
+/* How it Works */
+.bb-how-it-works {
+    margin-top: 3rem;
+}
+
+.bb-how-it-works h3 {
+    font-size: 1.2rem;
+    color: var(--accent-cyan);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.bb-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.bb-step-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.bb-step-number {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent-cyan);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.bb-step-card h4 {
+    margin: 0 0 0.5rem;
+    color: #fff;
+}
+
+.bb-step-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Rewards Table */
+.bb-rewards-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bb-reward-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 120px;
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.bb-reward-tier {
+    font-family: 'Fira Code', monospace;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.bb-reward-row.critical { border-left: 4px solid #FF3131; }
+.bb-reward-row.high { border-left: 4px solid #FFA500; }
+.bb-reward-row.medium { border-left: 4px solid #FFFF00; }
+.bb-reward-row.low { border-left: 4px solid #39FF14; }
+
+.bb-reward-row.critical .bb-reward-tier { color: #FF3131; }
+.bb-reward-row.high .bb-reward-tier { color: #FFA500; }
+.bb-reward-row.medium .bb-reward-tier { color: #FFFF00; }
+.bb-reward-row.low .bb-reward-tier { color: #39FF14; }
+
+.bb-reward-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.bb-reward-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    color: #fff;
+    text-align: right;
+}
+
+/* Scope Grid */
+.bb-scope-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.bb-scope-item {
+    background: rgba(0, 255, 157, 0.03);
+    border: 1px solid rgba(0, 255, 157, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+}
+
+.bb-scope-item.out-scope {
+    background: rgba(255, 49, 49, 0.03);
+    border-color: rgba(255, 49, 49, 0.1);
+    opacity: 0.6;
+}
+
+.bb-scope-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.bb-scope-icon {
+    font-size: 1.5rem;
+}
+
+.bb-scope-header h4 {
+    margin: 0;
+    color: #fff;
+}
+
+.bb-scope-header small {
+    color: var(--text-dim);
+}
+
+.bb-scope-tag {
+    margin-left: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+}
+
+.bb-scope-tag.in-scope {
+    background: rgba(0, 255, 157, 0.1);
+    color: #00ff9d;
+    border: 1px solid rgba(0, 255, 157, 0.3);
+}
+
+.bb-scope-tag.out-scope {
+    background: rgba(255, 49, 49, 0.1);
+    color: #ff3131;
+    border: 1px solid rgba(255, 49, 49, 0.3);
+}
+
+/* Leaderboard */
+.bb-leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.bb-leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.bb-rank {
+    font-family: 'Fira Code', monospace;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    font-size: 1.2rem;
+    width: 30px;
+}
+
+.bb-hunter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.bb-hunter-name {
+    font-weight: 700;
+    color: #fff;
+}
+
+.bb-hunter-bug {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.bb-severity-pill {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.bb-severity-pill.critical { background: rgba(255, 49, 49, 0.2); color: #ff3131; }
+.bb-severity-pill.high { background: rgba(255, 165, 0, 0.2); color: #ffa500; }
+.bb-severity-pill.medium { background: rgba(255, 255, 0, 0.2); color: #ffff00; }
+.bb-severity-pill.low { background: rgba(57, 255, 20, 0.2); color: #39ff14; }
+
+.bb-reward-pill {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    color: var(--accent-cyan);
+}
+
+/* Sidebar */
+.bb-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.bb-sidebar-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+.bb-sidebar-card h3 {
+    margin: 0 0 1.5rem;
+    font-size: 1.1rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
+}
+
+.bb-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.bb-faq-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bb-faq-q {
+    font-weight: 700;
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+}
+
+.bb-faq-a {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+.bb-sidebar-card.elite {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(0, 210, 224, 0.1));
+    border: 1px solid rgba(0, 210, 224, 0.2);
+    text-align: center;
+}
+
+.bb-elite-badge {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.bb-sidebar-card.elite p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+/* Rules List */
+.bb-rules-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.bb-rules-list li {
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.bb-rules-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+    font-weight: 800;
+}
+
+@media (max-width: 1024px) {
+    .bb-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .bb-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .bb-hero-visual {
+        width: 100%;
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .bb-steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .bb-reward-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .bb-reward-value {
+        text-align: left;
+    }
+}

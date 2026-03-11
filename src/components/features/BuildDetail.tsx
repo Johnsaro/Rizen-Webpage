@@ -1,5 +1,8 @@
 import React from 'react';
 import type { Build } from '../../data/builds';
+import RizenMarketingVideo from './RizenMarketingVideo';
+import PulseMarketingVideo from './PulseMarketingVideo';
+import PhantomMarketingVideo from './PhantomMarketingVideo';
 import './BuildDetail.css';
 
 interface BuildDetailProps {
@@ -110,9 +113,17 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                   <div className={`media-card primary-media-card ${build.media[0].type === 'video' ? 'monitor-frame' : ''}`}>
                     <div className="media-card-inner">
                       {build.media[0].type === 'video' ? (
-                        <video autoPlay loop muted playsInline>
-                          <source src={build.media[0].url} type="video/mp4" />
-                        </video>
+                        build.media[0].url === 'RIZEN_MOBILE_PROTOCOL_VIDEO' ? (
+                          <RizenMarketingVideo />
+                        ) : build.media[0].url === 'PULSE_AGENT_PROTOCOL_VIDEO' ? (
+                          <PulseMarketingVideo />
+                        ) : build.media[0].url === 'PHANTOM_PEEL_PROTOCOL_VIDEO' ? (
+                          <PhantomMarketingVideo />
+                        ) : (
+                          <video autoPlay loop muted playsInline>
+                            <source src={build.media[0].url} type="video/mp4" />
+                          </video>
+                        )
                       ) : (
                         <img src={build.media[0].url} alt={build.media[0].caption} />
                       )}
@@ -130,9 +141,17 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                         <div key={i} className={`media-card ${item.type === 'video' ? 'monitor-frame' : ''}`}>
                           <div className="media-card-inner">
                             {item.type === 'video' ? (
-                              <video autoPlay loop muted playsInline>
-                                <source src={item.url} type="video/mp4" />
-                              </video>
+                              item.url === 'RIZEN_MOBILE_PROTOCOL_VIDEO' ? (
+                                <RizenMarketingVideo />
+                              ) : item.url === 'PULSE_AGENT_PROTOCOL_VIDEO' ? (
+                                <PulseMarketingVideo />
+                              ) : item.url === 'PHANTOM_PEEL_PROTOCOL_VIDEO' ? (
+                                <PhantomMarketingVideo />
+                              ) : (
+                                <video autoPlay loop muted playsInline>
+                                  <source src={item.url} type="video/mp4" />
+                                </video>
+                              )
                             ) : (
                               <img src={item.url} alt={item.caption} />
                             )}
@@ -161,3 +180,6 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
 };
 
 export default BuildDetail;
+
+
+

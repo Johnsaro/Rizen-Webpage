@@ -53,6 +53,7 @@ export const builds: Build[] = [
       ]
     },
     media: [
+      { type: 'video', url: 'RIZEN_MOBILE_PROTOCOL_VIDEO', caption: 'RIZEN_MOBILE_PROTOCOL_BOOT' },
       { type: 'image', url: '/assets/builds/rizen-ss1.png', caption: 'Character Profile & Stats' },
       { type: 'image', url: '/assets/builds/rizen-ss2.png', caption: 'Real-time Quest Board' },
       { type: 'image', url: '/assets/builds/rizen-ss3.png', caption: 'Neural Breach Combat Interface' },
@@ -64,62 +65,63 @@ export const builds: Build[] = [
   },
   {
     id: 'pulse-agent',
-    title: 'PulseAgent 2.0',
-    oneLineSummary: 'Autonomous health and productivity enforcer for desktop environments.',
-    description: 'Autonomous health and productivity enforcer with a real-time analytics dashboard and persistent desktop widget.',
-    tags: ['Python', 'Automation', 'Desktop'],
-    status: 'Upcoming',
-    systemStatus: 'maintenance',
+    title: 'Pulse Agent 2.0',
+    oneLineSummary: 'Autonomous desktop enforcer and health-monitoring agent for the Rizen ecosystem.',
+    description: 'A professional desktop utility that acts as a resident agent, enforcing operative health protocols and productivity focus through real-time analytics.',
+    tags: ['Python', 'PyQt6', 'Win32 API', 'Automation'],
+    status: 'Live',
+    systemStatus: 'online',
     image: '/assets/builds/pulse-agent.png',
-    created_date: '2026-01-10',
+    created_date: '2026-03-04',
     intel: {
-      brief: 'A Windows background utility that monitors user activity to enforce hydration breaks and posture corrections using non-intrusive overlays.',
+      brief: 'Pulse Agent 2.0 is the desktop-side extension of the Rizen Mobile Protocol. It functions as an autonomous "Guardian" that monitors operative activity, enforces hydration/posture breaks, and provides a centralized Hub for productivity analytics.',
       patchNotes: [
-        'v2.0: Added Activity Pulse logic.',
-        'v1.1: Multi-monitor support.',
-        'v1.0: Core timer logic.'
+        'v2.0: Full PyQt6 Dashboard Hub integration with Live Sync.',
+        'v1.5: Activity Pulse engine for background monitoring.',
+        'v1.2: SystemWatcher and Guardian Alert mascot implementation.',
+        'v1.0: Core Win32 timer and overlay logic.'
       ],
       lessons: [
-        'Windows API interaction via pywin32 is powerful but requires careful resource handling.',
-        'User experience for intrusive alerts must be highly customizable to avoid annoyance.'
+        'Resident agents require minimal CPU footprint to remain non-intrusive.',
+        'PyQt6 provides a professional, hardware-accelerated interface for complex data visualization.',
+        'Integrating with the Rizen brand identity (Pulse) creates a cohesive multi-platform experience.'
       ]
     },
     media: [
-      { type: 'video', url: '/assets/builds/Productivity_Tool_UI_Demo.mp4', caption: 'Productivity Tool UI Demo' },
+      { type: 'video', url: 'PULSE_AGENT_PROTOCOL_VIDEO', caption: 'PULSE_AGENT_PROTOCOL_SYNC' },
       { type: 'image', url: '/assets/builds/pulse-app-dashboard.png', caption: 'Pulse // Hub Dashboard' },
-      { type: 'image', url: '/assets/builds/bot_agent-removebg-preview.png', caption: 'Bot Agent Preview' }
+      { type: 'image', url: '/assets/builds/bot_agent-removebg-preview.png', caption: 'Guardian Mascot Interface' }
     ],
     links: {
-      demo: '#',
-      repo: 'https://github.com/example/pulse-agent'
+      repo: 'https://github.com/Johnsaro/PulseAgent.git'
     }
   },
   {
     id: 'phantom-peel',
-    title: 'PhantomPeel Forensics',
+    title: 'Phantom Peel Forensics',
     oneLineSummary: 'Kernel-level driver enumeration and hardware identity integrity validator.',
-    description: 'Kernel-level driver enumeration and hardware identity integrity validator.',
-    tags: ['Python', 'Cybersecurity', 'Forensics', 'Win32'],
+    description: 'A professional-grade forensics utility designed to validate system integrity by detecting kernel-level driver artifacts and hardware identity mismatches.',
+    tags: ['Python', 'Cybersecurity', 'Forensics', 'Win32 API'],
     status: 'Live',
     systemStatus: 'online',
     image: '/assets/builds/phantom-peel.png',
     created_date: '2026-02-26',
     intel: {
-      brief: 'A specialized forensics utility designed to detect deep-seated traces of Windows kernel drivers and spoofer artifacts. It cross-references active IDs against hardware-rooted baselines to detect identity mismatches.',
+      brief: 'Phantom Peel functions as the forensics layer of the Rizen ecosystem. It is designed to perform deep-seated traces of Windows kernel drivers and spoofer artifacts, ensuring that operative hardware baselines remain untampered and authentic.',
       patchNotes: [
         'v1.1: Implemented Secure Boot and Test Signing state detection.',
         'v1.1: Added MAC OUI validation to flag locally administered addresses.',
         'v1.0: Core driver registry sweep and entropy-based artifact hunting.'
       ],
       lessons: [
-        'Kernel namespace resolution (\\??\\) is required for accurate ImagePath mapping.',
-        'Shannon entropy is an effective heuristic for detecting random-named spoofer payloads.',
-        'Batch processing PowerShell signature checks significantly reduces scan latency.'
+        'Kernel namespace resolution is required for accurate ImagePath mapping across isolated environments.',
+        'Heuristic-based entropy checks are highly effective at identifying randomized spoofer payloads.',
+        'Validation of hardware-rooted baselines is the only way to ensure true system identity integrity.'
       ]
     },
     media: [
-      { type: 'video', url: '/assets/builds/phantompeel-demo.mp4', caption: 'Kernel Sweep & Execution Overview' },
-      { type: 'image', url: '/assets/builds/Phantom_peel.png', caption: 'Phantom Peel Preview' }
+      { type: 'video', url: 'PHANTOM_PEEL_PROTOCOL_VIDEO', caption: 'PHANTOM_PEEL_FORENSICS_BOOT' },
+      { type: 'image', url: '/assets/builds/Phantom_peel.png', caption: 'Phantom Peel Forensic Interface' }
     ],
     links: {
       repo: 'https://github.com/Johnsaro/Phantom.git'

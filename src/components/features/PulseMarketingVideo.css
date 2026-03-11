@@ -1,0 +1,135 @@
+.pulse-marketing-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+.pulse-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  padding: 2rem;
+  text-align: center;
+}
+
+.pulse-layer.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.pulse-agent-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(180deg, #fff 0%, #00f3ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pulse-agent-tagline {
+  font-size: 1.1rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
+}
+
+.pulse-feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  padding: 2rem;
+  border-radius: 4px;
+  max-width: 500px;
+  position: relative;
+}
+
+.pulse-feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.pulse-feature-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00f3ff;
+  margin-bottom: 0.5rem;
+}
+
+.pulse-feature-desc {
+  font-size: 0.95rem;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.pulse-agent-preview {
+  width: 70%;
+  border: 2px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
+  overflow: hidden;
+}
+
+.pulse-agent-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Subtle data lines overlay */
+.pulse-data-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.pulse-status-indicator {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #00f3ff;
+  font-family: 'Space Mono', monospace;
+}
+
+.pulse-status-dot {
+  width: 8px;
+  height: 8px;
+  background: #00f3ff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00f3ff;
+  animation: pulse-dot 1s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.pulse-agent-mascot {
+  width: 120px;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3));
+}
