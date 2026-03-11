@@ -43,9 +43,9 @@ const CommunityHub: React.FC = () => {
 
     return (
         <div className="community-page reveal visible">
-            <div className="community-header">
+            <div className="community-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div className="status-tag pulse-border">GUILD NETWORK</div>
-                <h1>COMMUNITY</h1>
+                <h1 className="glitch-title" data-text="COMMUNITY" style={{ marginBottom: '1.5rem', marginTop: '0.5rem' }}>COMMUNITY</h1>
                 <p>A rising tide lifts all operatives. Share tactics, collaborate on builds, and ascend together.</p>
             </div>
 

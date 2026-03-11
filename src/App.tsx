@@ -12,11 +12,13 @@ import VaultReader from './components/features/VaultReader'
 import BuildDetail from './components/features/BuildDetail'
 import SystemArchitecture from './components/features/SystemArchitecture'
 import AgentNetwork from './components/features/AgentNetwork'
+import RizenBrandVideo from './components/features/RizenBrandVideo'
 import Builds from './pages/Builds'
 import Community from './pages/Community'
 import CommunityEvent from './pages/CommunityEvent'
 import AdminBountyConsole from './pages/AdminBountyConsole'
 import { useAuth } from './context/AuthContext'
+import { usePlayerProfile } from './hooks/usePlayerProfile'
 import { useCombatSim } from './hooks/useCombatSim'
 import { useTerminal } from './hooks/useTerminal'
 import { useInitiation } from './hooks/useInitiation'
@@ -29,22 +31,31 @@ import Dashboard from './components/dashboard/Dashboard'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading: authLoading } = useAuth();
+  const { profile } = usePlayerProfile();
   const isLoggedIn = !!user;
 
-  // Derive operative data from Supabase user metadata or fallback to level 1 defaults
+  // Derive operative data from Supabase user metadata or fallback to level 1 defaults (W04)
   const operativeData = useMemo(() => {
     if (!user) return demoPlayer;
 
     return {
       ...demoPlayer,
       id: user.id,
-      name: user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'RECRUIT',
-      class: user.user_metadata?.class || 'Security Analyst',
-      // For now, we keep the Level 1 stats from demoPlayer unless you want to fetch 
-      // full stats from a 'profiles' table.
+      name: profile?.name || user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'RECRUIT',
+      class: profile?.main_class || user.user_metadata?.class || 'Security Analyst',
+      level: profile?.level || 1,
+      stats: {
+        ...demoPlayer.stats,
+        hp: {
+          current: profile?.hp || demoPlayer.stats.hp.current,
+          max: profile?.max_hp || demoPlayer.stats.hp.max
+        },
+        rep: profile?.rep || 0,
+        streak: profile?.streak || 0
+      }
     };
-  }, [user]);
+  }, [user, profile]);
 
   const [scanned, setScanned] = useState(false);
   const [typedText, setTypedText] = useState("");
@@ -59,20 +70,27 @@ function App() {
 
   const handleLoginSuccess = () => {
     setAuthModalOpen(false);
-    // Removed setCurrentView('home') to preserve user location
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogout = () => {
     signOut();
     setCurrentView('home');
+    window.location.hash = '#/'; // Reset hash on logout
   };
 
   // Simple Hash-based Router
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
+      
+      // Fix state pollution (W03)
       if (hash === '#/admin/bounty-console') {
+        if (!isLoggedIn) {
+          window.location.hash = '#/';
+          setCurrentView('home');
+          return;
+        }
         setCurrentView('admin-console');
       } else if (hash.startsWith('#/builds/')) {
         const buildId = hash.replace('#/builds/', '');
@@ -122,7 +140,7 @@ function App() {
     handleHashChange(); // Initial check
 
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, [isLoggedIn]); // Re-run when login state changes (W03)
 
   const openBuildDetail = (build: Build) => {
     window.location.hash = `#/builds/${build.id}`;
@@ -131,8 +149,6 @@ function App() {
   const closeBuildDetail = () => {
     window.location.hash = `#/builds`;
   };
-
-
 
   const {
     combatState,
@@ -274,6 +290,15 @@ function App() {
 
   const rizenMobile = builds.find(b => b.id === 'rizen-mobile') || builds[0];
 
+  // Loading spinner while auth initializes (W16)
+  if (authLoading) {
+    return (
+      <div className="portal-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div className="loading-glitch" data-text="INITIALIZING COORD-NET LINK...">INITIALIZING COORD-NET LINK...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="portal">
       <AnnouncementBar
@@ -303,8 +328,8 @@ function App() {
           {/* 1. HERO SECTION */}
           <section className="hero" id="hero">
             <div className="hero-content reveal">
-              <div className="status-tag pulse-border">GUILD PROTOCOL v2.0</div>
               <h1 className="glitch-title" data-text="RIZEN">RIZEN</h1>
+              <div className="status-tag">GUILD PROTOCOL ACTIVE</div>
               <p className="hero-subtitle-typed">{typedText}<span className="cursor">|</span></p>
               <p className="hero-description reveal">
                 Stop playing games that don't matter. Turn your actual career and health into a high-stakes RPG.
@@ -343,6 +368,8 @@ function App() {
             <PhoneMockup phoneRef={phoneRef} />
           </section>
 
+          <RizenBrandVideo />
+
           {/* SYSTEM ARCHITECTURE */}
           <div style={{ padding: '4rem 0' }}>
             <SystemArchitecture />
@@ -362,25 +389,37 @@ function App() {
           </div>
 
           {/* 2. THE STAKES */}
-          <section className="section-padding threat-bg" id="stakes" >
+          <section className="section-padding" id="stakes" >
             <div className="centered-header reveal">
-              <h2 className="title-large">STAGNATION IS THE ENEMY</h2>
-              <p className="p-large">Inactivity is tracked. Procrastination is punished. Growth is rewarded.</p>
+              <span className="status-tag">ACCOUNTABILITY_SYSTEM</span>
+              <h2 className="title-large">PROTOCOL ENFORCEMENT</h2>
+              <p className="p-large">Rizen ensures consistency through a high-integrity enforcement engine. Stagnation is not just ignored—it is flagged.</p>
             </div>
 
             <div className="threat-visual-grid">
               <div className="threat-visual-card reveal tilt-card">
-                <div className="drain-animation" style={{ marginBottom: '1rem' }}>
-                  <div className="stat-minus">INT -15</div>
-                  <div className="stat-minus">XP -400</div>
+                <div className="operative-meta" style={{ marginBottom: '1.5rem', justifyContent: 'center' }}>
+                  <div className="meta-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" strokeWidth="2" fill="none">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                  </div>
+                  <div className="meta-label" style={{ fontSize: '1rem' }}>ANOMALY_DETECTION</div>
                 </div>
-                <h3 style={{ color: 'var(--accent-cyan)', marginBottom: '1rem' }}>THE TIME WRAITH</h3>
-                <p>Ignore your goals, and the Wraith spawns to drain your progress until you defeat it.</p>
+                <h3 style={{ color: 'var(--accent-cyan)', marginBottom: '1rem' }}>INTEGRITY MONITORING</h3>
+                <p>The protocol tracks your baseline activity. Significant drops in performance trigger a Stagnation Anomaly, requiring immediate validation.</p>
               </div>
               <div className="threat-visual-card reveal tilt-card">
-                <div className="glitch-icon pulse-red">💀</div>
-                <h3 style={{ color: 'var(--accent-crimson)', marginBottom: '1rem' }}>REAL PENALTIES</h3>
-                <p>Fail your real-world goals? Your in-game loadout breaks. Repair requires actual mastery.</p>
+                <div className="operative-meta meta-red" style={{ marginBottom: '1.5rem', justifyContent: 'center' }}>
+                  <div className="meta-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" strokeWidth="2" fill="none">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    </svg>
+                  </div>
+                  <div className="meta-label" style={{ fontSize: '1rem' }}>SYSTEM_PENALTIES</div>
+                </div>
+                <h3 style={{ color: 'var(--accent-crimson)', marginBottom: '1rem' }}>RESOURCE DEGRADATION</h3>
+                <p>Failure to meet real-world objectives results in virtual loadout degradation. Maintaining your arsenal requires proven mastery and discipline.</p>
               </div>
             </div>
           </section >
@@ -424,8 +463,9 @@ function App() {
           {/* COMBAT SIMULATOR */}
           <section className="section-padding threat-bg" id="combat">
             <div className="centered-header reveal">
-              <h2 className="title-large">PROVE YOUR SKILL</h2>
-              <p className="p-large" style={{ marginTop: '1rem' }}>Rizen is not a passive tracker. To progress, you must master real-world knowledge. Face the Time Wraith in a Tier 1 engagement.</p>
+              <span className="status-tag">INTERACTIVE_ASSESSMENT</span>
+              <h2 className="title-large">SKILL VERIFICATION ENGAGEMENT</h2>
+              <p className="p-large" style={{ marginTop: '1rem' }}>Rizen is not a passive tracker. To authorize level progression, you must neutralize the Stagnation Anomaly through technical validation.</p>
             </div>
             <CombatSimulator
               state={combatState}
@@ -479,49 +519,50 @@ function App() {
           {/* ARSENAL BENTO */}
           <section className="section-padding" id="arsenal" >
             <div className="centered-header reveal" style={{ marginBottom: '4rem' }}>
-              <h2 className="title-large" style={{ fontSize: '3rem' }}>THE GUILD ARSENAL</h2>
-              <p className="p-large" style={{ marginTop: '1rem' }}>Unlock specialized tools, scripts, and buffs by completing real-world milestones.</p>
+              <span className="status-tag">RESOURCE_REPOSITORY</span>
+              <h2 className="title-large" style={{ fontSize: '3rem' }}>THE OPERATIVE ARSENAL</h2>
+              <p className="p-large" style={{ marginTop: '1rem' }}>Access specialized toolsets and performance enhancers by validating technical milestones.</p>
             </div>
             <div className="arsenal-bento">
               <div
                 className="bento-item reveal large-arsenal tilt-card interactive-card"
                 onClick={() => setSelectedVaultItem(vaultContent['recon-script'])}
               >
-                <div className="weapon-tag">ACTIVE CAPABILITY // RANK A</div>
-                <h3 style={{ fontSize: '1.8rem', margin: '0' }}>AUTO-RECON SCRIPT</h3>
+                <div className="weapon-tag">ACTIVE_UTILITY // RANK A</div>
+                <h3 style={{ fontSize: '1.8rem', margin: '0' }}>RECON_SUITE v4.2</h3>
                 <div className="skill-code-box">
                   <div className="code-header"><span></span><span></span><span></span></div>
-                  <code>./recon -t 10.10.10.x --fast-scan</code>
+                  <code>./recon --target secure.protocol.internal --deep-scan</code>
                 </div>
-                <p style={{ marginTop: '1.5rem', color: 'var(--text-dim)' }}>Reduces the time spent on initial enumeration by 40%. Click to decrypt intel.</p>
+                <p style={{ marginTop: '1.5rem', color: 'var(--text-dim)' }}>Optimizes initial enumeration workflows. Decrypt intel to view full documentation.</p>
               </div>
               <div
                 className="bento-item reveal small-arsenal tilt-card interactive-card"
                 style={{ transitionDelay: '0.2s' }}
                 onClick={() => setSelectedVaultItem(vaultContent['focus-stim'])}
               >
-                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>PASSIVE BUFF</div>
-                <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>FOCUS STIM</h3>
-                <p style={{ color: 'var(--text-dim)' }}>Grants +25% XP multiplier for 2 hours when activated.</p>
+                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>PERFORMANCE_MODIFIER</div>
+                <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>FOCUS_ENHANCER</h3>
+                <p style={{ color: 'var(--text-dim)' }}>Accelerates skill acquisition rate by 25% during active focus sessions.</p>
                 <div style={{ marginTop: '1rem', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}><div style={{ height: '100%', width: '40%', background: 'var(--accent-cyan)' }}></div></div>
               </div>
               <div className="bento-item reveal small-arsenal tilt-card" style={{ transitionDelay: '0.3s' }}>
-                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>COSMETIC</div>
-                <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>NEON CLOAK</h3>
-                <p style={{ color: 'var(--text-dim)' }}>A guild badge of honor. Unlocked after completing the "Night Owl" streak.</p>
-                <div style={{ marginTop: '1rem', fontSize: '2rem', textAlign: 'center' }}>🥷</div>
+                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>STATUS_INDICATOR</div>
+                <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>ELITE_BADGE</h3>
+                <p style={{ color: 'var(--text-dim)' }}>Visual validation of consecutive milestone completion. Reserved for high-integrity operatives.</p>
+                <div style={{ marginTop: '1rem', fontSize: '2rem', textAlign: 'center' }}>🛡️</div>
               </div>
               <div
                 className="bento-item reveal large-arsenal tilt-card interactive-card"
                 style={{ transitionDelay: '0.4s' }}
                 onClick={() => setSelectedVaultItem(vaultContent['kernel-tamperer'])}
               >
-                <div className="weapon-tag">SPECIALIZATION // RANK S</div>
-                <h3 style={{ fontSize: '1.8rem', margin: '0 0 1rem 0' }}>THE KERNEL TAMPERER</h3>
-                <p style={{ color: 'var(--text-dim)' }}>Unlock advanced OS exploitation paths. This is a Tier 3 Class upgrade, requiring mastery of Assembly and C fundamentals.</p>
+                <div className="weapon-tag">SPECIALIZATION_KEY // RANK S</div>
+                <h3 style={{ fontSize: '1.8rem', margin: '0 0 1rem 0' }}>KERNEL_INTEGRITY_TOOL</h3>
+                <p style={{ color: 'var(--text-dim)' }}>Unlocks deep-system forensics and optimization paths. Requires Tier 3 proficiency in low-level architecture.</p>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                  <span className="mock-rank-s" style={{ width: 'auto', padding: '0.5rem 1rem' }}>SYS-ADMIN DEFEATED</span>
-                  <span className="mock-rank-a" style={{ width: 'auto', padding: '0.5rem 1rem', background: 'transparent', color: 'var(--text-dim)', border: '1px solid var(--text-dim)' }}>MEMORY MASTER [LOCKED]</span>
+                  <span className="mock-rank-s" style={{ width: 'auto', padding: '0.5rem 1rem' }}>VALIDATED</span>
+                  <span className="mock-rank-a" style={{ width: 'auto', padding: '0.5rem 1rem', background: 'transparent', color: 'var(--text-dim)', border: '1px solid var(--text-dim)' }}>ARCHITECTURE_PENDING</span>
                 </div>
               </div>
             </div>
@@ -530,23 +571,25 @@ function App() {
           {/* MANIFESTO SECTION */}
           <section className="section-padding" id="manifesto">
             <div className="centered-header reveal">
-              <h2 className="title-large">THE GUILD PROTOCOL</h2>
+              <span className="status-tag">CORE_PRINCIPLES</span>
+              <h2 className="title-large">THE OPERATIVE CODE</h2>
             </div>
             <div className="manifesto-box reveal">
-              <div className="manifesto-glitch">01. STAGNATION IS DEATH.</div>
-              <div className="manifesto-text">We do not accept the default path. We recognize that without active progression, skills atrophy and potential decays. The Guild demands forward momentum.</div>
-              <div className="manifesto-glitch">02. XP IS EARNED, NOT GIVEN.</div>
-              <div className="manifesto-text">Every line of code, every workout, every vulnerability patched contributes to your overall operative rank. Everything is tracked. Everything matters.</div>
-              <div className="manifesto-glitch">03. COLLECTIVE ASCENSION.</div>
-              <div className="manifesto-text">We share tactics, scripts, and strategies. We compete on the leaderboards to push each other further. A rising tide lifts all operatives.</div>
+              <div className="manifesto-glitch">01. CONTINUOUS ASCENSION</div>
+              <div className="manifesto-text">Stagnation is the silent failure of potential. We commit to a path of daily, incremental growth, ensuring our technical and physical baselines are always moving upward.</div>
+              <div className="manifesto-glitch">02. DATA-DRIVEN ACCOUNTABILITY</div>
+              <div className="manifesto-text">Every action is a data point. We utilize the Rizen protocol to track, analyze, and optimize our progress, turning subjective effort into objective mastery.</div>
+              <div className="manifesto-glitch">03. COLLECTIVE INTELLIGENCE</div>
+              <div className="manifesto-text">We are an elite network of specialists. We share intel, optimize loadouts, and leverage our collective proficiency to secure the future of the operative ecosystem.</div>
             </div>
           </section>
 
           {/* FINAL CALL */}
           <section className="final-cta reveal" >
             <div className="cta-content">
-              <h2 className="title-large" style={{ marginBottom: '1rem' }}>THE GUILD IS WAITING</h2>
-              <p style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', marginBottom: '3rem', fontFamily: 'Space Grotesk' }}>Your first quest begins at 08:00 AM. Will you be there?</p>
+              <span className="status-tag">SYSTEM_READY</span>
+              <h2 className="title-large" style={{ marginBottom: '1rem' }}>INITIALIZE YOUR ASCENSION</h2>
+              <p style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', marginBottom: '3rem', fontFamily: 'Space Grotesk' }}>The Rizen protocol is operational. Will you authorize your first deployment?</p>
               <button className="btn-primary large-btn" onClick={() => setAuthModalOpen(true)}>Initialize Onboarding</button>
             </div>
           </section >

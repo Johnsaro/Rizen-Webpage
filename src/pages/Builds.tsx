@@ -25,7 +25,7 @@ const Builds: React.FC<BuildsProps> = ({ onViewBuild }) => {
     <div className="builds-page">
       {/* 1. HERO SECTION */}
       <section className="builds-hero">
-        <div className="hero-content reveal visible">
+        <div className="hero-content reveal visible" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div className="status-tag pulse-border">OPERATIONS LOG</div>
           <h1 className="glitch-title" data-text="BUILDS">BUILDS</h1>
           <p className="hero-description reveal visible">
@@ -38,9 +38,9 @@ const Builds: React.FC<BuildsProps> = ({ onViewBuild }) => {
       <section className="section-padding">
         <div className="builds-grid">
           {sortedBuilds.map((build, index) => (
-            <div 
-              key={build.id} 
-              className="reveal visible" 
+            <div
+              key={build.id}
+              className="reveal visible"
               style={{ transitionDelay: `${index * 0.1}s` }}
             >
               <BuildCard build={build} onClick={onViewBuild} />

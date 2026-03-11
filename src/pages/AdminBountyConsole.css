@@ -308,6 +308,53 @@
     height: 14px;
 }
 
+/* ── ERROR BANNER ─────────────────────────────────────────── */
+.abc-error-banner {
+    max-width: 1200px;
+    margin: 0 auto 1.5rem;
+    background: rgba(255, 59, 92, 0.1);
+    border: 1px solid var(--hk-red);
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: abc-shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes abc-shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.abc-error-icon {
+    font-size: 1.2rem;
+}
+
+.abc-error-msg {
+    font-family: var(--hk-mono);
+    font-size: 0.85rem;
+    color: var(--hk-red);
+    letter-spacing: 1px;
+    flex: 1;
+}
+
+.abc-error-close {
+    background: transparent;
+    border: none;
+    color: var(--hk-red);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.abc-error-close:hover {
+    opacity: 1;
+}
+
 /* ── FEED ─────────────────────────────────────────────────── */
 .abc-feed {
     position: relative;

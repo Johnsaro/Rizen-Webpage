@@ -6,6 +6,8 @@ import ArsenalGrid from './ArsenalGrid';
 import AchievementGrid from './AchievementGrid';
 import CombatPreview from './CombatPreview';
 import LeaderboardTeaser from './LeaderboardTeaser';
+import SystemLog from './SystemLog';
+import ActiveBounties from './ActiveBounties';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 
 interface DashboardProps {
@@ -13,7 +15,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ user: mockUser }: DashboardProps) => {
-    const { profile, quests, loading } = usePlayerProfile();
+    const { profile, quests, notifications, bounties, loading, error } = usePlayerProfile();
 
     // Merge real data with mock defaults
     const activeUser = {
@@ -29,12 +31,13 @@ const Dashboard = ({ user: mockUser }: DashboardProps) => {
             },
             xp: {
                 current: profile?.current_xp ?? mockUser.stats.xp.current,
-                max: mockUser.stats.xp.max, // Max XP is usually fixed per level
+                max: mockUser.stats.xp.max,
             },
             rep: profile?.rep ?? mockUser.stats.rep,
             streak: profile?.streak ?? mockUser.stats.streak
         },
-        quests: quests.length > 0 ? (quests as any) : mockUser.quests
+        quests: quests.length > 0 ? (quests as any) : mockUser.quests,
+        // Achievements and Inventory are now fully dynamic from the profile object
     };
 
     if (loading) {
@@ -45,25 +48,45 @@ const Dashboard = ({ user: mockUser }: DashboardProps) => {
         );
     }
 
+    if (error) {
+        return (
+            <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '60vh', gap: '2rem' }}>
+                <div className="glitch-text" data-text="CONNECTION ERROR">CONNECTION ERROR</div>
+                <p style={{ color: 'var(--accent-crimson)', fontFamily: 'Fira Code' }}>{error}</p>
+                <button className="terminal-button" onClick={() => window.location.reload()}>RE-ESTABLISH CONNECTION</button>
+            </div>
+        );
+    }
+
     return (
         <div id="dashboard-home" className="dashboard-container">
             <div className="dashboard-bento">
-                {/* Left Column (Main Stats & Quests) */}
+                {/* Left Column (Main Stats & Intel) */}
                 <div className="dashboard-col-left">
                     <PlayerCard user={activeUser} delay={0.1} />
-                    <QuestBoard quests={activeUser.quests} delay={0.2} />
+                    <ActiveBounties bounties={bounties} delay={0.2} />
+                    <QuestBoard quests={activeUser.quests} delay={0.3} />
                 </div>
 
                 {/* Middle Column (Arsenal & Combat) */}
                 <div className="dashboard-col-middle">
-                    <ArsenalGrid arsenal={activeUser.arsenal} delay={0.3} />
-                    <CombatPreview delay={0.4} />
+                    <ArsenalGrid 
+                        inventory={profile?.inventory} 
+                        equippedWeapon={profile?.equipped_weapon} 
+                        delay={0.4} 
+                    />
+                    <CombatPreview delay={0.5} />
                 </div>
 
                 {/* Right Column (Leaderboard & Achievements) */}
                 <div className="dashboard-col-right">
-                    <LeaderboardTeaser currentUser={activeUser} delay={0.5} />
-                    <AchievementGrid achievements={activeUser.achievements} delay={0.6} />
+                    <LeaderboardTeaser currentUser={activeUser} delay={0.6} />
+                    <AchievementGrid 
+                        achievements={profile?.achievements} 
+                        featuredAchievement={profile?.featured_achievement} 
+                        delay={0.7} 
+                    />
+                    <SystemLog notifications={notifications} delay={0.8} />
                 </div>
             </div>
         </div>

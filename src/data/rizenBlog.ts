@@ -12,6 +12,35 @@ export interface BlogPost {
 
 export const rizenBlogPosts: BlogPost[] = [
     {
+        id: 'session-41-bug-sweep',
+        title: 'App Clean Status: The Session 41 Audit',
+        summary: 'A massive stability update. Following a comprehensive formal audit, 17 critical and major bugs in the Flutter application have been neutralized. The mobile protocol is now verified Clean.',
+        content: `Following the successful launch of v1.0.0, our focus shifted to **Protocol Hardening**. Session 41 marks the completion of our most rigorous internal audit to date.
+
+### The "Clean" Mandate
+We audited all 12 core model and service layers of the Rizen Flutter application. The mission was simple: identify every possible race condition, data corruption path, and UI synchronization lag.
+
+### Key Neutralizations
+1. **Race Condition Guards:** Added reentrancy protection to \`useItem()\`, \`purchaseItem()\`, and \`completeQuest()\`. Rapid-tapping exploits are now impossible.
+2. **Data Integrity:** Refactored XP Surge logic to ensure buffs are consumed *before* the save operation, preventing "immortal buff" glitches during network rollbacks.
+3. **Session Hardening:** Wrapped sensitive Supabase identifiers in safety guards to prevent silent write failures on cold starts.
+4. **Network Resilience:** Implemented strict 15-second timeouts across all cloud transmissions to prevent UI hanging during signal drops.
+
+### Status Report
+- **Flutter App:** 0 Known Open Bugs.
+- **Showcase Site:** Undergoing active audit (ETA: Session 45).
+- **Stability Rating:** EXCELLENT.
+
+The mobile interface is now the most stable it has ever been. Operatives are encouraged to update their local builds immediately to benefit from these hardening measures.
+
+*The Rizen protocol remains uncompromised.*`,
+        category: 'Patch Note',
+        version: 'v1.0.0+1',
+        date: '2026-03-11',
+        icon: '🛡️',
+        featured: true
+    },
+    {
         id: 'rizen-v1-release',
         title: 'Rizen v1.0.0: The Protocol is Live',
         summary: 'After 17 days and 37 sessions of intensive development, Rizen v1.0.0 has officially launched. The transition from prototype to production-ready operative interface is complete.',
@@ -48,7 +77,7 @@ The choice remains yours, Recruit. Rise or Stagnate.
         version: 'v1.0.0',
         date: '2026-03-08',
         icon: '🚀',
-        featured: true
+        featured: false
     },
     {
         id: 'neural-breach-design',
