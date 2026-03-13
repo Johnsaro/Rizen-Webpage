@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
+import BannedScreen from '../features/BannedScreen';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -8,10 +9,10 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin = false }) => {
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, signOut } = useAuth();
     const { profile, loading: profileLoading, error: profileError } = usePlayerProfile();
 
-    const isLoading = authLoading || (requireAdmin && profileLoading);
+    const isLoading = authLoading || (profileLoading && !!user);
 
     if (isLoading) {
         return (
@@ -33,6 +34,26 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
                 </div>
             </div>
         );
+    }
+
+    // Handle ban/suspend status (W20)
+    if (profile?.account_status === 'banned' || profile?.account_status === 'suspended') {
+        const isSuspended = profile.account_status === 'suspended';
+        const isStillSuspended = isSuspended && profile.suspended_until && new Date(profile.suspended_until) > new Date();
+
+        if (profile.account_status === 'banned' || isStillSuspended) {
+            return (
+                <BannedScreen 
+                    status={profile.account_status as 'banned' | 'suspended'} 
+                    reason={profile.ban_reason}
+                    until={profile.suspended_until}
+                    onLogout={() => {
+                        signOut();
+                        window.location.hash = '#/';
+                    }}
+                />
+            );
+        }
     }
 
     // Handle admin clearance (W15)

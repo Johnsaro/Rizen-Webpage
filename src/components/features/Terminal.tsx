@@ -52,7 +52,7 @@ const Terminal = ({
           <div className="terminal-signal">
             <span className="pulse-dot"></span>
           </div>
-          <span className="terminal-title">GUILD_MASTER_LINK [PID:{sessionID}]</span>
+          <span className="terminal-title">SYSTEM_LINK [PID:{sessionID}]</span>
         </div>
         <span className={`terminal-status ${isProcessing ? 'processing' : ''}`}>
           {isProcessing ? 'ANALYZING_PKT...' : 'LINK_ESTABLISHED'}
@@ -71,7 +71,7 @@ const Terminal = ({
               {isSystem && entry.rank && (
                 <div className="log-rewards">
                   <span className={`mock-rank-${entry.rank.toLowerCase()}`}>{entry.rank}</span>
-                  <span className="reward-xp">+{entry.xp} XP</span>
+                  <span className="reward-xp">+{entry.qi} Qi</span>
                 </div>
               )}
             </div>

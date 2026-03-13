@@ -57,8 +57,8 @@ const CommunityEvents: React.FC = () => {
 
             <section className="event-hub-hero">
                 <div className="status-tag pulse-border">INITIATIVES</div>
-                <h1 className="glitch-title" data-text="Guild Events">
-                    Guild Events
+                <h1 className="glitch-title" data-text="Sect Events">
+                    Sect Events
                 </h1>
                 <p className="event-hub-subtitle">
                     Participate in system-wide operations, hunt vulnerabilities, and climb the ranks of competitive challenge runs.
@@ -78,7 +78,7 @@ const CommunityEvents: React.FC = () => {
             {otherEvents.length > 0 && (
                 <section className="events-section">
                     <div className="section-header">
-                        <h2>All Archives & Objectives</h2>
+                        <h2>All Archives & Mandates</h2>
                         <div className="header-line"></div>
                     </div>
                     <div className="events-grid">
@@ -91,7 +91,7 @@ const CommunityEvents: React.FC = () => {
 
             {!featuredEvent && otherEvents.length === 0 && (
                 <section className="events-section" style={{ textAlign: 'center', opacity: 0.5 }}>
-                    <p style={{ fontFamily: 'Fira Code' }}>[0] Active objectives identified. Return to standby.</p>
+                    <p style={{ fontFamily: 'Fira Code' }}>[0] Active mandates identified. Return to standby.</p>
                 </section>
             )}
         </div>

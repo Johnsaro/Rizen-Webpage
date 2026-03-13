@@ -44,8 +44,8 @@ const QuestBoard = ({ quests, delay = 0.2 }: { quests: Quest[], delay?: number }
                                     </div>
                                     <h4 className="quest-title">{quest.title}</h4>
                                     <div className="quest-rewards">
-                                        <span className="reward reward-xp">+{quest.xp_reward} XP</span>
-                                        <span className="reward reward-rep">+{Math.round(quest.xp_reward / 10)} REP</span>
+                                        <span className="reward reward-xp">+{quest.xp_reward} Qi</span>
+                                        <span className="reward reward-rep">+{Math.round(quest.xp_reward / 10)} Spirit Stones</span>
                                     </div>
                                     <div className="quest-progress-container">
                                         <div className="quest-progress-fill" style={{ width: `${progress}%` }}></div>

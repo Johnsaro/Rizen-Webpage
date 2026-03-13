@@ -5,7 +5,7 @@ import QuestBoard from './QuestBoard';
 import ArsenalGrid from './ArsenalGrid';
 import AchievementGrid from './AchievementGrid';
 import CombatPreview from './CombatPreview';
-import LeaderboardTeaser from './LeaderboardTeaser';
+import PersonalRecordsTeaser from './PersonalRecordsTeaser';
 import SystemLog from './SystemLog';
 import ActiveBounties from './ActiveBounties';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
@@ -43,7 +43,7 @@ const Dashboard = ({ user: mockUser }: DashboardProps) => {
     if (loading) {
         return (
             <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-                <div className="loading-glitch" data-text="SYNCING OPERATIVE DATA...">SYNCING OPERATIVE DATA...</div>
+                <div className="loading-glitch" data-text="SYNCING CULTIVATOR DATA...">SYNCING CULTIVATOR DATA...</div>
             </div>
         );
     }
@@ -78,15 +78,19 @@ const Dashboard = ({ user: mockUser }: DashboardProps) => {
                     <CombatPreview delay={0.5} />
                 </div>
 
-                {/* Right Column (Leaderboard & Achievements) */}
+                {/* Right Column (Personal Records & Achievements) */}
                 <div className="dashboard-col-right">
-                    <LeaderboardTeaser currentUser={activeUser} delay={0.6} />
+                    <PersonalRecordsTeaser currentUser={activeUser} delay={0.6} />
                     <AchievementGrid 
                         achievements={profile?.achievements} 
                         featuredAchievement={profile?.featured_achievement} 
                         delay={0.7} 
                     />
-                    <SystemLog notifications={notifications} delay={0.8} />
+                    <SystemLog 
+                        notifications={notifications} 
+                        playerName={activeUser.name} 
+                        delay={0.8} 
+                    />
                 </div>
             </div>
         </div>

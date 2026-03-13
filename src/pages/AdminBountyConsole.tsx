@@ -60,7 +60,11 @@ const DEFAULT_PATCH: PatchIntel = {
     fixed_by: '',
 };
 
-const AdminBountyConsole: React.FC = () => {
+interface AdminBountyConsoleProps {
+    isIntegrated?: boolean;
+}
+
+const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = false }) => {
     const { user } = useAuth();
     const { profile, loading: profileLoading } = usePlayerProfile();
     const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -194,8 +198,7 @@ const AdminBountyConsole: React.FC = () => {
                     .from('notifications')
                     .insert([{
                         user_id: (submission as any).user_id,
-                        title: 'PATCH_INTEL_UPLINK',
-                        message: `Operative, your finding #${submission.id.slice(0, 6)} has been patched in v${patchModal.form.app_version}.`,
+                        message: `PATCH_INTEL: Cultivator, your finding #${submission.id.slice(0, 6)} has been patched in v${patchModal.form.app_version}.`,
                         type: 'bounty'
                     }]);
             }
@@ -252,10 +255,9 @@ const AdminBountyConsole: React.FC = () => {
                 .from('notifications')
                 .insert([{
                     user_id: (sub as any).user_id,
-                    title: isFirstBlood ? 'ACHIEVEMENT_UNLOCKED' : 'REWARD_ACQUIRED',
                     message: isFirstBlood 
-                        ? `FIRST BLOOD! Bounty #${sub.id.slice(0, 6)} reward + Badge issued. +1500 Total REP.`
-                        : `Mission Complete: Bounty #${sub.id.slice(0, 6)} reward issued. +1000 REP assigned.`,
+                        ? `ACHIEVEMENT: FIRST BLOOD! Bounty #${sub.id.slice(0, 6)} reward + Badge issued. +1500 Total Spirit Stones.`
+                        : `REWARD: Mission Complete: Bounty #${sub.id.slice(0, 6)} reward issued. +1000 Spirit Stones assigned.`,
                     type: 'reward'
                 }]);
 
@@ -279,41 +281,43 @@ const AdminBountyConsole: React.FC = () => {
     const statOpen = submissions.filter(s => s.status === 'received' || s.status === 'confirmed').length;
     const statFixed = submissions.filter(s => s.status === 'fixed' || s.status === 'rewarded').length;
 
-    if (profileLoading) return (
+    if (profileLoading && !isIntegrated) return (
         <div className="abc-gate">SYNCHRONIZING ADMIN CLEARANCE...</div>
     );
 
-    if (!profile?.is_admin) return (
+    if (!profile?.is_admin && !isIntegrated) return (
         <div className="abc-gate">UNAUTHORIZED — ADMINISTRATOR PRIVILEGES REQUIRED</div>
     );
 
     return (
-        <div className="abc-page">
-            <header className="abc-header">
-                <div className="abc-title-block">
-                    <span className="abc-sys-tag">SYS_CONSOLE // BOUNTY_OPS // LIVE_FEED</span>
-                    <span className="abc-badge">ADMIN CONTROL</span>
-                    <h1 className="abc-h1">Bounty Operation <span>Console</span></h1>
-                </div>
-                <div className="abc-stats">
-                    <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-cyan)' } as React.CSSProperties}>
-                        <span className="abc-stat-label">Total Findings</span>
-                        <span className="abc-stat-value">{submissions.length}</span>
+        <div className="abc-page" style={{ padding: isIntegrated ? 0 : '100px 2rem 2rem 2rem' }}>
+            {!isIntegrated && (
+                <header className="abc-header">
+                    <div className="abc-title-block">
+                        <span className="abc-sys-tag">SYS_CONSOLE // BOUNTY_OPS // LIVE_FEED</span>
+                        <span className="abc-badge">ADMIN CONTROL</span>
+                        <h1 className="abc-h1">Bounty Operation <span>Console</span></h1>
                     </div>
-                    <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-red)' } as React.CSSProperties}>
-                        <span className="abc-stat-label">Critical Active</span>
-                        <span className="abc-stat-value">{statCritical}</span>
+                    <div className="abc-stats">
+                        <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-cyan)' } as React.CSSProperties}>
+                            <span className="abc-stat-label">Total Findings</span>
+                            <span className="abc-stat-value">{submissions.length}</span>
+                        </div>
+                        <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-red)' } as React.CSSProperties}>
+                            <span className="abc-stat-label">Critical Active</span>
+                            <span className="abc-stat-value">{statCritical}</span>
+                        </div>
+                        <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-amber)' } as React.CSSProperties}>
+                            <span className="abc-stat-label">Open Intel</span>
+                            <span className="abc-stat-value">{statOpen}</span>
+                        </div>
+                        <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-green)' } as React.CSSProperties}>
+                            <span className="abc-stat-label">Resolved</span>
+                            <span className="abc-stat-value">{statFixed}</span>
+                        </div>
                     </div>
-                    <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-amber)' } as React.CSSProperties}>
-                        <span className="abc-stat-label">Open Intel</span>
-                        <span className="abc-stat-value">{statOpen}</span>
-                    </div>
-                    <div className="abc-stat" style={{ '--stat-accent': 'var(--hk-green)' } as React.CSSProperties}>
-                        <span className="abc-stat-label">Resolved</span>
-                        <span className="abc-stat-value">{statFixed}</span>
-                    </div>
-                </div>
-            </header>
+                </header>
+            )}
 
             <div className="abc-controls">
                 <div className="abc-filters">
@@ -358,7 +362,7 @@ const AdminBountyConsole: React.FC = () => {
                                 <div className="abc-card-body">
                                     <h3 className="abc-card-title">{sub.title}</h3>
                                     <div className="abc-card-meta">
-                                        <span>OPERATIVE: <span className="hl">{sub.operative_name}</span></span>
+                                        <span>CULTIVATOR: <span className="hl">{sub.operative_name}</span></span>
                                         <span>•</span>
                                         <span>TARGET: <span className="hl">{sub.component}</span></span>
                                     </div>
@@ -424,7 +428,7 @@ const AdminBountyConsole: React.FC = () => {
                                         onClick={() => handleAssignRep(sub)} 
                                         disabled={repLoading[sub.id] || sub.status === 'rewarded'}
                                     >
-                                        <RepIcon /> {repLoading[sub.id] ? 'ASSIGNING...' : 'ASSIGN REP'}
+                                        <RepIcon /> {repLoading[sub.id] ? 'ASSIGNING...' : 'ASSIGN SPIRIT STONES'}
                                     </button>
                                 </div>
                             </div>

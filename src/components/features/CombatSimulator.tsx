@@ -57,7 +57,7 @@ const CombatSimulator = ({
             {/* Operative Stats */}
             <div className={`engagement-card operative-card ${shakeTarget === 'player' ? 'shake-intense' : ''}`}>
               <div className="card-header">
-                <span className="card-tag">OPERATIVE_INTEGRITY</span>
+                <span className="card-tag">CULTIVATOR_INTEGRITY</span>
                 <span className="card-percent">{playerHP}%</span>
               </div>
               <div className="integrity-bar">
@@ -73,7 +73,7 @@ const CombatSimulator = ({
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 </div>
-                <div className="meta-label">RECRUIT_STATUS: ACTIVE</div>
+                <div className="meta-label">CULTIVATOR_STATUS: ACTIVE</div>
               </div>
             </div>
 

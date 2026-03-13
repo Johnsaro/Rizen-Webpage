@@ -18,7 +18,7 @@ const QuestDetailModal: React.FC<QuestDetailModalProps> = ({ quest, onClose }) =
           <div className="sm-header-left">
             <div className="sm-icon">📜</div>
             <div>
-              <div className="sm-badge">QUEST_INTEL</div>
+              <div className="sm-badge">TRIAL_INTEL</div>
               <h2 className="sm-title">{quest.title}</h2>
               <p className="sm-subtitle">Rank: {quest.rank} · {quest.type}</p>
             </div>
@@ -45,15 +45,15 @@ const QuestDetailModal: React.FC<QuestDetailModalProps> = ({ quest, onClose }) =
 
           <div className="qd-rewards" style={{ display: 'flex', gap: '1rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px' }}>
             <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>REWARD_XP</span>
-              <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>+{quest.xp_reward} XP</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>REWARD_QI</span>
+              <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>+{quest.xp_reward} Qi</span>
             </div>
             <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>REWARD_REP</span>
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 600 }}>+{(quest.xp_reward / 10).toFixed(0)} REP</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>REWARD_SPIRIT_STONES</span>
+              <span style={{ color: 'var(--accent-emerald)', fontWeight: 600 }}>+{(quest.xp_reward / 10).toFixed(0)} Spirit Stones</span>
             </div>
             <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>DISCIPLINE</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>DAO PATH</span>
               <span style={{ color: 'var(--accent-violet)', fontWeight: 600 }}>{quest.class_tag.toUpperCase()}</span>
             </div>
           </div>
@@ -62,7 +62,7 @@ const QuestDetailModal: React.FC<QuestDetailModalProps> = ({ quest, onClose }) =
         <div className="sm-footer" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem' }}>
           <button className="sm-btn-ghost" onClick={onClose}>Close Briefing</button>
           <button className="btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '0.85rem' }} onClick={() => window.location.hash = '#/community/hub'}>
-            Go to Guild Board
+            Go to Sect Board
           </button>
         </div>
       </div>

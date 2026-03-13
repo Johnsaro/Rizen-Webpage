@@ -35,7 +35,7 @@ const CommunityHub: React.FC = () => {
         {
             id: 'discord',
             title: 'Discord',
-            desc: 'Connect with operatives. Coordinate, learn, and ascend together.',
+            desc: 'Connect with cultivators. Coordinate, learn, and ascend together.',
             icon: '💬',
             activity: '1,204 Online'
         }
@@ -44,9 +44,9 @@ const CommunityHub: React.FC = () => {
     return (
         <div className="community-page reveal visible">
             <div className="community-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div className="status-tag pulse-border">GUILD NETWORK</div>
+                <div className="status-tag pulse-border">SECT NETWORK</div>
                 <h1 className="glitch-title" data-text="COMMUNITY" style={{ marginBottom: '1.5rem', marginTop: '0.5rem' }}>COMMUNITY</h1>
-                <p>A rising tide lifts all operatives. Share tactics, collaborate on builds, and ascend together.</p>
+                <p>A rising tide lifts all cultivators. Share tactics, collaborate on builds, and ascend together.</p>
             </div>
 
             <div className="community-grid">

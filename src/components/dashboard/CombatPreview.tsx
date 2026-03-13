@@ -43,7 +43,7 @@ const CombatPreview = ({ delay = 0.4 }: { delay?: number }) => {
     return (
         <div id="dashboard-combat" className="dash-card combat-preview-card fade-in-up" style={{ animationDelay: `${delay}s` }}>
             <div className="card-header">
-                <h3 className="card-title" style={{ color: 'var(--accent-crimson)' }}>COMBAT SIMULATION</h3>
+                <h3 className="card-title" style={{ color: 'var(--accent-crimson)' }}>ENLIGHTENMENT TRIAL</h3>
                 <span className="live-badge pulse-red">PREVIEW</span>
             </div>
 
@@ -95,7 +95,7 @@ const CombatPreview = ({ delay = 0.4 }: { delay?: number }) => {
             <div className="combat-mini-arena">
                 {/* Monster Stats */}
                 <div className={`combat-actor monster ${isMonsterHit ? 'bar-flash-monster shake-micro' : ''}`}>
-                    <div className="actor-name">TIME WRAITH (LVL 25)</div>
+                    <div className="actor-name">INNER DEMON (RLM 25)</div>
                     <div className="mini-hp-bar">
                         <div className="mini-hp-fill monster-hp" style={{ width: '60%' }}></div>
                     </div>
@@ -138,7 +138,7 @@ const CombatPreview = ({ delay = 0.4 }: { delay?: number }) => {
                 disabled={!selectedOption || isResolving}
                 onClick={handleSimulationSubmit}
             >
-                {isResolving ? 'RESOLVING INTERACTION...' : 'ENTER SIMULATION'}
+                {isResolving ? 'RESOLVING INTERACTION...' : 'BEGIN TRIAL'}
             </button>
         </div>
     );

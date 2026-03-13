@@ -125,7 +125,7 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                           </video>
                         )
                       ) : (
-                        <img src={build.media[0].url} alt={build.media[0].caption} />
+                        <img src={build.media[0].url} alt={build.media[0].caption} loading="lazy" />
                       )}
                     </div>
                     <div className="media-caption">
@@ -153,7 +153,7 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                                 </video>
                               )
                             ) : (
-                              <img src={item.url} alt={item.caption} />
+                              <img src={item.url} alt={item.caption} loading="lazy" />
                             )}
                           </div>
                           <div className="media-caption">

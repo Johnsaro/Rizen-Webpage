@@ -2,7 +2,7 @@ export interface VaultItem {
   id: string;
   name: string;
   rank: 'S' | 'A' | 'B' | 'C' | 'F';
-  type: 'ACTIVE_CAPABILITY' | 'PASSIVE_BUFF' | 'COSMETIC' | 'SPECIALIZATION';
+  type: 'ACTIVE_ARTIFACT' | 'CULTIVATION_PILL' | 'COSMETIC' | 'DAO_PATH';
   technicalSpecs: {
     label: string;
     value: string;
@@ -20,14 +20,14 @@ export const vaultContent: Record<string, VaultItem> = {
     id: 'recon-script',
     name: 'AUTO-RECON SCRIPT',
     rank: 'A',
-    type: 'ACTIVE_CAPABILITY',
+    type: 'ACTIVE_ARTIFACT',
     technicalSpecs: [
       { label: 'ENGINE', value: 'NMAP v7.92 / RUST_SCAN' },
       { label: 'THREADS', value: '256 / ADAPTIVE' },
       { label: 'EFFICIENCY', value: '+40% ENUM_SPEED' }
     ],
     content: {
-      title: 'OPERATIVE RECONNAISSANCE PROTOCOL',
+      title: 'CULTIVATOR RECONNAISSANCE PROTOCOL',
       description: 'A multi-threaded automation engine for rapid network perimeter analysis. Designed to identify service banners and vulnerabilities before the target detects intrusion.',
       codeBlock: `./recon -t 10.10.10.0/24 --aggressive --no-ping --output-format json`,
       dataPoints: [
@@ -42,7 +42,7 @@ export const vaultContent: Record<string, VaultItem> = {
     id: 'kernel-tamperer',
     name: 'THE KERNEL TAMPERER',
     rank: 'S',
-    type: 'SPECIALIZATION',
+    type: 'DAO_PATH',
     technicalSpecs: [
       { label: 'TARGET_OS', value: 'LINUX_KERNEL_v5.x' },
       { label: 'METHOD', value: 'LKM_INJECTION' },
@@ -65,10 +65,10 @@ copy_to_user(target_addr, payload, size);`,
     id: 'focus-stim',
     name: 'FOCUS STIM',
     rank: 'B',
-    type: 'PASSIVE_BUFF',
+    type: 'CULTIVATION_PILL',
     technicalSpecs: [
       { label: 'DURATION', value: '120 MIN' },
-      { label: 'MODIFIER', value: '1.25x XP' },
+      { label: 'MODIFIER', value: '1.25x Qi' },
       { label: 'COOLDOWN', value: '24 HOURS' }
     ],
     content: {
@@ -77,7 +77,7 @@ copy_to_user(target_addr, payload, size);`,
       dataPoints: [
         'Cognitive Load: Optimized (88%)',
         'Distraction Prevention: Active',
-        'Deep Work Streak: 3/5 Days',
+        'Deep Work Dao Heart: 3/5 Days',
         'Next Milestone: Flow State Mastery'
       ]
     }

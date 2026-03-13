@@ -19,33 +19,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active sessions and sets the user (W06)
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-      })
-      .catch(err => {
-        console.error('Error getting session:', err);
-      })
-      .finally(() => {
+    // Check initial session (W06)
+    const initSession = async () => {
+      try {
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          // If it's a refresh token error, we can ignore it as onAuthStateChange will handle SIGNED_OUT
+          if (error.message?.includes('Refresh Token Not Found')) {
+            console.log('No valid session found (Refresh Token Not Found). Clearing stale session.');
+            // This will clear the local storage to stop further refresh attempts
+            await supabase.auth.signOut();
+          } else {
+            console.error('Error getting session:', error.message);
+          }
+        }
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+      } catch (err) {
+        console.error('Unexpected error initializing auth:', err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    initSession();
 
     // Listen for changes on auth state (sign in, sign out, token refresh, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log(`Auth event: ${event}`);
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
       
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Session token refreshed successfully');
-      }
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        setSession(session);
+        setUser(session?.user ?? null);
+      } else if (event === 'SIGNED_OUT') {
         setSession(null);
         setUser(null);
       }
+
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
