@@ -7,7 +7,7 @@ export interface InitiationQuestion {
   text: string;
   options: string[];
   correct: string;
-  discipline: 'SECURITY' | 'SOFTWARE ENG' | 'WEB DEV' | 'GAME DEV';
+  discipline: 'SHADOW ARTS' | 'FORMATION MASTER' | 'ARTIFACT REFINER' | 'REALM ARCHITECT';
 }
 
 const initiationQuestions: InitiationQuestion[] = [
@@ -16,21 +16,21 @@ const initiationQuestions: InitiationQuestion[] = [
     text: "IDENTIFY THE PRIMARY TARGET: A system is unresponsive due to a flood of ICMP packets. Protocol?",
     options: ["TCP", "UDP", "ICMP", "HTTP"],
     correct: "ICMP",
-    discipline: 'SECURITY'
+    discipline: 'SHADOW ARTS'
   },
   {
     id: 'Q2',
     text: "ARCHITECTURAL CHECK: Which data structure follows the Last-In, First-Out (LIFO) principle?",
     options: ["Queue", "Stack", "Linked List", "Tree"],
     correct: "Stack",
-    discipline: 'SOFTWARE ENG'
+    discipline: 'FORMATION MASTER'
   },
   {
     id: 'Q3',
     text: "DOM MANIPULATION: Which method is used to select an element by its ID in JavaScript?",
     options: ["querySelector", "getElementById", "getElementByClassName", "find"],
     correct: "getElementById",
-    discipline: 'WEB DEV'
+    discipline: 'ARTIFACT REFINER'
   }
 ];
 
@@ -59,9 +59,9 @@ export const useInitiation = () => {
         answers['Q2'] === initiationQuestions[1].correct
       ].filter(Boolean).length;
 
-      if (correctCount === 3) setAssignedClass('SECURITY ANALYST (RANK A)');
-      else if (correctCount === 2) setAssignedClass('SOFTWARE ENGINEER (RANK B)');
-      else setAssignedClass('RECRUIT (RANK F)');
+      if (correctCount === 3) setAssignedClass('SHADOW ARTS (RANK A)');
+      else if (correctCount === 2) setAssignedClass('FORMATION MASTER (RANK B)');
+      else setAssignedClass('CULTIVATOR (RANK F)');
     }
   }, [step, answers]);
 

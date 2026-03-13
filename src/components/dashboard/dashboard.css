@@ -1107,178 +1107,450 @@
         max-width: 150px;
     }
 
-    /* ==========================================================================
-     SYSTEM LOG (OPERATIONAL LEDGER)
+}
+
+/* ==========================================================================
+     PERSONAL RECORDS TEASER
      ========================================================================== */
 
-    .system-log-card {
-        background: rgba(4, 10, 20, 0.9) !important;
-        border: 1px inset rgba(0, 228, 255, 0.3) !important;
-        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 228, 255, 0.1) !important;
-        position: relative;
-        overflow: hidden;
-    }
+.personal-records-teaser {
+    display: flex;
+    flex-direction: column;
+}
 
-    .system-log-card::before {
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        z-index: 2;
-        background-size: 100% 2px, 3px 100%;
-        pointer-events: none;
-    }
+.records-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
 
-    .system-log-content {
-        height: 300px;
-        overflow-y: auto;
-        font-family: 'Fira Code', monospace;
-        font-size: 0.8rem;
-        padding-right: 10px;
-        position: relative;
-        z-index: 3;
-    }
+.records-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
 
-    .system-log-content::-webkit-scrollbar {
-        width: 6px;
-    }
+.group-label {
+    font-family: 'Space Grotesk';
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    opacity: 0.6;
+}
 
-    .system-log-content::-webkit-scrollbar-track {
-        background: rgba(0, 228, 255, 0.05);
-        border-radius: 4px;
-    }
+/* Personal Bests */
+.bests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
 
-    .system-log-content::-webkit-scrollbar-thumb {
-        background: rgba(0, 228, 255, 0.3);
-        border-radius: 4px;
-    }
+.best-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
 
-    .log-entry-row {
-        margin-bottom: 0.8rem;
-        line-height: 1.4;
-        display: flex;
-        flex-wrap: wrap;
-        column-gap: 0.5rem;
-        opacity: 0;
-        animation: type-in 0.1s forwards;
-    }
+.best-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(0, 228, 255, 0.2);
+}
 
-    @keyframes type-in {
-        to {
-            opacity: 1;
-        }
-    }
+.best-icon {
+    font-size: 1.25rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .log-timestamp {
-        color: rgba(0, 228, 255, 0.6);
-        flex-shrink: 0;
-    }
+.best-info {
+    flex: 1;
+}
 
-    .log-type {
-        font-weight: 600;
-        flex-shrink: 0;
-    }
+.best-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
 
-    .type-combat_victory {
-        color: var(--accent-emerald);
-        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
-    }
+.best-value {
+    font-family: 'Space Grotesk';
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
 
-    .type-level_up {
-        color: #ffd700;
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-    }
+.best-detail {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    opacity: 0.5;
+}
 
-    .type-achievement {
-        color: var(--accent-purple);
-        text-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
-    }
+/* Weekly Pulse */
+.pulse-card {
+    background: rgba(0, 228, 255, 0.03);
+    border: 1px solid rgba(0, 228, 255, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+}
 
-    .type-system {
-        color: var(--accent-cyan);
-        text-shadow: 0 0 5px rgba(0, 228, 255, 0.5);
-    }
+.pulse-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
 
-    .type-alert {
-        color: var(--accent-crimson);
-        text-shadow: 0 0 5px rgba(244, 63, 94, 0.5);
-        animation: blink 1s infinite;
-    }
+.pulse-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .log-msg {
-        color: #e2e8f0;
-        flex-grow: 1;
-        text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
-    }
+.pulse-label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
 
-    .log-footer {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(0, 228, 255, 0.2);
-        position: relative;
-        z-index: 3;
-    }
+.pulse-value {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
 
-    .log-scan-line {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: rgba(0, 228, 255, 0.5);
-        box-shadow: 0 0 10px rgba(0, 228, 255, 1);
-        animation: scan 4s linear infinite;
-        pointer-events: none;
-        z-index: 4;
-    }
+.pulse-value.up {
+    color: var(--accent-emerald);
+}
 
-    @keyframes scan {
-        0% {
-            top: -100px;
-            opacity: 0;
-        }
+.pulse-value.down {
+    color: var(--accent-crimson);
+}
 
-        10% {
-            opacity: 1;
-        }
+.pulse-footer {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    opacity: 0.5;
+    text-align: right;
+    font-style: italic;
+}
 
-        90% {
-            opacity: 1;
-        }
+/* Milestone Timeline */
+.milestone-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-left: 0.5rem;
+    position: relative;
+}
 
-        100% {
-            top: 100%;
-            opacity: 0;
-        }
-    }
+.milestone-timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
 
-    .log-path {
-        font-family: 'Fira Code', monospace;
-        font-size: 0.7rem;
-        color: rgba(0, 228, 255, 0.5);
-        letter-spacing: 1px;
-    }
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
 
-    .log-empty-state {
-        color: var(--accent-cyan);
-        opacity: 0.7;
-        text-shadow: 0 0 5px rgba(0, 228, 255, 0.3);
-    }
+.milestone-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 5px var(--accent-cyan-glow);
+    z-index: 2;
+}
 
-    .log-cursor {
-        animation: blink 1s step-end infinite;
-    }
+.milestone-info {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
 
-    @media (prefers-reduced-motion: reduce) {
+.milestone-label {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
 
-        .log-scan-line,
-        .log-cursor,
-        .type-alert {
-            animation: none !important;
-        }
-    }
+.milestone-date {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+}
+
+.records-footer {
+    margin-top: 2rem;
+    font-family: 'Space Grotesk';
+    font-size: 0.75rem;
+    color: var(--accent-cyan);
+    text-align: center;
+    font-style: italic;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1rem;
+}
+
+/* ==========================================================================
+   TERMINAL THEME - SYSTEM LOG (OPERATIONAL LEDGER)
+   ========================================================================== */
+
+.system-log-card {
+    background: #03080e !important;
+    border: 1px solid rgba(0, 228, 255, 0.4) !important;
+    box-shadow: inset 0 0 20px rgba(0, 228, 255, 0.1), 0 0 10px rgba(0, 228, 255, 0.2) !important;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Fira Code', monospace;
+    color: rgba(0, 228, 255, 0.85);
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-top-bar {
+    background: #06111a;
+    border-bottom: 1px solid rgba(0, 228, 255, 0.3);
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 5px rgba(255,255,255,0.2);
+}
+
+.terminal-dot.red { background: #ff5f56; box-shadow: 0 0 8px rgba(255,95,86,0.6); }
+.terminal-dot.yellow { background: #ffbd2e; box-shadow: 0 0 8px rgba(255,189,46,0.6); }
+.terminal-dot.green { background: #27c93f; box-shadow: 0 0 8px rgba(39,201,63,0.6); }
+
+.terminal-title {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: rgba(0, 228, 255, 0.6);
+    letter-spacing: 1px;
+    font-family: 'Fira Code', monospace;
+    text-shadow: 0 0 5px rgba(0, 228, 255, 0.3);
+}
+
+.system-log-content {
+    height: 350px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    padding: 1rem;
+    position: relative;
+    z-index: 3;
+    line-height: 1.5;
+}
+
+.system-log-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.system-log-content::-webkit-scrollbar-track {
+    background: rgba(0, 228, 255, 0.05);
+}
+
+.system-log-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 228, 255, 0.4);
+    border-radius: 4px;
+}
+
+.term-init, .term-response, .term-end {
+    margin-bottom: 0.75rem;
+    text-shadow: 0 0 5px rgba(0, 228, 255, 0.4);
+}
+
+.term-prompt {
+    color: #4af626;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    text-shadow: 0 0 5px rgba(74, 246, 38, 0.5);
+}
+
+.term-cmd {
+    color: #fff;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+.term-ok {
+    color: #4af626;
+    font-weight: bold;
+}
+
+.term-active {
+    color: #ffbd2e;
+    font-weight: bold;
+    animation: term-blink 2s infinite;
+}
+
+@keyframes term-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.term-divider {
+    color: rgba(0, 228, 255, 0.3);
+    margin: 1rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    letter-spacing: 2px;
+}
+
+.log-empty-state {
+    color: rgba(0, 228, 255, 0.6);
+    margin-top: 1rem;
+}
+
+.log-entry-row {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.5rem;
+    opacity: 0;
+    animation: type-in 0.1s forwards;
+}
+
+@keyframes type-in {
+    to { opacity: 1; }
+}
+
+.log-timestamp {
+    color: rgba(0, 228, 255, 0.5);
+    flex-shrink: 0;
+}
+
+.log-type {
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.type-combat_victory { color: #27c93f; text-shadow: 0 0 5px rgba(39, 201, 63, 0.5); }
+.type-level_up { color: #ffbd2e; text-shadow: 0 0 5px rgba(255, 189, 46, 0.5); }
+.type-achievement { color: #b48ead; text-shadow: 0 0 5px rgba(180, 142, 173, 0.5); }
+.type-system { color: #00e4ff; text-shadow: 0 0 5px rgba(0, 228, 255, 0.5); }
+.type-alert { 
+    color: #ff5f56; 
+    text-shadow: 0 0 5px rgba(255, 95, 86, 0.5);
+    animation: term-blink 1s infinite;
+}
+
+.log-msg {
+    color: #e2e8f0;
+    flex-grow: 1;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.terminal-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    flex-grow: 1;
+    outline: none;
+    caret-color: transparent;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+    padding: 0;
+    margin: 0;
+}
+
+.user-cmd-line {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+
+.command-output-msg {
+    margin-top: 0.1rem;
+    margin-bottom: 0.75rem;
+    color: rgba(0, 228, 255, 0.7);
+    white-space: pre-wrap;
+    padding-left: 0.5rem;
+    border-left: 1px solid rgba(0, 228, 255, 0.2);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.system-msg {
+    color: #ffbd2e;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    text-shadow: 0 0 5px rgba(255, 189, 46, 0.4);
+}
+
+.log-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    background-color: rgba(0, 228, 255, 0.8);
+    vertical-align: middle;
+    margin-left: 0px;
+    animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* CRT EFFECTS */
+.crt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.log-scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to bottom, rgba(0, 228, 255, 0), rgba(0, 228, 255, 0.2) 50%, rgba(0, 228, 255, 0));
+    opacity: 0.5;
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+    z-index: 21;
+}
+
+@keyframes scan {
+    0% { top: -10%; }
+    100% { top: 110%; }
 }

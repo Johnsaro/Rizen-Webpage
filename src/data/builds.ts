@@ -31,18 +31,18 @@ export const builds: Build[] = [
   {
     id: 'rizen-mobile',
     title: 'Rizen Mobile Protocol',
-    oneLineSummary: 'Cross-platform mobile system for real-world quest tracking.',
-    description: 'The primary operative engagement interface for real-world quest tracking.',
+    oneLineSummary: 'Cross-platform mobile system for real-world trial tracking.',
+    description: 'The primary cultivator engagement interface for real-world trial tracking.',
     tags: ['Flutter', 'Supabase', 'Dart'],
     status: 'Live',
     systemStatus: 'online',
     image: '/assets/builds/rizen-mobile.png',
     created_date: '2026-03-08',
     intel: {
-      brief: 'The official v1.0.0 release of the Rizen mobile operative interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI quest generation, and real-time synchronization.',
+      brief: 'The official v1.0.0 release of the Rizen mobile cultivator interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI trial generation, and real-time synchronization.',
       patchNotes: [
         'v1.0.0: Official production release. Stability pass and final asset integration.',
-        'v0.4.0: Achievement system implemented.',
+        'v0.4.0: Heavenly Merit system implemented.',
         'v0.3.5: Combat system Phase 1-4 completed.',
         'v0.3.0: Supabase migration for cloud profiles.'
       ],
@@ -55,9 +55,9 @@ export const builds: Build[] = [
     media: [
       { type: 'video', url: 'RIZEN_MOBILE_PROTOCOL_VIDEO', caption: 'RIZEN_MOBILE_PROTOCOL_BOOT' },
       { type: 'image', url: '/assets/builds/rizen-ss1.png', caption: 'Character Profile & Stats' },
-      { type: 'image', url: '/assets/builds/rizen-ss2.png', caption: 'Real-time Quest Board' },
+      { type: 'image', url: '/assets/builds/rizen-ss2.png', caption: 'Real-time Trial Board' },
       { type: 'image', url: '/assets/builds/rizen-ss3.png', caption: 'Neural Breach Combat Interface' },
-      { type: 'image', url: '/assets/builds/rizen-ss4.png', caption: 'Guild Arsenal & Loadout' }
+      { type: 'image', url: '/assets/builds/rizen-ss4.png', caption: 'Spiritual Artifacts & Loadout' }
     ],
     links: {
       download: 'https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf'
@@ -67,14 +67,14 @@ export const builds: Build[] = [
     id: 'pulse-agent',
     title: 'Pulse Agent 2.0',
     oneLineSummary: 'Autonomous desktop enforcer and health-monitoring agent for the Rizen ecosystem.',
-    description: 'A professional desktop utility that acts as a resident agent, enforcing operative health protocols and productivity focus through real-time analytics.',
+    description: 'A professional desktop utility that acts as a resident agent, enforcing cultivator health protocols and productivity focus through real-time analytics.',
     tags: ['Python', 'PyQt6', 'Win32 API', 'Automation'],
     status: 'Live',
     systemStatus: 'online',
     image: '/assets/builds/pulse-agent.png',
     created_date: '2026-03-04',
     intel: {
-      brief: 'Pulse Agent 2.0 is the desktop-side extension of the Rizen Mobile Protocol. It functions as an autonomous "Guardian" that monitors operative activity, enforces hydration/posture breaks, and provides a centralized Hub for productivity analytics.',
+      brief: 'Pulse Agent 2.0 is the desktop-side extension of the Rizen Mobile Protocol. It functions as an autonomous "Guardian" that monitors cultivator activity, enforces hydration/posture breaks, and provides a centralized Hub for productivity analytics.',
       patchNotes: [
         'v2.0: Full PyQt6 Dashboard Hub integration with Live Sync.',
         'v1.5: Activity Pulse engine for background monitoring.',
@@ -107,7 +107,7 @@ export const builds: Build[] = [
     image: '/assets/builds/phantom-peel.png',
     created_date: '2026-02-26',
     intel: {
-      brief: 'Phantom Peel functions as the forensics layer of the Rizen ecosystem. It is designed to perform deep-seated traces of Windows kernel drivers and spoofer artifacts, ensuring that operative hardware baselines remain untampered and authentic.',
+      brief: 'Phantom Peel functions as the forensics layer of the Rizen ecosystem. It is designed to perform deep-seated traces of Windows kernel drivers and spoofer artifacts, ensuring that cultivator hardware baselines remain untampered and authentic.',
       patchNotes: [
         'v1.1: Implemented Secure Boot and Test Signing state detection.',
         'v1.1: Added MAC OUI validation to flag locally administered addresses.',

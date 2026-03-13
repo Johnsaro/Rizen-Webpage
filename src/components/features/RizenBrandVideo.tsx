@@ -142,14 +142,14 @@ const RizenBrandVideo: React.FC = () => {
         <div className={`bv-scene ${currentScene.id === 'classes' ? 'active' : ''}`}>
           <div className="bv-scene-header">
             <span className="bv-scene-tag">01</span>
-            <TypeWriter text="CHOOSE YOUR DISCIPLINE" speed={30} delay={200} className="bv-scene-title" />
+            <TypeWriter text="CHOOSE YOUR DAO PATH" speed={30} delay={200} className="bv-scene-title" />
           </div>
           <div className="bv-class-grid">
             {[
-              { name: 'SECURITY ANALYST', icon: '🛡', color: '#00D2E0', desc: 'Hunt threats. Break systems. Defend everything.' },
-              { name: 'SOFTWARE ENGINEER', icon: '⚙', color: '#BC13FE', desc: 'Architect solutions. Ship products. Scale infinitely.' },
-              { name: 'WEB DEVELOPER', icon: '◈', color: '#39FF14', desc: 'Craft interfaces. Build experiences. Own the frontend.' },
-              { name: 'GAME DEVELOPER', icon: '▶', color: '#FF6B35', desc: 'Design worlds. Code engines. Create realities.' },
+              { name: 'SHADOW ARTS', icon: '🛡', color: '#00D2E0', desc: 'Hunt threats. Break systems. Defend everything.' },
+              { name: 'FORMATION MASTER', icon: '⚙', color: '#BC13FE', desc: 'Architect solutions. Ship products. Scale infinitely.' },
+              { name: 'ARTIFACT REFINER', icon: '◈', color: '#39FF14', desc: 'Craft powerful tools carried by millions.' },
+              { name: 'REALM ARCHITECT', icon: '▶', color: '#FF6B35', desc: 'Design worlds. Code engines. Create realities.' },
             ].map((cls, i) => (
               <div
                 key={cls.name}
@@ -294,23 +294,23 @@ const RizenBrandVideo: React.FC = () => {
               <span className="bv-terminal-dot red" />
               <span className="bv-terminal-dot yellow" />
               <span className="bv-terminal-dot green" />
-              <span className="bv-terminal-title">GUILD_MASTER_v4.0</span>
+              <span className="bv-terminal-title">THE_SYSTEM_v4.0</span>
             </div>
             <div className="bv-terminal-body">
               <div className="bv-terminal-line">
                 <span className="bv-prompt">&gt;</span> submit_quest --type=main --proof=screenshot.png
               </div>
               <div className="bv-terminal-line output">
-                <span className="bv-prompt sys">[GM]</span> Analyzing submission...
+                <span className="bv-prompt sys">[SYSTEM]</span> Analyzing submission...
               </div>
               <div className="bv-terminal-line output success">
-                <span className="bv-prompt sys">[GM]</span> QUEST VALIDATED. Rank B confirmed.
+                <span className="bv-prompt sys">[SYSTEM]</span> QUEST VALIDATED. Rank B confirmed.
               </div>
               <div className="bv-terminal-line output success">
-                <span className="bv-prompt sys">[GM]</span> +2,400 XP | +180 Rep awarded.
+                <span className="bv-prompt sys">[SYSTEM]</span> +2,400 XP | +180 Rep awarded.
               </div>
               <div className="bv-terminal-line output warning">
-                <span className="bv-prompt sys">[GM]</span> No shortcuts. No excuses. Only proof.
+                <span className="bv-prompt sys">[SYSTEM]</span> No shortcuts. No excuses. Only proof.
               </div>
             </div>
           </div>
@@ -322,7 +322,7 @@ const RizenBrandVideo: React.FC = () => {
             <h1 className="bv-cta-logo">
               <span className="bv-glitch" data-text="RIZEN">RIZEN</span>
             </h1>
-            <div className="bv-cta-tagline">RISE OR STAGNATE. THE CHOICE IS YOURS, RECRUIT.</div>
+            <div className="bv-cta-tagline">RISE OR STAGNATE. THE CHOICE IS YOURS, CULTIVATOR.</div>
             <div className="bv-cta-ecosystem">
               <span className="bv-eco-item" style={{ color: '#00D2E0' }}>MOBILE</span>
               <span className="bv-eco-divider">//</span>
@@ -333,8 +333,8 @@ const RizenBrandVideo: React.FC = () => {
               <span className="bv-eco-item" style={{ color: '#39FF14' }}>VAULT</span>
             </div>
             <div className="bv-cta-button-row">
-              <div className="bv-cta-btn primary">INITIALIZE PROTOCOL</div>
-              <div className="bv-cta-btn secondary">VIEW BUILDS</div>
+              <div className="bv-cta-btn primary">INITIALIZE ASCENSION</div>
+              <div className="bv-cta-btn secondary">VIEW THE SECT</div>
             </div>
             <div className="bv-cta-year">PROTOCOL ACTIVE // 2026</div>
           </div>

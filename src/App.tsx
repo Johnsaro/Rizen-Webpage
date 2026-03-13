@@ -30,10 +30,23 @@ import { demoPlayer } from './data/demoPlayer'
 import Dashboard from './components/dashboard/Dashboard'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
+import CommandCenter from './pages/CommandCenter'
+
+const DAO_PATHS = [
+  { name: 'SHADOW ARTS', roles: ['Red Team', 'Sec Admin', 'Cloud Sec'], desc: 'Master the unseen. Infiltrate barriers. Find every weakness.', icon: '🛡️' },
+  { name: 'FORMATION MASTER', roles: ['Backend', 'Systems', 'Architecture'], desc: 'Build the arrays and frameworks that hold worlds together.', icon: '⚙️' },
+  { name: 'ARTIFACT REFINER', roles: ['Frontend', 'Fullstack', 'UI/UX'], desc: 'Craft powerful tools carried by millions.', icon: '🌐' },
+  { name: 'REALM ARCHITECT', roles: ['Engine', 'Tech Art', 'Gameplay'], desc: 'Create entire worlds. Define their rules.', icon: '🎮' },
+  { name: 'BODY CULTIVATOR', roles: ['Fitness', 'Athletics', 'Health'], desc: 'Refine the physical vessel through relentless training.', icon: '💪' },
+  { name: 'SCRIPTURE KEEPER', roles: ['Academics', 'Study', 'Research'], desc: 'Absorb knowledge. Seek to comprehend the Dao.', icon: '📖' },
+  { name: 'INSCRIPTION MASTER', roles: ['Creative', 'Art', 'Music'], desc: 'Channel Qi into art, runes, sound, and creation.', icon: '🎨' }
+];
+
 function App() {
   const { user, signOut, loading: authLoading } = useAuth();
   const { profile } = usePlayerProfile();
   const isLoggedIn = !!user;
+  const isAdmin = profile?.is_admin === true;
 
   // Derive operative data from Supabase user metadata or fallback to level 1 defaults (W04)
   const operativeData = useMemo(() => {
@@ -42,8 +55,8 @@ function App() {
     return {
       ...demoPlayer,
       id: user.id,
-      name: profile?.name || user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'RECRUIT',
-      class: profile?.main_class || user.user_metadata?.class || 'Security Analyst',
+      name: profile?.name || user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'CULTIVATOR',
+      class: profile?.main_class || user.user_metadata?.class || 'Shadow Arts',
       level: profile?.level || 1,
       stats: {
         ...demoPlayer.stats,
@@ -62,15 +75,20 @@ function App() {
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event' | 'admin-console'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event' | 'admin-console' | 'command-center'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
-  const fullText = "Rise or Stagnate. The choice is yours, Recruit.";
+  const fullText = "Rise or Stagnate. The choice is yours, Cultivator.";
 
   const handleLoginSuccess = () => {
     setAuthModalOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Admin routing fork after login success (Task #1)
+    if (isAdmin) {
+      window.location.hash = '#/command-center';
+    }
   };
 
   const handleLogout = () => {
@@ -85,13 +103,18 @@ function App() {
       const hash = window.location.hash;
       
       // Fix state pollution (W03)
-      if (hash === '#/admin/bounty-console') {
+      if (hash === '#/admin/bounty-console' || hash.startsWith('#/command-center')) {
         if (!isLoggedIn) {
           window.location.hash = '#/';
           setCurrentView('home');
           return;
         }
-        setCurrentView('admin-console');
+        if (!isAdmin) {
+          window.location.hash = '#/';
+          setCurrentView('home');
+          return;
+        }
+        setCurrentView('command-center');
       } else if (hash.startsWith('#/builds/')) {
         const buildId = hash.replace('#/builds/', '');
         const found = builds.find(b => b.id === buildId);
@@ -140,7 +163,14 @@ function App() {
     handleHashChange(); // Initial check
 
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [isLoggedIn]); // Re-run when login state changes (W03)
+  }, [isLoggedIn, isAdmin]); // Re-run when login state or admin status changes
+
+  // Auto-redirect admin on home view (Task #1)
+  useEffect(() => {
+    if (isLoggedIn && isAdmin && currentView === 'home') {
+      window.location.hash = '#/command-center';
+    }
+  }, [isLoggedIn, isAdmin, currentView]);
 
   const openBuildDetail = (build: Build) => {
     window.location.hash = `#/builds/${build.id}`;
@@ -164,8 +194,8 @@ function App() {
   } = useCombatSim();
 
   const {
-    guildMasterLog,
-    setGuildMasterLog,
+    systemLog,
+    setSystemLog,
     inputValue,
     setInputValue,
     isProcessing,
@@ -185,13 +215,13 @@ function App() {
   }, []);
 
   const onInitiationAnswer = useCallback((answer: string) => {
-    setGuildMasterLog(prev => [...prev, { sender: 'user', text: answer }]);
+    setSystemLog(prev => [...prev, { sender: 'user', text: answer }]);
     handleAnswer(answer);
-  }, [handleAnswer, setGuildMasterLog]);
+  }, [handleAnswer, setSystemLog]);
 
   const initiateDiscovery = () => {
     startInitiation();
-    setGuildMasterLog([{ sender: 'system', text: 'INITIATING CLASS DISCOVERY PROTOCOL...' }]);
+    setSystemLog([{ sender: 'system', text: 'INITIATING DAO PATH DISCOVERY...' }]);
   };
 
   // 1. TYPING ANIMATION
@@ -219,10 +249,10 @@ function App() {
     if (step === 'IDLE') return;
 
     if (step === 'Q1') {
-      setGuildMasterLog(prev => {
+      setSystemLog(prev => {
         const hasIntro = prev.some(l => l.text.includes("IDENTIFY YOUR STRENGTHS"));
         if (!hasIntro) {
-          return [...prev, { sender: 'system', text: "INITIATION PROTOCOL ACTIVATED. IDENTIFY YOUR STRENGTHS." }];
+          return [...prev, { sender: 'system', text: "THE SYSTEM AWAKENS. IDENTIFY YOUR STRENGTHS, CULTIVATOR." }];
         }
         return prev;
       });
@@ -231,7 +261,7 @@ function App() {
     const currentQ = questions.find(q => q.id === step);
     if (currentQ) {
       const timer = setTimeout(() => {
-        setGuildMasterLog(prev => {
+        setSystemLog(prev => {
           const hasQ = prev.some(l => l.text === currentQ.text);
           if (hasQ) return prev;
           return [...prev, { sender: 'system', text: currentQ.text }];
@@ -242,31 +272,38 @@ function App() {
 
     if (step === 'COMPLETE' && assignedClass) {
       const timer = setTimeout(() => {
-        setGuildMasterLog(prev => {
-          const completionText = `INITIATION COMPLETE. CLASS ASSIGNED: ${assignedClass}. WELCOME TO THE GUILD.`;
+        setSystemLog(prev => {
+          const completionText = `BINDING COMPLETE. DAO PATH SEALED: ${assignedClass}. WELCOME TO THE SECT.`;
           const hasComplete = prev.some(l => l.text === completionText);
           if (hasComplete) return prev;
           return [...prev, {
             sender: 'system',
             text: completionText,
             rank: assignedClass.includes('RANK A') ? 'A' : assignedClass.includes('RANK B') ? 'B' : 'F',
-            xp: 150
+            qi: 150
           }];
         });
       }, 600);
       return () => clearTimeout(timer);
     }
-  }, [step, assignedClass, questions, setGuildMasterLog]);
+  }, [step, assignedClass, questions, setSystemLog]);
 
   // 2. 3D TILT EFFECT & SCROLL REVEAL
   useEffect(() => {
+    let rafId: number;
     const handleMouseMove = (e: MouseEvent) => {
       if (!phoneRef.current) return;
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      const x = (clientX - innerWidth / 2) / 25;
-      const y = (clientY - innerHeight / 2) / 25;
-      phoneRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+      
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+        const x = (clientX - innerWidth / 2) / 25;
+        const y = (clientY - innerHeight / 2) / 25;
+        if (phoneRef.current) {
+          phoneRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+        }
+      });
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -286,7 +323,7 @@ function App() {
       observer.disconnect();
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [scanned, currentView, isLoggedIn]);
+  }, [scanned, currentView, isLoggedIn, activeDiscipline]); // Added activeDiscipline
 
   const rizenMobile = builds.find(b => b.id === 'rizen-mobile') || builds[0];
 
@@ -308,35 +345,43 @@ function App() {
         ctaLink={`#/builds/${rizenMobile.id}`}
       />
 
-      <Navbar
-        setAuthModalOpen={setAuthModalOpen}
-        setIsHovering={() => { }}
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-        isLoggedIn={isLoggedIn}
-        user={operativeData}
-        onLogout={handleLogout}
-      />
+      {currentView !== 'command-center' && (
+        <Navbar
+          setAuthModalOpen={setAuthModalOpen}
+          setIsHovering={() => { }}
+          currentView={currentView}
+          setCurrentView={setCurrentView as any}
+          isLoggedIn={isLoggedIn}
+          user={operativeData}
+          onLogout={handleLogout}
+        />
+      )}
       <ParticlesBackground />
 
       {!scanned && <ScannerOverlay onScanComplete={onScanComplete} />}
 
-      {isLoggedIn && currentView === 'home' ? (
-        <Dashboard user={operativeData} />
+      {isLoggedIn && !isAdmin && currentView === 'home' ? (
+        <ProtectedRoute>
+          <Dashboard user={operativeData} />
+        </ProtectedRoute>
+      ) : currentView === 'command-center' ? (
+        <ProtectedRoute requireAdmin>
+          <CommandCenter />
+        </ProtectedRoute>
       ) : currentView === 'home' ? (
         <>
           {/* 1. HERO SECTION */}
           <section className="hero" id="hero">
             <div className="hero-content reveal">
               <h1 className="glitch-title" data-text="RIZEN">RIZEN</h1>
-              <div className="status-tag">GUILD PROTOCOL ACTIVE</div>
+              <div className="status-tag">CULTIVATION SYSTEM ONLINE</div>
               <p className="hero-subtitle-typed">{typedText}<span className="cursor">|</span></p>
               <p className="hero-description reveal">
-                Stop playing games that don't matter. Turn your actual career and health into a high-stakes RPG.
+                Stop playing games that don't matter. Turn your real life into a cultivation system.
               </p>
               <div className="cta-group reveal">
-                <button className="btn-primary" onClick={initiateDiscovery}>Claim Your Class</button>
-                <button className="btn-secondary" onClick={() => setCurrentView('builds')}>View The Board</button>
+                <button className="btn-primary" onClick={initiateDiscovery}>Choose Your Dao Path</button>
+                <button className="btn-secondary" onClick={() => setCurrentView('builds')}>View The Sect</button>
               </div>
               <a
                 className="hero-apk-link reveal"
@@ -354,8 +399,9 @@ function App() {
               </a>
 
               <Terminal
-                log={guildMasterLog}
+                log={systemLog}
                 inputValue={inputValue}
+
                 setInputValue={setInputValue}
                 isProcessing={isProcessing}
                 onReportTask={handleReportTask}
@@ -391,8 +437,8 @@ function App() {
           {/* 2. THE STAKES */}
           <section className="section-padding" id="stakes" >
             <div className="centered-header reveal">
-              <span className="status-tag">ACCOUNTABILITY_SYSTEM</span>
-              <h2 className="title-large">PROTOCOL ENFORCEMENT</h2>
+              <span className="status-tag">TRIBULATION_SYSTEM</span>
+              <h2 className="title-large">HEAVENLY TRIBULATION</h2>
               <p className="p-large">Rizen ensures consistency through a high-integrity enforcement engine. Stagnation is not just ignored—it is flagged.</p>
             </div>
 
@@ -404,10 +450,10 @@ function App() {
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
                   </div>
-                  <div className="meta-label" style={{ fontSize: '1rem' }}>ANOMALY_DETECTION</div>
+                  <div className="meta-label" style={{ fontSize: '1rem' }}>QI_DEVIATION_DETECTION</div>
                 </div>
-                <h3 style={{ color: 'var(--accent-cyan)', marginBottom: '1rem' }}>INTEGRITY MONITORING</h3>
-                <p>The protocol tracks your baseline activity. Significant drops in performance trigger a Stagnation Anomaly, requiring immediate validation.</p>
+                <h3 style={{ color: 'var(--accent-cyan)', marginBottom: '1rem' }}>DAO HEART MONITORING</h3>
+                <p>The protocol tracks your baseline activity. Significant drops in performance trigger a Qi Deviation, requiring immediate validation.</p>
               </div>
               <div className="threat-visual-card reveal tilt-card">
                 <div className="operative-meta meta-red" style={{ marginBottom: '1.5rem', justifyContent: 'center' }}>
@@ -416,10 +462,10 @@ function App() {
                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                     </svg>
                   </div>
-                  <div className="meta-label" style={{ fontSize: '1rem' }}>SYSTEM_PENALTIES</div>
+                  <div className="meta-label" style={{ fontSize: '1rem' }}>CULTIVATION DECAY</div>
                 </div>
-                <h3 style={{ color: 'var(--accent-crimson)', marginBottom: '1rem' }}>RESOURCE DEGRADATION</h3>
-                <p>Failure to meet real-world objectives results in virtual loadout degradation. Maintaining your arsenal requires proven mastery and discipline.</p>
+                <h3 style={{ color: 'var(--accent-crimson)', marginBottom: '1rem' }}>SPIRITUAL ARTIFACT DEGRADATION</h3>
+                <p>Failure to cultivate results in Qi Deviation. Your spiritual artifacts lose energy. The System does not forgive stagnation.</p>
               </div>
             </div>
           </section >
@@ -427,16 +473,11 @@ function App() {
           {/* 3. CLASS STAGGERED GRID */}
           <section className="section-padding" id="disciplines">
             <div className="centered-header reveal">
-              <h2 className="title-large">CHOOSE YOUR DISCIPLINE</h2>
+              <h2 className="title-large">CHOOSE YOUR DAO PATH</h2>
               <p className="p-large" style={{ marginTop: '1rem' }}>Select a path to view its starting stats and loadout.</p>
             </div>
             <div className="stagger-grid">
-              {[
-                { name: 'SECURITY', roles: ['Red Team', 'Sec Admin', 'Cloud Sec'], desc: 'Master offensive and defensive security. Identify vulnerabilities.', icon: '🛡️' },
-                { name: 'SOFTWARE ENG', roles: ['Backend', 'Systems', 'Architecture'], desc: 'Architect scalable systems. Build the backbone of the digital world.', icon: '⚙️' },
-                { name: 'WEB DEV', roles: ['Frontend', 'Fullstack', 'UI/UX'], desc: 'Craft intuitive user interfaces. Bridge the gap between human and machine.', icon: '🌐' },
-                { name: 'GAME DEV', roles: ['Engine', 'Tech Art', 'Gameplay'], desc: 'Build worlds. Manipulate physics and logic to create experiences.', icon: '🎮' }
-              ].map((cls, i) => (
+              {DAO_PATHS.map((cls, i) => (
                 <div
                   key={cls.name}
                   className={`class-card-modern reveal ${activeDiscipline === cls.name ? 'active' : ''}`}
@@ -450,11 +491,31 @@ function App() {
                     {cls.roles.map(role => <span key={role} className="class-role-tag">{role}</span>)}
                   </div>
                   <p className="class-desc">{cls.desc}</p>
-                  <div className="class-dots" style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '1.5rem' }}>
-                    <span style={{ width: '8px', height: '8px', background: activeDiscipline === cls.name ? 'var(--accent-cyan)' : 'var(--text-dim)', borderRadius: '50%', transition: 'background 0.3s' }}></span>
-                    <span style={{ width: '8px', height: '8px', background: activeDiscipline === cls.name ? 'var(--text-main)' : 'rgba(255,255,255,0.1)', borderRadius: '50%', transition: 'background 0.3s' }}></span>
-                    <span style={{ width: '8px', height: '8px', background: activeDiscipline === cls.name ? 'var(--accent-crimson)' : 'var(--text-dim)', borderRadius: '50%', transition: 'background 0.3s' }}></span>
-                  </div>
+                  
+                  {activeDiscipline === cls.name ? (
+                    <button 
+                      className="btn-primary" 
+                      style={{ 
+                        marginTop: '1.5rem', 
+                        width: '100%', 
+                        fontSize: '0.8rem', 
+                        padding: '0.6rem 1rem',
+                        animation: 'fade-in-up 0.3s forwards'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAuthModalOpen(true);
+                      }}
+                    >
+                      SELECT THIS PATH
+                    </button>
+                  ) : (
+                    <div className="class-dots" style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '1.5rem' }}>
+                      <span style={{ width: '8px', height: '8px', background: 'var(--text-dim)', borderRadius: '50%', opacity: 0.3 }}></span>
+                      <span style={{ width: '8px', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }}></span>
+                      <span style={{ width: '8px', height: '8px', background: 'var(--text-dim)', borderRadius: '50%', opacity: 0.3 }}></span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -463,9 +524,9 @@ function App() {
           {/* COMBAT SIMULATOR */}
           <section className="section-padding threat-bg" id="combat">
             <div className="centered-header reveal">
-              <span className="status-tag">INTERACTIVE_ASSESSMENT</span>
-              <h2 className="title-large">SKILL VERIFICATION ENGAGEMENT</h2>
-              <p className="p-large" style={{ marginTop: '1rem' }}>Rizen is not a passive tracker. To authorize level progression, you must neutralize the Stagnation Anomaly through technical validation.</p>
+              <span className="status-tag">TRIBULATION_CHAMBER</span>
+              <h2 className="title-large">ENLIGHTENMENT TRIAL</h2>
+              <p className="p-large" style={{ marginTop: '1rem' }}>Rizen is not a passive tracker. To authorize level progression, you must survive the Heavenly Tribulation through proven comprehension.</p>
             </div>
             <CombatSimulator
               state={combatState}
@@ -481,36 +542,35 @@ function App() {
             />
           </section>
 
-          {/* RANKINGS SECTION */}
-          <section className="section-padding" id="rankings" >
+          {/* PERSONAL RECORDS SECTION */}
+          <section className="section-padding" id="records" >
             <div className="centered-header reveal">
-              <h2 className="title-large">GLOBAL LEADERBOARD</h2>
-              <p className="p-large">The elite who refuse to stagnate. Updated in real-time.</p>
+              <h2 className="title-large">PERSONAL RECORDS</h2>
+              <p className="p-large">Your only rival is yesterday's version of yourself. Track your evolution.</p>
             </div>
-            <div className="rankings-container reveal">
+            <div className="rankings-container reveal" style={{ border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(2, 6, 23, 0.4)' }}>
               <div className="ranking-row header">
-                <div>#</div>
-                <div>OPERATIVE</div>
-                <div>CLASS</div>
-                <div style={{ textAlign: 'center' }}>VLD_RATE</div>
-                <div style={{ textAlign: 'right' }}>REP_TOTAL</div>
+                <div>TYPE</div>
+                <div>METRIC</div>
+                <div>PEAK CULTIVATION</div>
+                <div style={{ textAlign: 'center' }}>TREND</div>
+                <div style={{ textAlign: 'right' }}>DATE</div>
               </div>
               {[
-                { rank: 1, user: 'V0idWalker', level: 'S', class: 'Sec Admin', vld: '98.2%', rep: '94,200', active: true },
-                { rank: 2, user: 'NeoConstruct', level: 'S', class: 'Software Eng', vld: '96.5%', rep: '89,450' },
-                { rank: 3, user: 'GhostWire', level: 'A', class: 'Red Team', vld: '94.1%', rep: '82,100' },
-                { rank: 4, user: 'CypherPunk', level: 'A', class: 'Web Dev', vld: '91.8%', rep: '77,800' },
-                { rank: 54, user: 'You (Recruit)', level: 'F', class: 'Unassigned', vld: '12.4%', rep: '1,240', me: true }
-              ].map((op) => (
-                <div key={op.rank} className={`ranking-row ${op.rank <= 3 ? 'rank-top' : ''}`} style={op.me ? { background: 'rgba(255, 255, 255, 0.05)' } : {}}>
-                  <div className="rank-num">{op.rank}</div>
-                  <div className="rank-user">
-                    <span className={`mock-rank-${op.level.toLowerCase()}`}>{op.level}</span>
-                    {op.user}
+                { type: 'STRENGTH', metric: 'Daily Spirit Stones', best: '1,240 SS', trend: '▲ +15%', date: '2026-03-08' },
+                { type: 'DAO HEART', metric: 'Longest Streak', best: '12 Days', trend: '🔥', date: '2026-03-05' },
+                { type: 'COMPREHENSION', metric: 'Quests/Day', best: '7 Quests', trend: '▲ +2', date: '2026-03-05' },
+                { type: 'VITALITY', metric: 'Sleep Quality', best: '94%', trend: '▲ +4%', date: '2026-03-10' },
+                { type: 'SPIRITUAL SENSE', metric: 'Recall Accuracy', best: '98%', trend: '▲ +2%', date: '2026-03-11' }
+              ].map((rec, i) => (
+                <div key={i} className="ranking-row">
+                  <div className="rank-num">{rec.type}</div>
+                  <div className="rank-user" style={{ color: 'var(--text-primary)' }}>
+                    {rec.metric}
                   </div>
-                  <div><span className="rank-class" style={op.me ? { borderColor: 'var(--text-dim)', color: 'var(--text-dim)' } : {}}>{op.class}</span></div>
-                  <div style={{ textAlign: 'center', fontFamily: 'Fira Code', fontSize: '0.85rem' }}>{op.vld}</div>
-                  <div className="rank-rep" style={{ textAlign: 'right', color: op.active ? 'var(--accent-cyan)' : 'inherit' }}>{op.rep}</div>
+                  <div><span className="rank-class" style={{ fontSize: '0.85rem', padding: '0.3rem 0.8rem' }}>{rec.best}</span></div>
+                  <div style={{ textAlign: 'center', fontFamily: 'Fira Code', fontWeight: 600, fontSize: '0.9rem', color: 'var(--accent-emerald)' }}>{rec.trend}</div>
+                  <div className="rank-rep" style={{ textAlign: 'right', opacity: 0.6, fontSize: '0.85rem' }}>{rec.date}</div>
                 </div>
               ))}
             </div>
@@ -520,7 +580,7 @@ function App() {
           <section className="section-padding" id="arsenal" >
             <div className="centered-header reveal" style={{ marginBottom: '4rem' }}>
               <span className="status-tag">RESOURCE_REPOSITORY</span>
-              <h2 className="title-large" style={{ fontSize: '3rem' }}>THE OPERATIVE ARSENAL</h2>
+              <h2 className="title-large" style={{ fontSize: '3rem' }}>SPIRITUAL ARTIFACTS</h2>
               <p className="p-large" style={{ marginTop: '1rem' }}>Access specialized toolsets and performance enhancers by validating technical milestones.</p>
             </div>
             <div className="arsenal-bento">
@@ -528,7 +588,7 @@ function App() {
                 className="bento-item reveal large-arsenal tilt-card interactive-card"
                 onClick={() => setSelectedVaultItem(vaultContent['recon-script'])}
               >
-                <div className="weapon-tag">ACTIVE_UTILITY // RANK A</div>
+                <div className="weapon-tag">ACTIVE_ARTIFACT // RANK A</div>
                 <h3 style={{ fontSize: '1.8rem', margin: '0' }}>RECON_SUITE v4.2</h3>
                 <div className="skill-code-box">
                   <div className="code-header"><span></span><span></span><span></span></div>
@@ -541,15 +601,15 @@ function App() {
                 style={{ transitionDelay: '0.2s' }}
                 onClick={() => setSelectedVaultItem(vaultContent['focus-stim'])}
               >
-                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>PERFORMANCE_MODIFIER</div>
+                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>CULTIVATION_PILL</div>
                 <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>FOCUS_ENHANCER</h3>
-                <p style={{ color: 'var(--text-dim)' }}>Accelerates skill acquisition rate by 25% during active focus sessions.</p>
+                <p style={{ color: 'var(--text-dim)' }}>Accelerates Qi absorption rate by 25% during closed-door cultivation sessions.</p>
                 <div style={{ marginTop: '1rem', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}><div style={{ height: '100%', width: '40%', background: 'var(--accent-cyan)' }}></div></div>
               </div>
               <div className="bento-item reveal small-arsenal tilt-card" style={{ transitionDelay: '0.3s' }}>
-                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>STATUS_INDICATOR</div>
+                <div className="weapon-tag" style={{ color: 'var(--text-dim)' }}>HEAVENLY_MERIT</div>
                 <h3 style={{ fontSize: '1.3rem', margin: '0 0 1rem 0' }}>ELITE_BADGE</h3>
-                <p style={{ color: 'var(--text-dim)' }}>Visual validation of consecutive milestone completion. Reserved for high-integrity operatives.</p>
+                <p style={{ color: 'var(--text-dim)' }}>Visual validation of consecutive milestone completion. Reserved for cultivators of unwavering Dao Heart.</p>
                 <div style={{ marginTop: '1rem', fontSize: '2rem', textAlign: 'center' }}>🛡️</div>
               </div>
               <div
@@ -557,7 +617,7 @@ function App() {
                 style={{ transitionDelay: '0.4s' }}
                 onClick={() => setSelectedVaultItem(vaultContent['kernel-tamperer'])}
               >
-                <div className="weapon-tag">SPECIALIZATION_KEY // RANK S</div>
+                <div className="weapon-tag">DAO_KEY // RANK S</div>
                 <h3 style={{ fontSize: '1.8rem', margin: '0 0 1rem 0' }}>KERNEL_INTEGRITY_TOOL</h3>
                 <p style={{ color: 'var(--text-dim)' }}>Unlocks deep-system forensics and optimization paths. Requires Tier 3 proficiency in low-level architecture.</p>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
@@ -572,15 +632,15 @@ function App() {
           <section className="section-padding" id="manifesto">
             <div className="centered-header reveal">
               <span className="status-tag">CORE_PRINCIPLES</span>
-              <h2 className="title-large">THE OPERATIVE CODE</h2>
+              <h2 className="title-large">THE CULTIVATOR'S DAO</h2>
             </div>
             <div className="manifesto-box reveal">
               <div className="manifesto-glitch">01. CONTINUOUS ASCENSION</div>
               <div className="manifesto-text">Stagnation is the silent failure of potential. We commit to a path of daily, incremental growth, ensuring our technical and physical baselines are always moving upward.</div>
-              <div className="manifesto-glitch">02. DATA-DRIVEN ACCOUNTABILITY</div>
-              <div className="manifesto-text">Every action is a data point. We utilize the Rizen protocol to track, analyze, and optimize our progress, turning subjective effort into objective mastery.</div>
-              <div className="manifesto-glitch">03. COLLECTIVE INTELLIGENCE</div>
-              <div className="manifesto-text">We are an elite network of specialists. We share intel, optimize loadouts, and leverage our collective proficiency to secure the future of the operative ecosystem.</div>
+              <div className="manifesto-glitch">02. THE SYSTEM SEES ALL</div>
+              <div className="manifesto-text">Every action is a data point. The System tracks, analyzes, and judges your cultivation. Subjective effort means nothing — only proven mastery.</div>
+              <div className="manifesto-glitch">03. SECT WISDOM</div>
+              <div className="manifesto-text">We are cultivators on parallel paths. We share insights, refine techniques, and leverage collective comprehension to ascend.</div>
             </div>
           </section>
 
@@ -589,8 +649,8 @@ function App() {
             <div className="cta-content">
               <span className="status-tag">SYSTEM_READY</span>
               <h2 className="title-large" style={{ marginBottom: '1rem' }}>INITIALIZE YOUR ASCENSION</h2>
-              <p style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', marginBottom: '3rem', fontFamily: 'Space Grotesk' }}>The Rizen protocol is operational. Will you authorize your first deployment?</p>
-              <button className="btn-primary large-btn" onClick={() => setAuthModalOpen(true)}>Initialize Onboarding</button>
+              <p style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', marginBottom: '3rem', fontFamily: 'Space Grotesk' }}>The Rizen protocol is operational. Will you begin your cultivation?</p>
+              <button className="btn-primary large-btn" onClick={() => setAuthModalOpen(true)}>Bind The System</button>
             </div>
           </section >
         </>
@@ -613,12 +673,12 @@ function App() {
       <footer className="portal-footer">
         <div className="footer-logo">RIZEN</div>
         <div className="guild-status">
-          <span className="dot pulse"></span> SYSTEMS NOMINAL // GUILD OPEN
+          <span className="dot pulse"></span> SYSTEMS NOMINAL // SECT OPEN
         </div>
         <div className="footer-online-status">
           <div className="radar-circle"></div>
           <span className="online-number">1,204</span>
-          <span className="online-label">OPERATIVES ONLINE</span>
+          <span className="online-label">CULTIVATORS ONLINE</span>
         </div>
       </footer>
 

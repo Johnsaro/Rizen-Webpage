@@ -65,9 +65,9 @@ export interface DemoPlayer {
 }
 
 export const demoPlayer: DemoPlayer = {
-    id: 'usr_new_operative',
-    name: 'RECRUIT',
-    class: 'Security Analyst',
+    id: 'usr_new_cultivator',
+    name: 'CULTIVATOR',
+    class: 'Shadow Arts',
     level: 1,
     stats: {
         hp: {
@@ -89,7 +89,7 @@ export const demoPlayer: DemoPlayer = {
     quests: [
         {
             id: 'q_init_001',
-            title: 'Initialize Guild Connection',
+            title: 'Initialize Sect Connection',
             type: 'Main Quest',
             timeRemaining: 'No limit',
             rewardXP: 500,

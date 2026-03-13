@@ -23,7 +23,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
     // New: Report Mode
     const [reportMode, setReportMode] = useState<'basic' | 'technical'>('basic');
 
-    const MIN_XP_THRESHOLD = 500;
+    const MIN_QI_THRESHOLD = 500;
 
     // Form State
     const [formData, setFormData] = useState({
@@ -66,7 +66,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
         }
 
         const currentXP = profile?.current_xp || 0;
-        if (currentXP < MIN_XP_THRESHOLD) {
+        if (currentXP < MIN_QI_THRESHOLD) {
             setShowClearanceDenied(true);
             return;
         }
@@ -149,12 +149,12 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                             SYSTEM STATUS: BOUNTY IS LIVE
                         </div>
                         <h1 className="bb-title">Project Zero <span>// Bug Bounty</span></h1>
-                        <p className="bb-tagline">Identify vulnerabilities. Secure the protocol. Be rewarded in Reputation.</p>
+                        <p className="bb-tagline">Identify vulnerabilities. Secure the protocol. Be rewarded in Spirit Stones.</p>
                         
                         <div className="bb-stats-grid">
                             <div className="bb-stat-box">
                                 <span className="bb-stat-label">MAX BOUNTY</span>
-                                <span className="bb-stat-value">15,000 REP</span>
+                                <span className="bb-stat-value">15,000 Spirit Stones</span>
                             </div>
                             <div className="bb-stat-box">
                                 <span className="bb-stat-label">RESPONSE TIME</span>
@@ -162,7 +162,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                             </div>
                             <div className="bb-stat-box">
                                 <span className="bb-stat-label">TOTAL PAID</span>
-                                <span className="bb-stat-value">45,500 REP</span>
+                                <span className="bb-stat-value">45,500 Spirit Stones</span>
                             </div>
                         </div>
 
@@ -179,7 +179,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                 <div className="bb-operative-pill">
                                     <div className="bb-avatar">{(profile?.name || user?.email)?.charAt(0).toUpperCase()}</div>
                                     <div className="bb-op-info">
-                                        <span className="bb-op-label">ACTIVE OPERATIVE</span>
+                                        <span className="bb-op-label">ACTIVE CULTIVATOR</span>
                                         <span className="bb-op-name">{profile?.name || user?.email?.split('@')[0]}</span>
                                     </div>
                                 </div>
@@ -250,22 +250,22 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                     <div className="bb-reward-row critical">
                                         <div className="bb-reward-tier">SSS // CRITICAL</div>
                                         <div className="bb-reward-desc">RCE, Unauthorized Data Access, Wallet Exploits</div>
-                                        <div className="bb-reward-value">15,000 REP</div>
+                                        <div className="bb-reward-value">15,000 Spirit Stones</div>
                                     </div>
                                     <div className="bb-reward-row high">
                                         <div className="bb-reward-tier">S // HIGH</div>
-                                        <div className="bb-reward-desc">Broken Auth, Logical Exploits, XP Duplication</div>
-                                        <div className="bb-reward-value">7,500 REP</div>
+                                        <div className="bb-reward-desc">Broken Auth, Logical Exploits, Qi Duplication</div>
+                                        <div className="bb-reward-value">7,500 Spirit Stones</div>
                                     </div>
                                     <div className="bb-reward-row medium">
                                         <div className="bb-reward-tier">A // MEDIUM</div>
                                         <div className="bb-reward-desc">Major UI Bugs, Performance Issues, Minor Logic</div>
-                                        <div className="bb-reward-value">3,500 REP</div>
+                                        <div className="bb-reward-value">3,500 Spirit Stones</div>
                                     </div>
                                     <div className="bb-reward-row low">
                                         <div className="bb-reward-tier">B // LOW</div>
                                         <div className="bb-reward-desc">Visual Glitches, Typos, Small UI Inconsistencies</div>
-                                        <div className="bb-reward-value">1,500 REP</div>
+                                        <div className="bb-reward-value">1,500 Spirit Stones</div>
                                     </div>
                                 </div>
                             </section>
@@ -322,7 +322,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                         <div className={`bb-severity-pill ${sub.severity.toLowerCase()}`}>
                                             {sub.severity}
                                         </div>
-                                        <div className="bb-reward-pill">+{sub.score} REP</div>
+                                        <div className="bb-reward-pill">+{sub.score} Spirit Stones</div>
                                     </div>
                                 ))
                             ) : (
@@ -366,7 +366,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                     <div className="bb-sidebar-card elite">
                         <div className="bb-elite-badge">🏆</div>
                         <h3>Top Reward</h3>
-                        <p>The operative with the most critical findings will receive the <strong>"Exterminator Prime"</strong> legacy badge and 100,000 bonus REP at the end of the season.</p>
+                        <p>The cultivator with the most critical findings will receive the <strong>"Exterminator Prime"</strong> legacy badge and 100,000 bonus Spirit Stones at the end of the season.</p>
                     </div>
                 </aside>
             </div>
@@ -383,17 +383,17 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                         <div className="guard-label" style={{ color: 'var(--accent-amber)' }}>CLEARANCE DENIED</div>
                         <h2 className="guard-title">Insufficient Experience</h2>
                         <p className="guard-desc">
-                            Operatives must possess at least <strong style={{ color: '#fff' }}>500 XP</strong> to join the Sentinel Uplink.<br />
-                            Complete quests to increase your standing.
+                            Cultivators must possess at least <strong style={{ color: '#fff' }}>500 Qi</strong> to join the Sect Uplink.<br />
+                            Complete trials to increase your standing.
                         </p>
                         <div className="guard-code-block" style={{ background: 'rgba(245, 158, 11, 0.05)', color: 'var(--accent-amber)' }}>
                             <span className="guard-code-prefix">&gt;&nbsp;</span>
-                            xp_level.verify(<span className="guard-code-hl" style={{ color: 'var(--accent-amber)' }}>{profile?.current_xp || 0}</span>) → <span className="guard-code-status" style={{ color: 'var(--accent-crimson)' }}>FAILED</span>
+                            qi_level.verify(<span className="guard-code-hl" style={{ color: 'var(--accent-amber)' }}>{profile?.current_xp || 0}</span>) → <span className="guard-code-status" style={{ color: 'var(--accent-crimson)' }}>FAILED</span>
                         </div>
                         <div className="guard-actions">
                             <button className="guard-btn-ghost" onClick={() => setShowClearanceDenied(false)}>Return</button>
                             <button className="guard-btn-primary" style={{ background: 'var(--accent-amber)', color: '#000' }} onClick={() => window.location.hash = '#/'}>
-                                Go to Quest Board
+                                Go to Sect Board
                             </button>
                         </div>
                     </div>
@@ -410,7 +410,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                 <div>
                                     <div className="sm-badge">SECURE UPLINK</div>
                                     <h2 className="sm-title">Transmit Findings</h2>
-                                    <p className="sm-subtitle">Direct channel → Guild Security Core</p>
+                                    <p className="sm-subtitle">Direct channel → Sect Security Core</p>
                                 </div>
                             </div>
                             <button className="sm-close" onClick={() => setShowSubmitModal(false)}>✕</button>
@@ -441,7 +441,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                 <>
                                     <div className="sm-field">
                                         <label className="sm-label">Vulnerability Title</label>
-                                        <input className="sm-input" type="text" required placeholder="e.g. Broken Access Control on Guild Board" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+                                        <input className="sm-input" type="text" required placeholder="e.g. Broken Access Control on Sect Board" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
                                     </div>
                                     <div className="sm-row">
                                         <div className="sm-field">
@@ -478,7 +478,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     />
                                     <div className="sm-meta-hint" style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
-                                        🛡️ Sentinel Ghost-Script active. Browser and system metadata will be automatically attached to this report for the engineers.
+                                        🛡️ Sect Ghost-Script active. Browser and system metadata will be automatically attached to this report for the engineers.
                                     </div>
                                 </div>
                             )}

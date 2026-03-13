@@ -38,7 +38,7 @@ const PhantomMarketingVideo: React.FC = () => {
       {/* Step 2: The Interface */}
       <div className={`phantom-layer ${step === 2 ? 'active' : ''}`}>
         <div className="phantom-preview-frame">
-          <img src="/assets/builds/Phantom_peel.png" alt="Phantom Peel Interface" />
+          <img src="/assets/builds/Phantom_peel.png" alt="Phantom Peel Interface" loading="lazy" />
         </div>
         <p style={{ marginTop: '1rem', color: '#666', fontSize: '0.8rem', letterSpacing: '0.2rem' }}>
           SYSTEM_SCAN_IN_PROGRESS

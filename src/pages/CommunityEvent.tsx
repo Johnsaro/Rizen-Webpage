@@ -11,10 +11,10 @@ const CommunityEvent: React.FC = () => {
                     Rizen Community Challenge
                 </h1>
                 <h2 className="event-subtitle">
-                    Join the Guild. Track your progress. Rise above the rest.
+                    Join the Sect. Track your progress. Rise above the rest.
                 </h2>
                 <p className="event-description">
-                    Rizen turns life and productivity into a progression system. Participate in the community challenge and climb the leaderboard.
+                    Rizen turns life and productivity into a cultivation system. Participate in the community challenge and climb the leaderboard.
                 </p>
                 <div className="event-cta-group">
                     <button className="btn-primary">Join the Challenge</button>
@@ -25,26 +25,26 @@ const CommunityEvent: React.FC = () => {
             {/* REWARD SYSTEM SECTION */}
             <section className="event-section">
                 <div className="centered-header">
-                    <h2 className="title-large">REWARD TIERS</h2>
+                    <h2 className="title-large">CULTIVATION TIERS</h2>
                     <p className="p-large" style={{ marginTop: '1rem' }}>Ascension brings privileges. Prove your consistency.</p>
                 </div>
                 <div className="reward-grid">
                     <div className="reward-card tilt-card">
                         <div className="reward-icon mock-rank-f" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem', borderColor: 'var(--text-dim)' }}>
-                            REC
+                            MTL
                         </div>
-                        <h3>Recruit</h3>
+                        <h3>Mortal</h3>
                         <p className="tier-desc">Entry level participation in the challenge.</p>
                         <ul className="reward-list">
                             <li>Community recognition</li>
-                            <li>Guild Access</li>
+                            <li>Sect Access</li>
                         </ul>
                     </div>
                     <div className="reward-card tilt-card">
                         <div className="reward-icon mock-rank-a" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem' }}>
-                            OPR
+                            FND
                         </div>
-                        <h3>Operator</h3>
+                        <h3>Foundation</h3>
                         <p className="tier-desc">Consistent progress and active tracking.</p>
                         <ul className="reward-list">
                             <li>Leaderboard ranking visibility</li>
@@ -54,14 +54,14 @@ const CommunityEvent: React.FC = () => {
                     </div>
                     <div className="reward-card tilt-card elite">
                         <div className="reward-icon mock-rank-s" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem' }}>
-                            ELT
+                            NAS
                         </div>
-                        <h3>Elite</h3>
+                        <h3>Nascent Soul</h3>
                         <p className="tier-desc">Top 5% on the global leaderboard.</p>
                         <ul className="reward-list">
                             <li>Exclusive Discord Role</li>
                             <li>Custom Neon Cloak cosmetic</li>
-                            <li>Direct line to Guildmaster</li>
+                            <li>Direct line to The System</li>
                         </ul>
                     </div>
                 </div>
@@ -77,8 +77,8 @@ const CommunityEvent: React.FC = () => {
                     <div className="step-row">
                         <div className="step-number">01</div>
                         <div className="step-content">
-                            <h3>Join the Guild</h3>
-                            <p>Create a Rizen account and enter the community challenge. Select your initial class discipline.</p>
+                            <h3>Join the Sect</h3>
+                            <p>Create a Rizen account and enter the community challenge. Select your initial Dao Path.</p>
                         </div>
                     </div>
                     <div className="step-line"></div>
@@ -93,8 +93,8 @@ const CommunityEvent: React.FC = () => {
                     <div className="step-row">
                         <div className="step-number">03</div>
                         <div className="step-content">
-                            <h3>Earn Reputation</h3>
-                            <p>Your validated progress contributes to your overall Reputation Score (REP) and VLD rate.</p>
+                            <h3>Earn Spirit Stones</h3>
+                            <p>Your validated progress contributes to your overall Spirit Stones and VLD rate.</p>
                         </div>
                     </div>
                     <div className="step-line"></div>
@@ -117,15 +117,15 @@ const CommunityEvent: React.FC = () => {
                 <div className="rankings-container">
                     <div className="ranking-row header">
                         <div>#</div>
-                        <div>OPERATIVE</div>
-                        <div>CLASS</div>
+                        <div>CULTIVATOR</div>
+                        <div>DAO PATH</div>
                         <div style={{ textAlign: 'center' }}>VLD_RATE</div>
-                        <div style={{ textAlign: 'right' }}>REP_TOTAL</div>
+                        <div style={{ textAlign: 'right' }}>SPIRIT_STONES</div>
                     </div>
                     {[
-                        { rank: 1, user: 'V0idWalker', level: 'S', class: 'Sec Admin', vld: '98.2%', rep: '94,200', active: true },
-                        { rank: 2, user: 'NeoConstruct', level: 'S', class: 'Software Eng', vld: '96.5%', rep: '89,450' },
-                        { rank: 3, user: 'GhostWire', level: 'A', class: 'Red Team', vld: '94.1%', rep: '82,100' },
+                        { rank: 1, user: 'V0idWalker', level: 'S', class: 'Shadow Arts', vld: '98.2%', rep: '94,200', active: true },
+                        { rank: 2, user: 'NeoConstruct', level: 'S', class: 'Formation Master', vld: '96.5%', rep: '89,450' },
+                        { rank: 3, user: 'GhostWire', level: 'A', class: 'Shadow Arts', vld: '94.1%', rep: '82,100' },
                     ].map((op) => (
                         <div key={op.rank} className={`ranking-row rank-top`}>
                             <div className="rank-num">{op.rank}</div>
@@ -149,7 +149,7 @@ const CommunityEvent: React.FC = () => {
                 <div className="centered-header">
                     <h2 className="title-large" style={{ fontSize: '2.5rem' }}>COMMUNITY HUB</h2>
                     <p className="p-large" style={{ marginTop: '1rem', maxWidth: '500px' }}>
-                        The Guild operates together. Join discussions, share builds, and evolve with the community.
+                        The Sect operates together. Join discussions, share builds, and evolve with the community.
                     </p>
                 </div>
 

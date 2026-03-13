@@ -20,12 +20,12 @@ export const rizenDocs: DocSection[] = [
     id: 'getting-started',
     title: 'Getting Started',
     icon: '🚀',
-    summary: 'Initialize your operative profile and connect to the Guild network.',
+    summary: 'Initialize your cultivator profile and connect to the Sect network.',
     subsections: [
       {
         id: 'installation',
         title: 'Installation',
-        content: 'Rizen v1.0.0 is distributed as an Android APK. Operatives must download the package and side-load it onto their mobile device.',
+        content: 'Rizen v1.0.0 is distributed as an Android APK. Cultivators must download the package and side-load it onto their mobile device.',
         code: `// 1. Download the v1.0.0 APK from the Builds board\n// 2. Enable "Install Unknown Apps" in Android Settings\n// 3. Open the APK file to initiate installation`,
         language: 'bash',
         items: [
@@ -37,8 +37,8 @@ export const rizenDocs: DocSection[] = [
       {
         id: 'initialization',
         title: 'System Initialization',
-        content: 'Upon first launch, you must authorize the application via the Guild Secure Uplink (Supabase Auth).',
-        code: `Step 1: Launch Rizen App\nStep 2: Select "INITIALIZE PROFILE"\nStep 3: Enter operative credentials`,
+        content: 'Upon first launch, you must authorize the application via the Sect Secure Uplink (Supabase Auth).',
+        code: `Step 1: Launch Rizen App\nStep 2: Select "INITIALIZE PROFILE"\nStep 3: Enter cultivator credentials`,
         language: 'bash'
       }
     ]
@@ -57,7 +57,7 @@ export const rizenDocs: DocSection[] = [
       {
         id: 'component-tree',
         title: 'Component Structure',
-        content: 'The application is divided into functional modules: Dashboard (Stats/Rank), Arsenal (Inventory/Weapons), Guild (Leaderboard/Events), and Core (Settings/Auth).'
+        content: 'The application is divided into functional modules: Dashboard (Stats/Rank), Spiritual Artifacts (Inventory/Artifacts), Sect (Leaderboard/Events), and Core (Settings/Auth).'
       }
     ]
   },
@@ -65,7 +65,7 @@ export const rizenDocs: DocSection[] = [
     id: 'tech-stack',
     title: 'Tech Stack',
     icon: '⚡',
-    summary: 'The bleeding-edge technologies powering the Guild.',
+    summary: 'The bleeding-edge technologies powering the Sect.',
     subsections: [
       {
         id: 'frontend',
@@ -113,33 +113,33 @@ try {
       {
         id: 'conflict-resolution',
         title: 'Conflict Resolution',
-        content: 'When multiple devices modify the same operative profile, Rizen uses vector clocks and deterministic conflict resolution prioritizing the most difficult earned achievements.'
+        content: 'When multiple devices modify the same cultivator profile, Rizen uses vector clocks and deterministic conflict resolution prioritizing the most difficult earned achievements.'
       }
     ]
   },
   {
     id: 'ai-quest-gen',
-    title: 'AI Quest Generation',
+    title: 'AI Trial Generation',
     icon: '🤖',
-    summary: 'The AI-driven administrative layer that manages the Guild Board and quest verification.',
+    summary: 'The AI-driven administrative layer that manages the Sect Board and trial verification.',
     subsections: [
       {
         id: 'dynamic-quests',
-        title: 'Dynamic Quest Generation',
-        content: 'The Guild Master (GM) utilizes a specialized system prompt to validate real-world tasks and convert them into balanced in-game quests with appropriate XP weight and deadlines.',
+        title: 'Dynamic Trial Generation',
+        content: 'The System AI utilizes a specialized system prompt to validate real-world tasks and convert them into balanced in-game trials with appropriate Qi weight and deadlines.',
         items: [
           'Task Validation: Prevents low-effort or duplicate entries.',
-          'Context Awareness: Recognizes operative class and difficulty level.',
+          'Context Awareness: Recognizes cultivator path and difficulty level.',
           'Verification Protocol: Requires proof of completion for high-rank rewards.'
         ]
       },
       {
         id: 'llm-integration',
         title: 'LLM Integration',
-        content: 'We leverage OpenAI GPT-4o for dynamic parsing of unstructured productivity logs into structured Quest objects.',
-        code: `const quest = await GuildMasterAI.parseLog(userEntry, context);
-if (quest.confidenceScore > 0.85) {
-  await dispatchQuest(quest);
+        content: 'We leverage OpenAI GPT-4o for dynamic parsing of unstructured productivity logs into structured Trial objects.',
+        code: `const trial = await SystemAI.parseLog(userEntry, context);
+if (trial.confidenceScore > 0.85) {
+  await dispatchTrial(trial);
 }`,
         language: 'typescript'
       }
@@ -149,12 +149,12 @@ if (quest.confidenceScore > 0.85) {
     id: 'security-model',
     title: 'Security Model (RLS)',
     icon: '🛡️',
-    summary: 'Protecting operative data with Row Level Security.',
+    summary: 'Protecting cultivator data with Row Level Security.',
     subsections: [
       {
         id: 'rls-policies',
         title: 'Row Level Security',
-        content: 'All database access is gated by strict RLS policies ensuring operatives can only mutate their own data while allowing read-only access for global leaderboards.',
+        content: 'All database access is gated by strict RLS policies ensuring cultivators can only mutate their own data while allowing read-only access for global leaderboards.',
         code: `create policy "Users can update own profile"
   on profiles for update
   using ( auth.uid() = id );`,
@@ -164,24 +164,24 @@ if (quest.confidenceScore > 0.85) {
   },
   {
     id: 'progression-system',
-    title: 'Progression (XP/REP/VLD)',
+    title: 'Progression (Qi/Spirit Stones/VLD)',
     icon: '📈',
-    summary: 'Tracking growth through XP, reputation, and meaningful milestones.',
+    summary: 'Tracking growth through Qi, spirit stones, and meaningful milestones.',
     subsections: [
       {
         id: 'metrics-defined',
         title: 'Core Metrics',
-        content: 'Operatives are measured on three primary vertical axes.',
+        content: 'Cultivators are measured on three primary vertical axes.',
         items: [
-          'XP: Class-specific experience points used to level up and unlock abilities.',
-          'REP (Reputation): Guild-wide currency earned through consistency.',
-          'VLD (Validation Rate): The percentage of quests successfully verified by the GM.'
+          'Qi: Path-specific experience points used to rank up and unlock abilities.',
+          'Spirit Stones: Sect-wide currency earned through consistency.',
+          'VLD (Validation Rate): The percentage of trials successfully verified by the System.'
         ]
       },
       {
         id: 'achievements',
-        title: 'Achievement Catalog',
-        content: 'A system of 18 unique achievements across four categories: Consistency, Combat, Quests, and Knowledge.'
+        title: 'Heavenly Merit Catalog',
+        content: 'A system of 18 unique merits across four categories: Consistency, Combat, Trials, and Knowledge.'
       }
     ]
   },
@@ -194,7 +194,7 @@ if (quest.confidenceScore > 0.85) {
       {
         id: 'sync-issues',
         title: 'State Desynchronization',
-        content: 'If your local state falls out of sync with the Guild servers, navigate to Settings > Network and initiate a "Force State Reconcile".'
+        content: 'If your local state falls out of sync with the Sect servers, navigate to Settings > Network and initiate a "Force State Reconcile".'
       },
       {
         id: 'auth-failures',

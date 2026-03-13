@@ -3,7 +3,7 @@
 // Common achievement list based on app's 18-badge system
 const ALL_ACHIEVEMENTS = [
     { id: 'first_step', name: 'First Step', icon: '👣' },
-    { id: 'quest_taker', name: 'Quest Taker', icon: '📜' },
+    { id: 'trial_seeker', name: 'Trial Seeker', icon: '📜' },
     { id: 'first_blood', name: 'First Blood', icon: '⚔️' },
     { id: 'early_bird', name: 'Early Bird', icon: '🌅' },
     { id: 'night_owl', name: 'Night Owl', icon: '🦉' },
@@ -11,7 +11,7 @@ const ALL_ACHIEVEMENTS = [
     { id: 'sentinel', name: 'Sentinel', icon: '🛡️' },
     { id: 'data_miner', name: 'Data Miner', icon: '💎' },
     { id: 'alpha_tester', name: 'Alpha Tester', icon: 'λ' },
-    { id: 'consistency_king', name: 'Consistency King', icon: '👑' },
+    { id: 'dao_heart_master', name: 'Dao Heart Master', icon: '👑' },
 ];
 
 const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 0.6 }: { achievements?: Record<string, string>, featuredAchievement?: string, delay?: number }) => {
@@ -31,7 +31,7 @@ const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 
     return (
         <div id="dashboard-achievements" className="dash-card achievements-card fade-in-up" style={{ animationDelay: `${delay}s` }}>
             <div className="card-header">
-                <h3 className="card-title">MEDAL_RACK</h3>
+                <h3 className="card-title">HEAVENLY_MERITS</h3>
                 <div className="header-status">{unlockedCount}/{totalCount}_UNLOCKED</div>
             </div>
 
@@ -40,7 +40,7 @@ const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 
                     <div className="feat-icon">{featured.icon}</div>
                     <div className="feat-info">
                         <div className="feat-title">{featured.name.toUpperCase()}</div>
-                        <div className="feat-desc">Featured Operative Achievement</div>
+                        <div className="feat-desc">Featured Cultivator Merit</div>
                     </div>
                 </div>
             )}
@@ -53,7 +53,7 @@ const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 
                         </div>
                     ) : (
                         <div key={item.id} className="ach-badge locked premium-locked" title="???" style={{ animationDelay: `${delay + 0.1 + (index * 0.05)}s` }}>
-                            {index === 2 ? <span style={{ fontSize: '0.6rem', lineHeight: 1, textAlign: 'center', opacity: 0.5 }}>LVL<br />20</span> : '?'}
+                            {index === 2 ? <span style={{ fontSize: '0.6rem', lineHeight: 1, textAlign: 'center', opacity: 0.5 }}>RLM<br />20</span> : '?'}
                         </div>
                     )
                 ))}

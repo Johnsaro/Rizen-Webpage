@@ -29,7 +29,7 @@ const ArsenalGrid = ({ inventory = {}, equippedWeapon = '', delay = 0.3 }: { inv
     return (
         <div id="dashboard-arsenal" className="dash-card arsenal-card fade-in-up" style={{ animationDelay: `${delay}s` }}>
             <div className="card-header">
-                <h3 className="card-title">GUILD_ARSENAL</h3>
+                <h3 className="card-title">SPIRITUAL_ARTIFACTS</h3>
                 <div className="header-action" onClick={() => window.location.hash = '#/arsenal'}>VIEW_FULL_VAULT</div>
             </div>
 
@@ -42,14 +42,14 @@ const ArsenalGrid = ({ inventory = {}, equippedWeapon = '', delay = 0.3 }: { inv
                                 <div className="item-icon-placeholder">{equippedItem.icon}</div>
                                 <div className="item-info">
                                     <div className="item-name">{equippedItem.name}</div>
-                                    <div className="equipped-badge">PRIMARY_WEAPON</div>
+                                    <div className="equipped-badge">PRIMARY_ARTIFACT</div>
                                 </div>
                             </div>
                         ) : (
                             <div className="equipped-item locked" style={{ opacity: 0.5, borderStyle: 'dashed' }}>
                                 <div className="item-icon-placeholder">🚫</div>
                                 <div className="item-info">
-                                    <div className="item-name">NO_WEAPON_EQUIPPED</div>
+                                    <div className="item-name">NO_ARTIFACT_EQUIPPED</div>
                                     <div className="equipped-badge">EMPTY_SLOT</div>
                                 </div>
                             </div>
@@ -93,11 +93,11 @@ const ArsenalGrid = ({ inventory = {}, equippedWeapon = '', delay = 0.3 }: { inv
                 </div>
 
                 <div className="arsenal-section">
-                    <div className="section-label">ACTIVE_CONSUMABLES</div>
+                    <div className="section-label">ACTIVE_PILLS</div>
                     <div className="consumables-row">
                         <div className="consumable-item active-consumable premium-glow-gold">
                             <span className="gold-text">⚡</span>
-                            <span className="gold-text" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>FOCUS_BOOST_ACTIVE</span>
+                            <span className="gold-text" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>FOCUS_ELIXIR_ACTIVE</span>
                             <div className="consumable-active-badge">2H_REMAINING</div>
                         </div>
                     </div>

@@ -15,13 +15,13 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
   const [status, setStatus] = useState<'idle' | 'authenticating' | 'granted' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    class: 'Security Analyst'
+    class: 'Shadow Arts'
   });
 
   // Clear timeouts on unmount (W09)
@@ -39,7 +39,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
           name: '',
           email: '',
           password: '',
-          class: 'Security Analyst'
+          class: 'Shadow Arts'
         });
         setErrorMessage('');
         setStatus('idle');
@@ -159,7 +159,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
           name: '',
           email: '',
           password: '',
-          class: 'Security Analyst'
+          class: 'Shadow Arts'
         });
 
         if (onLoginSuccess) {
@@ -281,10 +281,13 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
                 value={formData.class}
                 onChange={(e) => setFormData({ ...formData, class: e.target.value })}
               >
-                <option value="Security Analyst">Security Analyst</option>
-                <option value="Software Engineer">Software Engineer</option>
-                <option value="Web Developer">Web Developer</option>
-                <option value="Game Developer">Game Developer</option>
+                <option value="Shadow Arts">Shadow Arts</option>
+                <option value="Formation Master">Formation Master</option>
+                <option value="Artifact Refiner">Artifact Refiner</option>
+                <option value="Realm Architect">Realm Architect</option>
+                <option value="Body Cultivator">Body Cultivator</option>
+                <option value="Scripture Keeper">Scripture Keeper</option>
+                <option value="Inscription Master">Inscription Master</option>
               </select>
               <div className="input-helper">INITIAL DISCIPLINE PREFERENCE</div>
             </div>

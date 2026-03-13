@@ -14,6 +14,9 @@ export interface PlayerProfile {
   max_hp: number;
   onboarding_complete: boolean;
   is_admin?: boolean;
+  account_status?: 'active' | 'banned' | 'suspended';
+  ban_reason?: string;
+  suspended_until?: string;
   achievements?: Record<string, string>; // ID: Date unlocked
   featured_achievement?: string;
   class_xp?: Record<string, number>;
@@ -39,7 +42,6 @@ export interface Quest {
 
 export interface PlayerNotification {
   id: string;
-  title: string;
   message: string;
   type: string;
   created_at: string;

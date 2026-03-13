@@ -44,8 +44,8 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
     const sections = isLoggedIn
-      ? ['dashboard-home', 'dashboard-quests', 'dashboard-arsenal', 'dashboard-combat', 'dashboard-achievements', 'dashboard-leaderboard']
-      : ['hero', 'stakes', 'disciplines', 'rankings', 'arsenal', 'manifesto'];
+      ? ['dashboard-home', 'dashboard-quests', 'dashboard-arsenal', 'dashboard-combat', 'dashboard-achievements', 'dashboard-records']
+      : ['hero', 'stakes', 'disciplines', 'records', 'arsenal', 'manifesto'];
 
     sections.forEach(id => {
       const el = document.getElementById(id);
@@ -164,10 +164,10 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
           >COMMUNITY</a>
 
           <a
-            href={isLoggedIn ? "#dashboard-leaderboard" : "#rankings"}
-            className={`nav-item ${currentView === 'home' && (activeSection === 'rankings' || activeSection === 'dashboard-leaderboard') ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-leaderboard' : 'rankings')}
-          >LEADERBOARD</a>
+            href={isLoggedIn ? "#dashboard-records" : "#records"}
+            className={`nav-item ${currentView === 'home' && (activeSection === 'records' || activeSection === 'dashboard-records') ? 'active' : ''}`}
+            onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-records' : 'records')}
+          >PERSONAL RECORDS</a>
 
           {!isLoggedIn && (
             <a
@@ -194,7 +194,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
                     <svg viewBox="0 0 24 24" width="12" height="12" stroke="#000" strokeWidth="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                   </div>
                   <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.75rem', letterSpacing: '1px', color: 'var(--text-dim)', opacity: 0.8 }}>
-                    OPERATIVE: <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.85rem' }}>{((user as Record<string, unknown>)?.name as string) || 'SHADOW-7'}</span>
+                    CULTIVATOR: <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.85rem' }}>{((user as Record<string, unknown>)?.name as string) || 'SHADOW-7'}</span>
                   </span>
                 </div>
                 <button

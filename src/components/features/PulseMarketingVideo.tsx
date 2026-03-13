@@ -18,7 +18,7 @@ const PulseMarketingVideo: React.FC = () => {
 
       {/* Step 0: The Identity */}
       <div className={`pulse-layer ${step === 0 ? 'active' : ''}`}>
-        <img src="/assets/builds/bot_agent-removebg-preview.png" alt="Pulse Agent" className="pulse-agent-mascot" />
+        <img src="/assets/builds/bot_agent-removebg-preview.png" alt="Pulse Agent" className="pulse-agent-mascot" loading="lazy" />
         <h2 className="pulse-agent-title">PULSE AGENT</h2>
         <p className="pulse-agent-tagline">Autonomous Desktop Guardian</p>
       </div>
@@ -38,7 +38,7 @@ const PulseMarketingVideo: React.FC = () => {
       <div className={`pulse-layer ${step === 2 ? 'active' : ''}`}>
         <h3 className="pulse-agent-title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>PULSE HUB: LIVE ANALYTICS</h3>
         <div className="pulse-agent-preview">
-          <img src="/assets/builds/pulse-app-dashboard.png" alt="Pulse Dashboard" />
+          <img src="/assets/builds/pulse-app-dashboard.png" alt="Pulse Dashboard" loading="lazy" />
         </div>
       </div>
 

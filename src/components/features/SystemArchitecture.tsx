@@ -2,9 +2,9 @@ import React from 'react';
 import './SystemArchitecture.css';
 
 const orbitNodes = [
-    { id: 'guild', title: 'Guild Master', desc: 'AI quest generator', tag: 'CORE', path: '#/community/hub', icon: '🤖', angle: 0 },
+    { id: 'guild', title: 'The System', desc: 'Sentient cultivation guide', tag: 'CORE', path: '#/community/hub', icon: '🤖', angle: 0 },
     { id: 'combat', title: 'Combat Engine', desc: 'Knowledge-based combat system', tag: 'SIM', path: '#combat', icon: '⚔️', angle: 60 },
-    { id: 'achievements', title: 'Achievement Matrix', desc: 'Badges and progression tracking', tag: 'PROG', path: '#rankings', icon: '🏆', angle: 120 },
+    { id: 'achievements', title: 'Achievement Matrix', desc: 'Badges and progression tracking', tag: 'PROG', path: '#records', icon: '🏆', angle: 120 },
     { id: 'economy', title: 'Economy System', desc: 'Consumables, buffs, and currency', tag: 'SYS', path: '#arsenal', icon: '💎', angle: 180 },
     { id: 'vault', title: 'Knowledge Vault', desc: 'Flashcards and learning system', tag: 'DATA', path: '#/community/docs', icon: '📚', angle: 240 },
     { id: 'events', title: 'Event Network', desc: 'Community challenges & bug bounties', tag: 'NET', path: '#/community/events', icon: '🌐', angle: 300 }

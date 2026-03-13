@@ -29,7 +29,7 @@ const RizenMarketingVideo: React.FC = () => {
       <div className={`video-layer ${step === 1 ? 'active' : ''}`}>
         <div className="boot-text">CHARACTER_SYNC: [OPERATIVE_DATA]</div>
         <div className="app-screen">
-          <img src="/assets/builds/rizen-ss1.png" alt="Profile" />
+          <img src="/assets/builds/rizen-ss1.png" alt="Profile" loading="lazy" />
           <div className="scan-line"></div>
         </div>
       </div>
@@ -38,7 +38,7 @@ const RizenMarketingVideo: React.FC = () => {
       <div className={`video-layer ${step === 2 ? 'active' : ''}`}>
         <div className="boot-text">FETCHING_QUEST_BOARD...</div>
         <div className="app-screen">
-          <img src="/assets/builds/rizen-ss2.png" alt="Quests" />
+          <img src="/assets/builds/rizen-ss2.png" alt="Quests" loading="lazy" />
           <div className="scan-line"></div>
         </div>
       </div>
@@ -47,14 +47,14 @@ const RizenMarketingVideo: React.FC = () => {
       <div className={`video-layer ${step === 3 ? 'active' : ''}`}>
         <div className="boot-text alert-red">NEURAL_BREACH_DETECTED!</div>
         <div className="app-screen">
-          <img src="/assets/builds/rizen-ss3.png" alt="Combat" />
+          <img src="/assets/builds/rizen-ss3.png" alt="Combat" loading="lazy" />
           <div className="scan-line" style={{ background: '#ff0055', boxShadow: '0 0 10px #ff0055' }}></div>
         </div>
       </div>
 
       {/* Step 4: Finale */}
       <div className={`video-layer ${step === 4 ? 'active' : ''}`}>
-        <img src="/assets/builds/rizen-logo.png" alt="Rizen Logo" className="final-logo" />
+        <img src="/assets/builds/rizen-logo.png" alt="Rizen Logo" className="final-logo" loading="lazy" />
         <div className="boot-text" style={{ marginTop: '2rem' }}>RIZEN MOBILE PROTOCOL</div>
         <div className="protocol-status">[PROTOCOL_STATUS: ACTIVE]</div>
       </div>

@@ -26,10 +26,10 @@ const Builds: React.FC<BuildsProps> = ({ onViewBuild }) => {
       {/* 1. HERO SECTION */}
       <section className="builds-hero">
         <div className="hero-content reveal visible" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className="status-tag pulse-border">OPERATIONS LOG</div>
+          <div className="status-tag pulse-border">CULTIVATION LOG</div>
           <h1 className="glitch-title" data-text="BUILDS">BUILDS</h1>
           <p className="hero-description reveal visible">
-            Operations shipped by the Guild. Real work. Real progression.
+            Artifacts forged by the Sect. Real cultivation. Real progression.
           </p>
         </div>
       </section>
