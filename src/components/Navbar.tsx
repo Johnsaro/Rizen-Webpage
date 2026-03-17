@@ -9,9 +9,41 @@ interface NavbarProps {
   isLoggedIn: boolean;
   user: unknown;
   onLogout: () => void;
+  navigateTo: (hash: string) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout }) => {
+const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
+  const [displayText, setDisplayText] = useState(text);
+  const [isScrambling, setIsScrambling] = useState(false);
+  const chars = "0123456789ABCDEF!@#$%^&*()_+";
+
+  const scramble = () => {
+    if (isScrambling) return;
+    setIsScrambling(true);
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(prev => 
+        prev.split("").map((char, index) => {
+          if (index < iteration) return text[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join("")
+      );
+      if (iteration >= text.length) {
+        clearInterval(interval);
+        setIsScrambling(false);
+      }
+      iteration += 1 / 3;
+    }, 30);
+  };
+
+  return (
+    <span onMouseEnter={scramble} onClick={scramble} style={{ minWidth: `${text.length}ch`, display: 'inline-block' }}>
+      {displayText}
+    </span>
+  );
+};
+
+const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout, navigateTo }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -19,12 +51,14 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
 
-      // Calculate scroll progress
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+        // Calculate scroll progress
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollProgress(progress);
+      });
     };
 
     // Intersection Observer for active sections
@@ -62,62 +96,31 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-
-    if (currentView !== 'home') {
-      // Set the hash to go "home" and target the section
-      window.location.hash = `#/${targetId}`;
-      setTimeout(() => {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    } else {
-      // Just update hash if already on home, or scroll directly
-      window.location.hash = `#/${targetId}`;
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    }
+    navigateTo(`#${targetId}`);
   };
 
   const handleBuildsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    window.location.hash = '#/builds';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateTo('#/builds');
   };
 
   const handleCommunityClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    window.location.hash = '#/community';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateTo('#/community');
   };
 
   const handleLogoClick = () => {
-    window.location.hash = '#/';
     if (isLoggedIn) {
-      setTimeout(() => {
-        const targetElement = document.getElementById('dashboard-home');
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 100);
+      navigateTo('#dashboard-home');
     } else {
+      navigateTo('#/');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleLogout = () => {
-    setCurrentView('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     onLogout();
   };
 
@@ -132,9 +135,14 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
       </div>
 
       <div className="navbar-container">
-        <div className="navbar-logo" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
-          RIZEN
-        </div>
+        <button 
+          className="navbar-logo" 
+          onClick={handleLogoClick} 
+          style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'inherit', cursor: 'pointer' }}
+          aria-label="Rizen Home"
+        >
+          <ScrambledText text="RIZEN" active={false} />
+        </button>
 
         <div className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}>
           {!isLoggedIn && (
@@ -142,39 +150,39 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
               href="#hero"
               className={`nav-item ${currentView === 'home' && activeSection === 'hero' ? 'active' : ''}`}
               onClick={(e) => scrollToSection(e, 'hero')}
-            >MISSION</a>
+            ><ScrambledText text="MISSION" active={currentView === 'home' && activeSection === 'hero'} /></a>
           )}
 
           <a
             href={isLoggedIn ? "#dashboard-arsenal" : "#arsenal"}
             className={`nav-item ${currentView === 'home' && (activeSection === 'arsenal' || activeSection === 'dashboard-arsenal') ? 'active' : ''}`}
             onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-arsenal' : 'arsenal')}
-          >ARSENAL</a>
+          ><ScrambledText text="ARSENAL" active={currentView === 'home' && (activeSection === 'arsenal' || activeSection === 'dashboard-arsenal')} /></a>
 
           <a
             href="#/builds"
             className={`nav-item ${currentView === 'builds' ? 'active' : ''}`}
             onClick={handleBuildsClick}
-          >BUILDS</a>
+          ><ScrambledText text="BUILDS" active={currentView === 'builds'} /></a>
 
           <a
             href="#/community"
             className={`nav-item ${currentView === 'community' ? 'active' : ''}`}
             onClick={handleCommunityClick}
-          >COMMUNITY</a>
+          ><ScrambledText text="COMMUNITY" active={currentView === 'community'} /></a>
 
           <a
             href={isLoggedIn ? "#dashboard-records" : "#records"}
             className={`nav-item ${currentView === 'home' && (activeSection === 'records' || activeSection === 'dashboard-records') ? 'active' : ''}`}
             onClick={(e) => scrollToSection(e, isLoggedIn ? 'dashboard-records' : 'records')}
-          >PERSONAL RECORDS</a>
+          ><ScrambledText text="PERSONAL RECORDS" active={currentView === 'home' && (activeSection === 'records' || activeSection === 'dashboard-records')} /></a>
 
           {!isLoggedIn && (
             <a
               href="#manifesto"
               className={`nav-item ${currentView === 'home' && activeSection === 'manifesto' ? 'active' : ''}`}
               onClick={(e) => scrollToSection(e, 'manifesto')}
-            >MANIFESTO</a>
+            ><ScrambledText text="MANIFESTO" active={currentView === 'home' && activeSection === 'manifesto'} /></a>
           )}
 
           <div className="nav-actions">
@@ -211,13 +219,19 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
           </div>
         </div>
 
-        <div className="navbar-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <button 
+          className="navbar-toggle" 
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+          aria-label="Toggle Menu"
+          aria-expanded={mobileMenuOpen}
+        >
           <div className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}>
             <span></span>
             <span></span>
             <span></span>
           </div>
-        </div>
+        </button>
       </div>
     </nav>
   );

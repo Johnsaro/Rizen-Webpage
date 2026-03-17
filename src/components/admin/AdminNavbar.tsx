@@ -10,7 +10,7 @@ interface AdminNavbarProps {
 
 const AdminNavbar: React.FC<AdminNavbarProps> = ({ currentTab, setCurrentTab, adminName, onLogout }) => {
   return (
-    <nav className="navbar scrolled admin-navbar">
+    <nav className="navbar scrolled admin-navbar" style={{ top: 0 }}>
       <div className="navbar-container">
         <div className="navbar-logo" style={{ color: 'var(--accent-crimson)' }}>
           RIZEN <span style={{ fontSize: '0.6rem', verticalAlign: 'middle', opacity: 0.6, marginLeft: '0.5rem', letterSpacing: '2px' }}>COMMAND_CENTER</span>

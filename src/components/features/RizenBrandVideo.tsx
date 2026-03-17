@@ -7,19 +7,18 @@ interface Scene {
 }
 
 const SCENES: Scene[] = [
-  { id: 'hook', duration: 4500 },
-  { id: 'hook2', duration: 3500 },
-  { id: 'reveal', duration: 4000 },
-  { id: 'classes', duration: 5000 },
-  { id: 'quests', duration: 5000 },
-  { id: 'combat', duration: 5500 },
-  { id: 'arsenal', duration: 5000 },
-  { id: 'guild', duration: 4500 },
-  { id: 'cta', duration: 5500 },
+  { id: 'problem', duration: 5500 },
+  { id: 'flip', duration: 5500 },
+  { id: 'how', duration: 6500 },
+  { id: 'system', duration: 6000 },
+  { id: 'close', duration: 6500 },
 ];
 
 const TOTAL_DURATION = SCENES.reduce((sum, s) => sum + s.duration, 0);
 
+/**
+ * Enhanced TypeWriter with flicker effect and custom cursor
+ */
 const TypeWriter: React.FC<{ text: string; speed?: number; delay?: number; className?: string }> = ({
   text, speed = 40, delay = 0, className = ''
 }) => {
@@ -27,11 +26,9 @@ const TypeWriter: React.FC<{ text: string; speed?: number; delay?: number; class
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    setDisplayed('');
-    setStarted(false);
     const startTimer = setTimeout(() => setStarted(true), delay);
     return () => clearTimeout(startTimer);
-  }, [text, delay]);
+  }, [delay]);
 
   useEffect(() => {
     if (!started) return;
@@ -43,10 +40,35 @@ const TypeWriter: React.FC<{ text: string; speed?: number; delay?: number; class
   }, [displayed, started, text, speed]);
 
   return (
-    <span className={className}>
+    <span className={`${className} ${!started ? 'bv-hidden' : ''}`}>
       {displayed}
-      {displayed.length < text.length && started && <span className="bv-cursor">_</span>}
+      {displayed.length < text.length && started && <span className="bv-cursor">█</span>}
     </span>
+  );
+};
+
+/**
+ * FadeIn with direction and scale support
+ */
+const FadeIn: React.FC<{ 
+  delay: number; 
+  children: React.ReactNode; 
+  className?: string;
+  direction?: 'up' | 'down' | 'left' | 'right' | 'none';
+}> = ({
+  delay, children, className = '', direction = 'up'
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div className={`bv-fade bv-fade-${direction} ${visible ? 'visible' : ''} ${className}`}>
+      {children}
+    </div>
   );
 };
 
@@ -54,11 +76,16 @@ const RizenBrandVideo: React.FC = () => {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [key, setKey] = useState(0);
 
   const currentScene = SCENES[sceneIndex];
 
   const advanceScene = useCallback(() => {
-    setSceneIndex((prev) => (prev + 1) % SCENES.length);
+    setSceneIndex((prev) => {
+      const next = (prev + 1) % SCENES.length;
+      if (next === 0) setKey((k) => k + 1);
+      return next;
+    });
   }, []);
 
   useEffect(() => {
@@ -67,7 +94,6 @@ const RizenBrandVideo: React.FC = () => {
     return () => clearTimeout(timer);
   }, [sceneIndex, isPaused, currentScene.duration, advanceScene]);
 
-  // Elapsed time tracker for progress bar
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -80,297 +106,272 @@ const RizenBrandVideo: React.FC = () => {
     return () => clearInterval(interval);
   }, [isPaused]);
 
-  // Reset elapsed on loop
-  useEffect(() => {
-    if (sceneIndex === 0) setElapsed(0);
-  }, [sceneIndex]);
-
   const progressPercent = (elapsed / TOTAL_DURATION) * 100;
 
   return (
     <div className="bv-container reveal">
-      <div className="bv-label">
-        <span className="bv-label-dot" />
-        BRAND PROTOCOL // RIZEN 2026
+      <div className="bv-header">
+        <div className="bv-label">
+          <span className="bv-label-dot" />
+          RIZEN // OPERATIONAL_CORE_V2.0
+        </div>
+        <div className="bv-timestamp">
+          {new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+        </div>
       </div>
 
       <div
         className="bv-frame"
         onClick={() => setIsPaused((p) => !p)}
-        title={isPaused ? 'Click to play' : 'Click to pause'}
+        key={key}
       >
-        {/* Persistent overlays */}
-        <div className="bv-scanlines" />
+        {/* ATMOSPHERICS */}
         <div className="bv-vignette" />
-        <div className="bv-noise" />
+        <div className="bv-grain" />
+        <div className="bv-scanline" />
+        <div className="bv-chromatic" />
+        <div className="bv-grid-bg" />
 
-        {/* ── SCENE: HOOK 1 ── */}
-        <div className={`bv-scene ${currentScene.id === 'hook' ? 'active' : ''}`}>
-          <div className="bv-hook-lines">
-            <TypeWriter text="You track your workouts." speed={35} delay={300} className="bv-hook-line" />
-            <TypeWriter text="Your calories." speed={35} delay={1200} className="bv-hook-line" />
-            <TypeWriter text="Your sleep." speed={35} delay={1800} className="bv-hook-line" />
-          </div>
-        </div>
-
-        {/* ── SCENE: HOOK 2 ── */}
-        <div className={`bv-scene ${currentScene.id === 'hook2' ? 'active' : ''}`}>
-          <div className="bv-hook-question">
-            <TypeWriter
-              text="But who tracks your growth?"
-              speed={45}
-              delay={200}
-              className="bv-hook-big"
-            />
-          </div>
-        </div>
-
-        {/* ── SCENE: REVEAL ── */}
-        <div className={`bv-scene ${currentScene.id === 'reveal' ? 'active' : ''}`}>
-          <div className="bv-reveal-wrapper">
-            <h1 className="bv-logo-text">
-              <span className="bv-glitch" data-text="RIZEN">RIZEN</span>
-            </h1>
-            <div className="bv-tagline">
-              <TypeWriter text="Rise or Stagnate." speed={60} delay={800} className="bv-tagline-text" />
+        {/* ── SCENE 1: THE PROBLEM ── */}
+        <div className={`bv-scene bv-scene-problem ${currentScene.id === 'problem' ? 'active' : ''}`}>
+          {currentScene.id === 'problem' && (
+            <div className="bv-problem-content" key="problem-content">
+              <FadeIn delay={400} direction="left" key="p1">
+                <div className="bv-strike-line">Another to-do list app.</div>
+              </FadeIn>
+              <FadeIn delay={1600} direction="right" key="p2">
+                <div className="bv-strike-line">Another streak broken.</div>
+              </FadeIn>
+              <FadeIn delay={2800} direction="left" key="p3">
+                <div className="bv-strike-line">Another system that doesn't stick.</div>
+              </FadeIn>
+              <FadeIn delay={4200} direction="none" className="bv-problem-question-wrap" key="p4">
+                <div className="bv-problem-question">Sound familiar?</div>
+                <div className="bv-glitch-echo">Sound familiar?</div>
+              </FadeIn>
             </div>
-            <div className="bv-logo-flare" />
-          </div>
+          )}
         </div>
 
-        {/* ── SCENE: CLASSES ── */}
-        <div className={`bv-scene ${currentScene.id === 'classes' ? 'active' : ''}`}>
-          <div className="bv-scene-header">
-            <span className="bv-scene-tag">01</span>
-            <TypeWriter text="CHOOSE YOUR DAO PATH" speed={30} delay={200} className="bv-scene-title" />
-          </div>
-          <div className="bv-class-grid">
-            {[
-              { name: 'SHADOW ARTS', icon: '🛡', color: '#00D2E0', desc: 'Hunt threats. Break systems. Defend everything.' },
-              { name: 'FORMATION MASTER', icon: '⚙', color: '#BC13FE', desc: 'Architect solutions. Ship products. Scale infinitely.' },
-              { name: 'ARTIFACT REFINER', icon: '◈', color: '#39FF14', desc: 'Craft powerful tools carried by millions.' },
-              { name: 'REALM ARCHITECT', icon: '▶', color: '#FF6B35', desc: 'Design worlds. Code engines. Create realities.' },
-            ].map((cls, i) => (
-              <div
-                key={cls.name}
-                className="bv-class-card"
-                style={{
-                  '--card-color': cls.color,
-                  animationDelay: `${0.3 + i * 0.15}s`,
-                } as React.CSSProperties}
-              >
-                <div className="bv-class-icon">{cls.icon}</div>
-                <div className="bv-class-name">{cls.name}</div>
-                <div className="bv-class-desc">{cls.desc}</div>
+        {/* ── SCENE 2: THE FLIP ── */}
+        <div className={`bv-scene bv-scene-flip ${currentScene.id === 'flip' ? 'active' : ''}`}>
+          {currentScene.id === 'flip' && (
+            <div className="bv-flip-content" key="flip-content">
+              <div className="bv-flip-hook">
+                <TypeWriter 
+                  key="tw-flip"
+                  text="What if your goals fought back?" 
+                  speed={30} 
+                  delay={500} 
+                  className="bv-flip-text" 
+                />
               </div>
-            ))}
-          </div>
+              
+              <FadeIn delay={2600} direction="up" className="bv-stats-container" key="f-stats">
+                <div className="bv-flip-bars">
+                  {[
+                    { label: 'HP', class: 'hp', val: '72%' },
+                    { label: 'XP', class: 'xp', val: '45%' },
+                    { label: 'LVL', class: 'lvl', val: '12' }
+                  ].map((bar, i) => (
+                    <div key={bar.label} className="bv-bar-row" style={{ animationDelay: `${i * 0.1}s` }}>
+                      <span className="bv-bar-label">{bar.label}</span>
+                      <div className="bv-bar-track">
+                        <div className={`bv-bar-fill ${bar.class}`} />
+                        <div className="bv-bar-glow" />
+                      </div>
+                      <span className="bv-bar-value">{bar.val}</span>
+                    </div>
+                  ))}
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={4200} direction="none" key="f-sub">
+                <div className="bv-flip-sub">
+                  <span className="bv-bracket">[</span>
+                  NOT A GIMMICK. A REAL RPG SYSTEM MAPPED TO YOUR LIFE.
+                  <span className="bv-bracket">]</span>
+                </div>
+              </FadeIn>
+            </div>
+          )}
         </div>
 
-        {/* ── SCENE: QUESTS ── */}
-        <div className={`bv-scene ${currentScene.id === 'quests' ? 'active' : ''}`}>
-          <div className="bv-scene-header">
-            <span className="bv-scene-tag">02</span>
-            <TypeWriter text="REAL MISSIONS. REAL STAKES." speed={30} delay={200} className="bv-scene-title" />
-          </div>
-          <div className="bv-quest-ranks">
-            {['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'].map((rank, i) => (
-              <div
-                key={rank}
-                className="bv-rank-badge"
-                style={{
-                  animationDelay: `${0.4 + i * 0.08}s`,
-                  '--rank-intensity': `${(i + 1) / 9}`,
-                } as React.CSSProperties}
-              >
-                {rank}
+        {/* ── SCENE 3: HOW IT WORKS ── */}
+        <div className={`bv-scene bv-scene-how ${currentScene.id === 'how' ? 'active' : ''}`}>
+          {currentScene.id === 'how' && (
+            <div className="bv-how-content-wrapper" key="how-content">
+              <div className="bv-scene-tag">PROTOCOL_OVERVIEW</div>
+              <div className="bv-how-steps">
+                <FadeIn delay={400} direction="up" className="bv-step" key="h1">
+                  <div className="bv-step-card">
+                    <div className="bv-step-num">01</div>
+                    <div className="bv-step-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                      </svg>
+                    </div>
+                    <div className="bv-step-title">Set real goals</div>
+                    <div className="bv-step-desc">Habits, projects, tasks.</div>
+                  </div>
+                </FadeIn>
+
+                <div className="bv-connector-wrap">
+                  <div className="bv-connector-line">
+                    <div className="bv-connector-pulse" style={{ animationDelay: '1.2s' }} />
+                  </div>
+                </div>
+
+                <FadeIn delay={1800} direction="up" className="bv-step" key="h2">
+                  <div className="bv-step-card active">
+                    <div className="bv-step-num">02</div>
+                    <div className="bv-step-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <path d="M8 13h8M8 17h8" />
+                      </svg>
+                    </div>
+                    <div className="bv-step-title">They become quests</div>
+                    <div className="bv-step-desc">AI-generated RPG trials.</div>
+                  </div>
+                </FadeIn>
+
+                <div className="bv-connector-wrap">
+                  <div className="bv-connector-line">
+                    <div className="bv-connector-pulse" style={{ animationDelay: '2.6s' }} />
+                  </div>
+                </div>
+
+                <FadeIn delay={3200} direction="up" className="bv-step" key="h3">
+                  <div className="bv-step-card">
+                    <div className="bv-step-num">03</div>
+                    <div className="bv-step-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                      </svg>
+                    </div>
+                    <div className="bv-step-title">Win in combat</div>
+                    <div className="bv-step-desc">Level up through action.</div>
+                  </div>
+                </FadeIn>
               </div>
-            ))}
-          </div>
-          <div className="bv-quest-info">
-            <div className="bv-quest-line">
-              <span className="bv-quest-label">DAILY</span>
-              <span className="bv-quest-detail">Refresh every 24h. Miss them, lose momentum.</span>
             </div>
-            <div className="bv-quest-line">
-              <span className="bv-quest-label">MAIN</span>
-              <span className="bv-quest-detail">Long-term objectives. Real proof required.</span>
-            </div>
-            <div className="bv-quest-line">
-              <span className="bv-quest-label">SIDE</span>
-              <span className="bv-quest-detail">Optional mastery. Extra XP for the ambitious.</span>
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* ── SCENE: COMBAT ── */}
-        <div className={`bv-scene ${currentScene.id === 'combat' ? 'active' : ''}`}>
-          <div className="bv-scene-header">
-            <span className="bv-scene-tag">03</span>
-            <TypeWriter text="KNOWLEDGE IS YOUR WEAPON" speed={30} delay={200} className="bv-scene-title" />
-          </div>
-          <div className="bv-combat-demo">
-            <div className="bv-combat-top">
-              <div className="bv-combat-entity">
-                <span className="bv-entity-name">PROCRASTINATION SPECTER</span>
-                <div className="bv-hp-bar">
-                  <div className="bv-hp-fill enemy" style={{ width: '65%' }} />
+        {/* ── SCENE 4: THE SYSTEM ── */}
+        <div className={`bv-scene bv-scene-system ${currentScene.id === 'system' ? 'active' : ''}`}>
+          {currentScene.id === 'system' && (
+            <div className="bv-system-content-wrapper" key="system-content">
+              <FadeIn delay={300} direction="down" key="s-header">
+                <div className="bv-sys-header">
+                  <h2 className="bv-sys-title">INTEGRATED ECOSYSTEM</h2>
+                  <div className="bv-sys-subtitle">COORDINATED_SYSTEM_SYNC</div>
+                </div>
+              </FadeIn>
+
+              <div className="bv-sys-map">
+                <div className="bv-map-lines">
+                   <svg className="bv-map-svg" viewBox="0 0 800 200">
+                     <path d="M200 100 H600" className="bv-map-path" />
+                     <circle cx="200" cy="100" r="4" className="bv-map-node-dot" />
+                     <circle cx="400" cy="100" r="4" className="bv-map-node-dot" />
+                     <circle cx="600" cy="100" r="4" className="bv-map-node-dot" />
+                   </svg>
+                </div>
+
+                <div className="bv-sys-nodes">
+                  <FadeIn delay={800} direction="none" className="bv-node-box-wrap" key="s1">
+                    <div className="bv-node-box primary">
+                      <div className="bv-node-status live">LIVE</div>
+                      <div className="bv-node-name">RIZEN MOBILE</div>
+                      <div className="bv-node-role">CORE ENGINE</div>
+                    </div>
+                  </FadeIn>
+
+                  <FadeIn delay={1600} direction="none" className="bv-node-box-wrap" key="s2">
+                    <div className="bv-node-box">
+                      <div className="bv-node-status live">LIVE</div>
+                      <div className="bv-node-name">PULSE AGENT</div>
+                      <div className="bv-node-role">DESKTOP GUARD</div>
+                    </div>
+                  </FadeIn>
+
+                  <FadeIn delay={2400} direction="none" className="bv-node-box-wrap" key="s3">
+                    <div className="bv-node-box">
+                      <div className="bv-node-status live">LIVE</div>
+                      <div className="bv-node-name">PHANTOM PEEL</div>
+                      <div className="bv-node-role">FORENSICS</div>
+                    </div>
+                  </FadeIn>
                 </div>
               </div>
-            </div>
-            <div className="bv-combat-question">
-              <div className="bv-timer-ring">
-                <span>15</span>
-              </div>
-              <div className="bv-question-text">
-                What flag reveals service versions in nmap?
-              </div>
-              <div className="bv-answer-grid">
-                <div className="bv-answer wrong">-sS</div>
-                <div className="bv-answer correct">-sV</div>
-                <div className="bv-answer wrong">-O</div>
-                <div className="bv-answer wrong">-A</div>
-              </div>
-            </div>
-            <div className="bv-combat-bottom">
-              <div className="bv-combat-entity">
-                <span className="bv-entity-name">YOU // LV.12 OPERATIVE</span>
-                <div className="bv-hp-bar">
-                  <div className="bv-hp-fill player" style={{ width: '88%' }} />
+
+              <FadeIn delay={4000} direction="up" key="s-footer">
+                <div className="bv-sys-footer">
+                  <span className="bv-footer-line" />
+                  ONE ECOSYSTEM. ALL LIVE. ALL CONNECTED.
+                  <span className="bv-footer-line" />
                 </div>
-              </div>
+              </FadeIn>
             </div>
-            <div className="bv-damage-number">-340 HP</div>
-          </div>
+          )}
         </div>
 
-        {/* ── SCENE: ARSENAL ── */}
-        <div className={`bv-scene ${currentScene.id === 'arsenal' ? 'active' : ''}`}>
-          <div className="bv-scene-header">
-            <span className="bv-scene-tag">04</span>
-            <TypeWriter text="YOUR SKILLS ARE YOUR ARSENAL" speed={30} delay={200} className="bv-scene-title" />
-          </div>
-          <div className="bv-arsenal-grid">
-            {[
-              { name: 'Recon Suite', hint: 'nmap -sV', durability: 87, rarity: 'rare' },
-              { name: 'Exploit Framework', hint: 'msfconsole', durability: 62, rarity: 'epic' },
-              { name: 'Kernel Probe', hint: 'lsmod | grep', durability: 45, rarity: 'legendary' },
-            ].map((weapon, i) => (
-              <div
-                key={weapon.name}
-                className={`bv-weapon-card ${weapon.rarity}`}
-                style={{ animationDelay: `${0.3 + i * 0.2}s` } as React.CSSProperties}
-              >
-                <div className="bv-weapon-name">{weapon.name}</div>
-                <div className="bv-weapon-hint">{weapon.hint}</div>
-                <div className="bv-durability-bar">
-                  <div
-                    className="bv-durability-fill"
-                    style={{ width: `${weapon.durability}%` }}
-                  />
-                  <span className="bv-durability-text">{weapon.durability}%</span>
+        {/* ── SCENE 5: CLOSE ── */}
+        <div className={`bv-scene bv-scene-close ${currentScene.id === 'close' ? 'active' : ''}`}>
+          {currentScene.id === 'close' && (
+            <div className="bv-close-content" key="close-content">
+              <FadeIn delay={600} direction="none" className="bv-logo-wrap" key="c1">
+                <h1 className="bv-logo-main">RIZEN</h1>
+                <div className="bv-logo-shimmer" />
+              </FadeIn>
+              
+              <FadeIn delay={2000} direction="none" key="c2">
+                <div className="bv-close-divider-container">
+                  <div className="bv-divider-glow" />
+                  <div className="bv-divider-line" />
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="bv-arsenal-warning">
-            <TypeWriter
-              text="⚠ IDLE FOR 7 DAYS = WEAPON LOCKED. USE IT OR LOSE IT."
-              speed={25}
-              delay={1500}
-              className="bv-warning-text"
-            />
-          </div>
+              </FadeIn>
+
+              <FadeIn delay={2800} direction="up" key="c3">
+                <div className="bv-close-tagline">YOUR LIFE. YOUR BOSS FIGHT.</div>
+              </FadeIn>
+              
+              <FadeIn delay={4200} direction="up" className="bv-close-meta" key="c4">
+                <div className="bv-meta-item">EST. 2026</div>
+                <div className="bv-meta-sep" />
+                <div className="bv-meta-item highlight">DISCIPLINE, ENGINEERED</div>
+              </FadeIn>
+            </div>
+          )}
         </div>
 
-        {/* ── SCENE: GUILD ── */}
-        <div className={`bv-scene ${currentScene.id === 'guild' ? 'active' : ''}`}>
-          <div className="bv-scene-header">
-            <span className="bv-scene-tag">05</span>
-            <TypeWriter text="AI-DRIVEN ACCOUNTABILITY" speed={30} delay={200} className="bv-scene-title" />
-          </div>
-          <div className="bv-terminal">
-            <div className="bv-terminal-header">
-              <span className="bv-terminal-dot red" />
-              <span className="bv-terminal-dot yellow" />
-              <span className="bv-terminal-dot green" />
-              <span className="bv-terminal-title">THE_SYSTEM_v4.0</span>
-            </div>
-            <div className="bv-terminal-body">
-              <div className="bv-terminal-line">
-                <span className="bv-prompt">&gt;</span> submit_quest --type=main --proof=screenshot.png
-              </div>
-              <div className="bv-terminal-line output">
-                <span className="bv-prompt sys">[SYSTEM]</span> Analyzing submission...
-              </div>
-              <div className="bv-terminal-line output success">
-                <span className="bv-prompt sys">[SYSTEM]</span> QUEST VALIDATED. Rank B confirmed.
-              </div>
-              <div className="bv-terminal-line output success">
-                <span className="bv-prompt sys">[SYSTEM]</span> +2,400 XP | +180 Rep awarded.
-              </div>
-              <div className="bv-terminal-line output warning">
-                <span className="bv-prompt sys">[SYSTEM]</span> No shortcuts. No excuses. Only proof.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── SCENE: CTA ── */}
-        <div className={`bv-scene ${currentScene.id === 'cta' ? 'active' : ''}`}>
-          <div className="bv-cta-wrapper">
-            <h1 className="bv-cta-logo">
-              <span className="bv-glitch" data-text="RIZEN">RIZEN</span>
-            </h1>
-            <div className="bv-cta-tagline">RISE OR STAGNATE. THE CHOICE IS YOURS, CULTIVATOR.</div>
-            <div className="bv-cta-ecosystem">
-              <span className="bv-eco-item" style={{ color: '#00D2E0' }}>MOBILE</span>
-              <span className="bv-eco-divider">//</span>
-              <span className="bv-eco-item" style={{ color: '#00D2E0' }}>PULSE</span>
-              <span className="bv-eco-divider">//</span>
-              <span className="bv-eco-item" style={{ color: '#ff0055' }}>PHANTOM</span>
-              <span className="bv-eco-divider">//</span>
-              <span className="bv-eco-item" style={{ color: '#39FF14' }}>VAULT</span>
-            </div>
-            <div className="bv-cta-button-row">
-              <div className="bv-cta-btn primary">INITIALIZE ASCENSION</div>
-              <div className="bv-cta-btn secondary">VIEW THE SECT</div>
-            </div>
-            <div className="bv-cta-year">PROTOCOL ACTIVE // 2026</div>
-          </div>
-        </div>
-
-        {/* Pause indicator */}
-        {isPaused && (
-          <div className="bv-pause-indicator">
-            <div className="bv-pause-icon">❚❚</div>
-            <div className="bv-pause-text">PAUSED</div>
-          </div>
-        )}
-
-        {/* Scene dots */}
-        <div className="bv-scene-dots">
+        {/* HUD & OVERLAYS */}
+        <div className="bv-hud-left">
           {SCENES.map((s, i) => (
-            <button
-              key={s.id}
-              className={`bv-dot ${i === sceneIndex ? 'active' : ''} ${i < sceneIndex ? 'passed' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSceneIndex(i);
-                setElapsed(SCENES.slice(0, i).reduce((sum, sc) => sum + sc.duration, 0));
-              }}
-              title={s.id.toUpperCase()}
-            />
+            <div key={s.id} className={`bv-hud-dot ${i === sceneIndex ? 'active' : ''}`}>
+              <span className="bv-hud-num">0{i + 1}</span>
+            </div>
           ))}
         </div>
 
-        {/* Progress bar */}
-        <div className="bv-progress">
-          <div
-            className="bv-progress-fill"
-            style={{ width: `${progressPercent}%` }}
-          />
+        <div className="bv-progress-container">
+          <div className="bv-progress-fill" style={{ width: `${progressPercent}%` }} />
         </div>
+
+        {isPaused && (
+          <div className="bv-pause-overlay">
+            <div className="bv-pause-box">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
+              </svg>
+              <span>SYSTEM_PAUSED</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -9,10 +9,11 @@ export type LogEntry = {
 
 export const useTerminal = () => {
   const [systemLog, setSystemLog] = useState<LogEntry[]>([
-    { sender: 'system', text: 'CONNECTION ESTABLISHED. WAITING FOR CULTIVATOR REPORT...' }
+    { sender: 'system', text: 'THE SYSTEM IS ONLINE. IDENTIFY YOURSELF, CULTIVATOR. WHAT TRIAL DID YOU OVERCOME TODAY?' }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isQiSurging, setIsQiSurging] = useState(false);
 
   const handleReportTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +55,12 @@ export const useTerminal = () => {
 
       setSystemLog(prev => [...prev, { sender: 'system', text, rank, qi }]);
       setIsProcessing(false);
+      
+      // Trigger Qi Surge animation (Task #3)
+      if (qi >= 150) {
+        setIsQiSurging(true);
+        setTimeout(() => setIsQiSurging(false), 1000);
+      }
     }, 1200);
   };
 
@@ -63,6 +70,7 @@ export const useTerminal = () => {
     inputValue,
     setInputValue,
     isProcessing,
+    isQiSurging,
     handleReportTask
   };
 };

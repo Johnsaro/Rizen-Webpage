@@ -3,17 +3,25 @@ import './combat-preview.css';
 
 type HitEffect = 'none' | 'monsterHit' | 'playerHit';
 
-const CombatPreview = ({ delay = 0.4 }: { delay?: number }) => {
+const CombatPreview = ({ delay = 0.4, onCombatClick }: { delay?: number, onCombatClick?: () => void }) => {
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [hitEffect, setHitEffect] = useState<HitEffect>('none');
     const [isResolving, setIsResolving] = useState<boolean>(false);
 
     const handleOptionSelect = (optionId: string) => {
         if (isResolving) return;
+        if (onCombatClick) {
+            onCombatClick();
+            return;
+        }
         setSelectedOption(optionId);
     };
 
     const handleSimulationSubmit = () => {
+        if (onCombatClick) {
+            onCombatClick();
+            return;
+        }
         if (!selectedOption || isResolving) return;
 
         setIsResolving(true);

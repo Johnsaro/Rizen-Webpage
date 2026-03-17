@@ -1,12 +1,12 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import AnnouncementBar from './components/AnnouncementBar'
-import ScannerOverlay from './components/layout/ScannerOverlay'
-import ParticlesBackground from './components/layout/ParticlesBackground'
-import Terminal from './components/features/Terminal'
+import HeroSection from './components/features/HeroSection'
 import CombatSimulator from './components/features/CombatSimulator'
-import PhoneMockup from './components/features/PhoneMockup'
 import AuthModal from './components/features/AuthModal'
 import VaultReader from './components/features/VaultReader'
 import BuildDetail from './components/features/BuildDetail'
@@ -19,6 +19,7 @@ import CommunityEvent from './pages/CommunityEvent'
 import AdminBountyConsole from './pages/AdminBountyConsole'
 import { useAuth } from './context/AuthContext'
 import { usePlayerProfile } from './hooks/usePlayerProfile'
+import type { PlayerProfile } from './hooks/usePlayerProfile'
 import { useCombatSim } from './hooks/useCombatSim'
 import { useTerminal } from './hooks/useTerminal'
 import { useInitiation } from './hooks/useInitiation'
@@ -26,11 +27,21 @@ import { vaultContent } from './data/vaultContent'
 import type { VaultItem } from './data/vaultContent'
 import { builds } from './data/builds'
 import type { Build } from './data/builds'
-import { demoPlayer } from './data/demoPlayer'
 import Dashboard from './components/dashboard/Dashboard'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
 import CommandCenter from './pages/CommandCenter'
+
+const DEFAULT_OPERATIVE: Partial<PlayerProfile> = {
+  name: 'CULTIVATOR',
+  main_class: 'Shadow Arts',
+  level: 1,
+  current_xp: 0,
+  rep: 0,
+  streak: 0,
+  hp: 100,
+  max_hp: 100,
+};
 
 const DAO_PATHS = [
   { name: 'SHADOW ARTS', roles: ['Red Team', 'Sec Admin', 'Cloud Sec'], desc: 'Master the unseen. Infiltrate barriers. Find every weakness.', icon: '🛡️' },
@@ -50,68 +61,81 @@ function App() {
 
   // Derive operative data from Supabase user metadata or fallback to level 1 defaults (W04)
   const operativeData = useMemo(() => {
-    if (!user) return demoPlayer;
-
     return {
-      ...demoPlayer,
-      id: user.id,
-      name: profile?.name || user.user_metadata?.full_name || user.email?.split('@')[0].toUpperCase() || 'CULTIVATOR',
-      class: profile?.main_class || user.user_metadata?.class || 'Shadow Arts',
-      level: profile?.level || 1,
+      id: user?.id || 'usr_new_cultivator',
+      name: profile?.name || user?.user_metadata?.full_name || user?.email?.split('@')[0].toUpperCase() || DEFAULT_OPERATIVE.name,
+      class: profile?.main_class || user?.user_metadata?.class || DEFAULT_OPERATIVE.main_class,
+      level: profile?.level || DEFAULT_OPERATIVE.level,
       stats: {
-        ...demoPlayer.stats,
         hp: {
-          current: profile?.hp || demoPlayer.stats.hp.current,
-          max: profile?.max_hp || demoPlayer.stats.hp.max
+          current: profile?.hp || DEFAULT_OPERATIVE.hp,
+          max: profile?.max_hp || DEFAULT_OPERATIVE.max_hp
+        },
+        xp: {
+          current: profile?.current_xp || 0,
+          max: 1000 // Hardcoded max for demo visualization
         },
         rep: profile?.rep || 0,
-        streak: profile?.streak || 0
+        streak: profile?.streak || 0,
+        classXP: profile?.class_xp || { recon: 0, exploitation: 0, enumeration: 0 }
       }
     };
   }, [user, profile]);
 
-  const [scanned, setScanned] = useState(false);
-  const [typedText, setTypedText] = useState("");
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
+  const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isTrialRewardMode, setIsTrialRewardMode] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
   const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event' | 'admin-console' | 'command-center'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const fullText = "Rise or Stagnate. The choice is yours, Cultivator.";
+
+  // Centralized Navigation Logic (Task #4)
+  const navigateTo = useCallback((hash: string) => {
+    // If it's an internal section scroll AND we are already on home
+    if (hash.startsWith('#') && !hash.startsWith('#/') && currentView === 'home') {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        // Still update hash for consistency
+        window.location.hash = hash;
+        return;
+      }
+    }
+
+    // Otherwise update hash for the router to handle view switching
+    if (window.location.hash !== hash) {
+      window.location.hash = hash;
+    }
+  }, [currentView]);
 
   const handleLoginSuccess = () => {
     setAuthModalOpen(false);
+    setIsTrialRewardMode(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Admin routing fork after login success (Task #1)
     if (isAdmin) {
-      window.location.hash = '#/command-center';
+      navigateTo('#/command-center');
     }
   };
 
   const handleLogout = () => {
     signOut();
     setCurrentView('home');
-    window.location.hash = '#/'; // Reset hash on logout
+    navigateTo('#/');
   };
 
   // Simple Hash-based Router
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash;
+      const hash = window.location.hash || '#/';
       
       // Fix state pollution (W03)
       if (hash === '#/admin/bounty-console' || hash.startsWith('#/command-center')) {
-        if (!isLoggedIn) {
-          window.location.hash = '#/';
-          setCurrentView('home');
-          return;
-        }
-        if (!isAdmin) {
-          window.location.hash = '#/';
-          setCurrentView('home');
+        if (!isLoggedIn || !isAdmin) {
+          navigateTo('#/');
           return;
         }
         setCurrentView('command-center');
@@ -154,8 +178,19 @@ function App() {
         setCommunitySubView('hub');
         setSelectedBuild(null);
       } else {
+        // Catch-all: treat any other hash (including section hashes) as Home View
         setCurrentView('home');
         setSelectedBuild(null);
+        
+        // If it's a section hash, scroll to it after render
+        if (hash.startsWith('#') && !hash.startsWith('#/')) {
+          setTimeout(() => {
+            const element = document.querySelector(hash);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
+        }
       }
     };
 
@@ -163,21 +198,21 @@ function App() {
     handleHashChange(); // Initial check
 
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [isLoggedIn, isAdmin]); // Re-run when login state or admin status changes
+  }, [isLoggedIn, isAdmin, navigateTo]);
 
   // Auto-redirect admin on home view (Task #1)
   useEffect(() => {
     if (isLoggedIn && isAdmin && currentView === 'home') {
-      window.location.hash = '#/command-center';
+      navigateTo('#/command-center');
     }
-  }, [isLoggedIn, isAdmin, currentView]);
+  }, [isLoggedIn, isAdmin, currentView, navigateTo]);
 
   const openBuildDetail = (build: Build) => {
-    window.location.hash = `#/builds/${build.id}`;
+    navigateTo(`#/builds/${build.id}`);
   };
 
   const closeBuildDetail = () => {
-    window.location.hash = `#/builds`;
+    navigateTo(`#/builds`);
   };
 
   const {
@@ -199,8 +234,20 @@ function App() {
     inputValue,
     setInputValue,
     isProcessing,
+    isQiSurging,
     handleReportTask
   } = useTerminal();
+
+  // Dynamic Browser Tab Titles (Task #1)
+  useEffect(() => {
+    if (combatState === 'active') {
+      document.title = "⚠️ SYSTEM BREACH // Combat Active";
+    } else if (combatState === 'victory') {
+      document.title = "✨ CULTIVATION SUCCESSFUL";
+    } else {
+      document.title = "RIZEN // Rise or Stagnate";
+    }
+  }, [combatState]);
 
   const {
     step,
@@ -209,10 +256,6 @@ function App() {
     startInitiation,
     handleAnswer
   } = useInitiation();
-
-  const onScanComplete = useCallback(() => {
-    setScanned(true);
-  }, []);
 
   const onInitiationAnswer = useCallback((answer: string) => {
     setSystemLog(prev => [...prev, { sender: 'user', text: answer }]);
@@ -223,19 +266,6 @@ function App() {
     startInitiation();
     setSystemLog([{ sender: 'system', text: 'INITIATING DAO PATH DISCOVERY...' }]);
   };
-
-  // 1. TYPING ANIMATION
-  useEffect(() => {
-    if (scanned) {
-      let i = 0;
-      const interval = setInterval(() => {
-        setTypedText(fullText.slice(0, i));
-        i++;
-        if (i > fullText.length) clearInterval(interval);
-      }, 50);
-      return () => clearInterval(interval);
-    }
-  }, [scanned]);
 
   // Global Auth Trigger
   useEffect(() => {
@@ -273,7 +303,7 @@ function App() {
     if (step === 'COMPLETE' && assignedClass) {
       const timer = setTimeout(() => {
         setSystemLog(prev => {
-          const completionText = `BINDING COMPLETE. DAO PATH SEALED: ${assignedClass}. WELCOME TO THE SECT.`;
+          const completionText = `BINDING COMPLETE. DAO PATH SEALED: ${assignedClass}. THE SYSTEM AWAITS YOUR SOUL. REVEAL YOUR IDENTIFIER TO INITIALIZE.`;
           const hasComplete = prev.some(l => l.text === completionText);
           if (hasComplete) return prev;
           return [...prev, {
@@ -288,42 +318,66 @@ function App() {
     }
   }, [step, assignedClass, questions, setSystemLog]);
 
-  // 2. 3D TILT EFFECT & SCROLL REVEAL
+  // Auto-open AuthModal when initiation is complete (Task #2)
   useEffect(() => {
-    let rafId: number;
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!phoneRef.current) return;
-      
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-        const x = (clientX - innerWidth / 2) / 25;
-        const y = (clientY - innerHeight / 2) / 25;
-        if (phoneRef.current) {
-          phoneRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    if (scanned) {
-      window.addEventListener('mousemove', handleMouseMove);
+    if (step === 'COMPLETE' && assignedClass) {
+      const timer = setTimeout(() => {
+        setSystemLog(prev => [...prev, { 
+          sender: 'system', 
+          text: 'ESTABLISHING SECURE UPLINK... PREPARING SOUL BINDING PROTOCOL.' 
+        }]);
+        setAuthModalOpen(true);
+      }, 2000); // 2s delay to let user read the sealed path message
+      return () => clearTimeout(timer);
     }
+  }, [step, assignedClass, setSystemLog]);
+
+  // Auto-open AuthModal on combat victory for guest users (Task #1)
+  useEffect(() => {
+    if (combatState === 'victory' && !isLoggedIn) {
+      const timer = setTimeout(() => {
+        setIsTrialRewardMode(true);
+        setAuthModalOpen(true);
+      }, 2000); // 2s delay to let victory message play
+      return () => clearTimeout(timer);
+    }
+  }, [combatState, isLoggedIn]);
+
+  // 2. SCROLL REVEAL OBSERVER
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+    // Small timeout to ensure DOM is ready after conditional renders (Task #3 optimization)
+    const timer = setTimeout(() => {
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const cardName = el.dataset.daoCard;
+            if (cardName) {
+              setRevealedCards(prev => {
+                if (prev.has(cardName)) return prev;
+                const next = new Set(prev);
+                next.add(cardName);
+                return next;
+              });
+            } else {
+              requestAnimationFrame(() => {
+                entry.target.classList.add('visible');
+              });
+            }
+          }
+        });
+      }, { threshold: 0.1 });
+
+      const elements = document.querySelectorAll('.reveal');
+      elements.forEach(el => observer!.observe(el));
+    }, 500);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(timer);
+      observer?.disconnect();
     };
-  }, [scanned, currentView, isLoggedIn, activeDiscipline]); // Added activeDiscipline
+  }, [currentView, isLoggedIn, authLoading]);
 
   const rizenMobile = builds.find(b => b.id === 'rizen-mobile') || builds[0];
 
@@ -338,12 +392,14 @@ function App() {
 
   return (
     <div className="portal">
-      <AnnouncementBar
-        label="LATEST RELEASE"
-        message={`${rizenMobile.title} v1.0.0 is now Live`}
-        ctaText="View Intel"
-        ctaLink={`#/builds/${rizenMobile.id}`}
-      />
+      {currentView !== 'command-center' && (
+        <AnnouncementBar
+          label="LATEST RELEASE"
+          message={`${rizenMobile.title} v1.0.0 is now Live`}
+          ctaText="View Intel"
+          ctaLink={`#/builds/${rizenMobile.id}`}
+        />
+      )}
 
       {currentView !== 'command-center' && (
         <Navbar
@@ -354,80 +410,55 @@ function App() {
           isLoggedIn={isLoggedIn}
           user={operativeData}
           onLogout={handleLogout}
+          navigateTo={navigateTo}
         />
       )}
-      <ParticlesBackground />
 
-      {!scanned && <ScannerOverlay onScanComplete={onScanComplete} />}
-
-      {isLoggedIn && !isAdmin && currentView === 'home' ? (
-        <ProtectedRoute>
-          <Dashboard user={operativeData} />
-        </ProtectedRoute>
-      ) : currentView === 'command-center' ? (
+      {currentView === 'command-center' ? (
         <ProtectedRoute requireAdmin>
           <CommandCenter />
         </ProtectedRoute>
       ) : currentView === 'home' ? (
         <>
-          {/* 1. HERO SECTION */}
-          <section className="hero" id="hero">
-            <div className="hero-content reveal">
-              <h1 className="glitch-title" data-text="RIZEN">RIZEN</h1>
-              <div className="status-tag">CULTIVATION SYSTEM ONLINE</div>
-              <p className="hero-subtitle-typed">{typedText}<span className="cursor">|</span></p>
-              <p className="hero-description reveal">
-                Stop playing games that don't matter. Turn your real life into a cultivation system.
-              </p>
-              <div className="cta-group reveal">
-                <button className="btn-primary" onClick={initiateDiscovery}>Choose Your Dao Path</button>
-                <button className="btn-secondary" onClick={() => setCurrentView('builds')}>View The Sect</button>
-              </div>
-              <a
-                className="hero-apk-link reveal"
-                href="https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                Get the App
-                <span className="hero-apk-chip">APK · Android</span>
-              </a>
+          <HeroSection 
+            onInitiateDiscovery={initiateDiscovery}
+            onViewSect={() => navigateTo('#/builds')}
+            systemLog={systemLog}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            isProcessing={isProcessing}
+            isQiSurging={isQiSurging}
+            handleReportTask={handleReportTask}
+            step={step}
+            questions={questions}
+            onInitiationAnswer={onInitiationAnswer}
+          />
 
-              <Terminal
-                log={systemLog}
-                inputValue={inputValue}
+          {/* DASHBOARD (Ghost Mode if not logged in) */}
+          <div id="dashboard-section" className="reveal">
+            <Dashboard 
+              user={operativeData} 
+              isPreview={!isLoggedIn} 
+              onInteract={() => setAuthModalOpen(true)} 
+            />
+          </div>
 
-                setInputValue={setInputValue}
-                isProcessing={isProcessing}
-                onReportTask={handleReportTask}
-                initiationStep={step}
-                initiationQuestions={questions}
-                onInitiationAnswer={onInitiationAnswer}
-              />
-            </div>
-
-            <PhoneMockup phoneRef={phoneRef} />
-          </section>
-
-          <RizenBrandVideo />
+          <div className="reveal">
+            <RizenBrandVideo />
+          </div>
 
           {/* SYSTEM ARCHITECTURE */}
-          <div style={{ padding: '4rem 0' }}>
+          <div style={{ padding: '4rem 0' }} className="reveal">
             <SystemArchitecture />
           </div>
 
           {/* AGENT NETWORK */}
-          <div style={{ paddingBottom: '4rem' }}>
+          <div style={{ paddingBottom: '4rem' }} className="reveal">
             <AgentNetwork />
           </div>
 
           {/* INFINITE MARQUEE SEPARATOR */}
-          <div className="marquee-container">
+          <div className="marquee-container reveal">
             <div className="marquee-content">
               <span>// RANK UP // GET SHREDDED // MASTER SKILLS // SECURE SYSTEMS </span>
               <span>// RANK UP // GET SHREDDED // MASTER SKILLS // SECURE SYSTEMS </span>
@@ -480,7 +511,8 @@ function App() {
               {DAO_PATHS.map((cls, i) => (
                 <div
                   key={cls.name}
-                  className={`class-card-modern reveal ${activeDiscipline === cls.name ? 'active' : ''}`}
+                  data-dao-card={cls.name}
+                  className={`class-card-modern reveal ${revealedCards.has(cls.name) ? 'visible' : ''} ${activeDiscipline === cls.name ? 'active' : ''}`}
                   style={{ transitionDelay: `${i * 0.1}s` }}
                   onClick={() => setActiveDiscipline(cls.name)}
                 >
@@ -684,8 +716,13 @@ function App() {
 
       <AuthModal
         isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setIsTrialRewardMode(false);
+        }}
         onLoginSuccess={handleLoginSuccess}
+        initialClass={assignedClass || undefined}
+        isTrialRewardMode={isTrialRewardMode}
       />
       <VaultReader item={selectedVaultItem} onClose={() => setSelectedVaultItem(null)} />
     </div >

@@ -54,7 +54,7 @@ const QuestDetailModal: React.FC<QuestDetailModalProps> = ({ quest, onClose }) =
             </div>
             <div>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', display: 'block' }}>DAO PATH</span>
-              <span style={{ color: 'var(--accent-violet)', fontWeight: 600 }}>{quest.class_tag.toUpperCase()}</span>
+              <span style={{ color: 'var(--accent-violet)', fontWeight: 600 }}>{quest.class_tag?.toUpperCase() || 'GENERAL'}</span>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import './dashboard.css';
-import type { DemoPlayer } from '../../data/demoPlayer';
 import PlayerCard from './PlayerCard';
 import QuestBoard from './QuestBoard';
 import ArsenalGrid from './ArsenalGrid';
@@ -11,34 +13,13 @@ import ActiveBounties from './ActiveBounties';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 
 interface DashboardProps {
-    user: DemoPlayer;
+    user: any; // Legacy prop
+    isPreview?: boolean;
+    onInteract?: () => void;
 }
 
-const Dashboard = ({ user: mockUser }: DashboardProps) => {
+const Dashboard = ({ user: legacyUser, isPreview, onInteract }: DashboardProps) => {
     const { profile, quests, notifications, bounties, loading, error } = usePlayerProfile();
-
-    // Merge real data with mock defaults
-    const activeUser = {
-        ...mockUser,
-        name: profile?.name ?? mockUser.name,
-        class: profile?.main_class ?? mockUser.class,
-        level: profile?.level ?? mockUser.level,
-        stats: {
-            ...mockUser.stats,
-            hp: {
-                current: profile?.hp ?? mockUser.stats.hp.current,
-                max: profile?.max_hp ?? mockUser.stats.hp.max
-            },
-            xp: {
-                current: profile?.current_xp ?? mockUser.stats.xp.current,
-                max: mockUser.stats.xp.max,
-            },
-            rep: profile?.rep ?? mockUser.stats.rep,
-            streak: profile?.streak ?? mockUser.stats.streak
-        },
-        quests: quests.length > 0 ? (quests as any) : mockUser.quests,
-        // Achievements and Inventory are now fully dynamic from the profile object
-    };
 
     if (loading) {
         return (
@@ -48,47 +29,61 @@ const Dashboard = ({ user: mockUser }: DashboardProps) => {
         );
     }
 
-    if (error) {
+    if (error || !profile) {
         return (
             <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '60vh', gap: '2rem' }}>
                 <div className="glitch-text" data-text="CONNECTION ERROR">CONNECTION ERROR</div>
-                <p style={{ color: 'var(--accent-crimson)', fontFamily: 'Fira Code' }}>{error}</p>
+                <p style={{ color: 'var(--accent-crimson)', fontFamily: 'Fira Code' }}>{error || 'PROFILE NOT FOUND'}</p>
                 <button className="terminal-button" onClick={() => window.location.reload()}>RE-ESTABLISH CONNECTION</button>
             </div>
         );
     }
 
     return (
-        <div id="dashboard-home" className="dashboard-container">
-            <div className="dashboard-bento">
+        <div id="dashboard-home" className={`dashboard-container ${isPreview ? 'preview-mode' : ''}`}>
+            {isPreview && (
+                <>
+                    <div className="preview-banner" onClick={onInteract}>
+                        <div className="banner-content">
+                            <span className="banner-glitch">CULTIVATOR DETECTED AS GUEST. PROGRESS IS VOLATILE.</span>
+                            <button className="banner-cta">[BIND SYSTEM TO PERSIST DATA]</button>
+                        </div>
+                    </div>
+                    <div className="preview-watermark">PREVIEW MODE</div>
+                </>
+            )}
+
+            <div className="dashboard-bento" style={isPreview ? { filter: 'saturate(0.8)', cursor: 'pointer' } : {}} onClick={isPreview ? onInteract : undefined}>
                 {/* Left Column (Main Stats & Intel) */}
                 <div className="dashboard-col-left">
-                    <PlayerCard user={activeUser} delay={0.1} />
+                    <PlayerCard profile={profile} delay={0.1} />
                     <ActiveBounties bounties={bounties} delay={0.2} />
-                    <QuestBoard quests={activeUser.quests} delay={0.3} />
+                    <QuestBoard quests={quests} delay={0.3} onQuestClick={isPreview ? onInteract : undefined} />
                 </div>
 
                 {/* Middle Column (Arsenal & Combat) */}
                 <div className="dashboard-col-middle">
                     <ArsenalGrid 
-                        inventory={profile?.inventory} 
-                        equippedWeapon={profile?.equipped_weapon} 
+                        inventory={profile.inventory} 
+                        equippedWeapon={profile.equipped_weapon} 
                         delay={0.4} 
+                        onItemClick={isPreview ? onInteract : undefined}
                     />
-                    <CombatPreview delay={0.5} />
+                    <CombatPreview delay={0.5} onCombatClick={isPreview ? onInteract : undefined} />
                 </div>
 
                 {/* Right Column (Personal Records & Achievements) */}
                 <div className="dashboard-col-right">
-                    <PersonalRecordsTeaser currentUser={activeUser} delay={0.6} />
+                    <PersonalRecordsTeaser profile={profile} delay={0.6} onRecordClick={isPreview ? onInteract : undefined} />
                     <AchievementGrid 
-                        achievements={profile?.achievements} 
-                        featuredAchievement={profile?.featured_achievement} 
+                        achievements={profile.achievements} 
+                        featuredAchievement={profile.featured_achievement} 
                         delay={0.7} 
+                        onAchievementClick={isPreview ? onInteract : undefined}
                     />
                     <SystemLog 
                         notifications={notifications} 
-                        playerName={activeUser.name} 
+                        playerName={profile.name} 
                         delay={0.8} 
                     />
                 </div>

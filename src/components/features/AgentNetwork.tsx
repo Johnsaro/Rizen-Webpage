@@ -88,11 +88,21 @@ const AgentNetwork: React.FC = () => {
 
                 <div className="agent-grid">
                     {agentsData.map((agent, index) => (
-                        <div
+                        <button
                             key={agent.id}
                             className="agent-card reveal visible"
-                            style={{ transitionDelay: `${index * 0.1}s` }}
-                            tabIndex={0}
+                            style={{ 
+                                transitionDelay: `${index * 0.1}s`,
+                                background: 'none',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                textAlign: 'left',
+                                padding: '1.5rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                                color: 'inherit'
+                            }}
                             aria-label={`Agent ${agent.name}, ${agent.role}`}
                         >
                             <div className="agent-card__header">
@@ -123,7 +133,7 @@ const AgentNetwork: React.FC = () => {
                                     </div>
                                 </div>
                             )}
-                        </div>
+                        </button>
                     ))}
                 </div>
             </div>

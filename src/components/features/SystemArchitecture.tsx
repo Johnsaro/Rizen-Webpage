@@ -72,7 +72,7 @@ const SystemArchitecture: React.FC = () => {
                                     style={{ '--angle': `${node.angle}deg` } as React.CSSProperties}
                                 >
                                     <div className="orbit-node-anti-spin">
-                                        <div className="orbit-node" onClick={() => handleNodeClick(node.path)}>
+                                        <button className="orbit-node" onClick={() => handleNodeClick(node.path)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', display: 'block', width: '100%', height: '100%' }}>
                                             <div className="node-content">
                                                 <div className="node-icon">{node.icon}</div>
                                                 <div className="node-short-title">{node.title}</div>
@@ -81,7 +81,7 @@ const SystemArchitecture: React.FC = () => {
                                                 <div className="weapon-tag">{node.tag}</div>
                                                 <p className="node-desc">{node.desc}</p>
                                             </div>
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -97,13 +97,18 @@ const SystemArchitecture: React.FC = () => {
                     </div>
                     <div className="mobile-nodes">
                         {orbitNodes.map(node => (
-                            <div className="bento-item mobile-node-card tilt-card" key={`mobile-${node.id}`} onClick={() => handleNodeClick(node.path)}>
+                            <button 
+                                className="bento-item mobile-node-card tilt-card" 
+                                key={`mobile-${node.id}`} 
+                                onClick={() => handleNodeClick(node.path)}
+                                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'left', padding: '1.5rem', cursor: 'pointer', display: 'block', width: '100%' }}
+                            >
                                 <div className="weapon-tag">{node.tag}</div>
-                                <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', marginTop: '0', fontSize: '1.2rem' }}>
+                                <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', marginTop: '0', fontSize: '1.2rem', color: 'inherit' }}>
                                     <span>{node.icon}</span> {node.title}
                                 </h4>
                                 <p style={{ color: 'var(--text-dim)', margin: 0 }}>{node.desc}</p>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </div>

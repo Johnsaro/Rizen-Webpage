@@ -10,7 +10,7 @@ import { usePlayerProfile } from '../hooks/usePlayerProfile';
 const CommandCenter: React.FC = () => {
     const { signOut } = useAuth();
     const { profile } = usePlayerProfile();
-    const [activeTab, setActiveTab] = useState('bounty'); // Default to bounty as requested
+    const [activeTab, setActiveTab] = useState('overview');
 
     useEffect(() => {
         // Sync hash with tab for deep linking
@@ -18,7 +18,7 @@ const CommandCenter: React.FC = () => {
             const hash = window.location.hash;
             if (hash === '#/command-center/overview') setActiveTab('overview');
             else if (hash === '#/command-center/users') setActiveTab('users');
-            else setActiveTab('bounty');
+            else setActiveTab('overview');
         };
 
         window.addEventListener('hashchange', handleHash);

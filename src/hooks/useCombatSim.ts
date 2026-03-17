@@ -1,3 +1,6 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import { useState } from 'react';
 
 export type CombatState = 'idle' | 'active' | 'victory' | 'defeat';
@@ -46,7 +49,7 @@ export const useCombatSim = () => {
       setShakeTarget(null);
       if (isCorrect && monsterHP - 34 <= 0) {
         setCombatState('victory');
-        setCombatMessage('ANOMALY_NEUTRALIZED: PROTOCOL_STABILIZED.');
+        setCombatMessage('ANOMALY PURGED. SPIRITUAL ENERGY DETECTED. INITIALIZING DATA PERMANENCE...');
       } else if (!isCorrect && playerHP - 34 <= 0) {
         setCombatState('defeat');
         setCombatMessage('CRITICAL_FAILURE: SYSTEM_RECOVERY_REQUIRED.');
@@ -56,7 +59,7 @@ export const useCombatSim = () => {
           setCombatMessage('FETCHING_NEXT_QUERY...');
         } else {
           setCombatState('victory');
-          setCombatMessage('ANOMALY_NEUTRALIZED: PROTOCOL_STABILIZED.');
+          setCombatMessage('ANOMALY PURGED. SPIRITUAL ENERGY DETECTED. INITIALIZING DATA PERMANENCE...');
         }
       }
       setIsCombatAnimating(false);

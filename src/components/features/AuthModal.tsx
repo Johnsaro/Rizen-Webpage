@@ -1,3 +1,6 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -6,9 +9,11 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess?: () => void;
+  initialClass?: string;
+  isTrialRewardMode?: boolean;
 }
 
-const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewardMode }: AuthModalProps) => {
   const { signIn, signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +26,24 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
     name: '',
     email: '',
     password: '',
-    class: 'Shadow Arts'
+    class: initialClass || 'Shadow Arts'
   });
+
+  // Handle initialClass or isTrialRewardMode changes when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      if (isTrialRewardMode || initialClass) {
+        setMode('register');
+      }
+      
+      if (initialClass) {
+        setFormData(prev => ({
+          ...prev,
+          class: initialClass
+        }));
+      }
+    }
+  }, [isOpen, initialClass, isTrialRewardMode]);
 
   // Clear timeouts on unmount (W09)
   useEffect(() => {
@@ -39,13 +60,13 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
           name: '',
           email: '',
           password: '',
-          class: 'Shadow Arts'
+          class: initialClass || 'Shadow Arts'
         });
         setErrorMessage('');
         setStatus('idle');
       }
     }
-  }, [isOpen, status]);
+  }, [isOpen, status, initialClass]);
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -196,8 +217,25 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
           <span className="close-icon-text">×</span>
         </button>
         <div className="manifesto-glitch auth-title">
-          {mode === 'login' ? 'NODE ACCESS' : 'REQUEST INVITATION'}
+          {isTrialRewardMode ? 'CLAIM YOUR SPOILS' : (mode === 'login' ? 'NODE ACCESS' : 'REQUEST INVITATION')}
         </div>
+
+        {isTrialRewardMode && (
+          <div className="auth-highlight" style={{ 
+            color: 'var(--accent-cyan)', 
+            fontSize: '0.75rem', 
+            textAlign: 'center', 
+            marginBottom: '1.5rem',
+            fontFamily: 'Fira Code',
+            letterSpacing: '1px',
+            border: '1px solid var(--accent-cyan)',
+            padding: '0.5rem',
+            background: 'rgba(0, 243, 255, 0.05)',
+            animation: 'pulse 2s infinite'
+          }}>
+            VICTORY DETECTED. INITIALIZE LINK TO CLAIM +1,500 SPIRIT STONES.
+          </div>
+        )}
 
         <form onSubmit={handleAuth} style={{ width: '100%' }}>
           {mode === 'register' && (

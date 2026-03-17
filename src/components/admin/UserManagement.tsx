@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { PlayerProfile } from '../../hooks/usePlayerProfile';
+import './UserManagement.css';
+
+const PAGE_SIZE = 20;
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<PlayerProfile[]>([]);
@@ -12,6 +15,8 @@ const UserManagement: React.FC = () => {
   const [suspendUntil, setSuspendUntil] = useState('');
   const [durationOption, setDurationOption] = useState<string>('24h');
   const [updating, setUpdating] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
   const durationOptions = [
     { label: '1 HOUR', value: '1h' },
@@ -45,30 +50,28 @@ const UserManagement: React.FC = () => {
     }
   }, [actionModal, durationOption]);
 
-  const fetchUsers = async (isManual = false) => {
+  const [syncFlash, setSyncFlash] = useState(false);
+
+  const fetchUsers = async (isManual = false, page = currentPage) => {
     setLoading(true);
     try {
-      // Use .or to catch both false and NULL is_admin values
-      // This ensures new users who haven't had the default 'false' applied yet are still seen
-      const { data, error } = await supabase
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
         .from('profiles')
-        .select('*')
+        .select('*', { count: 'exact' })
         .or('is_admin.eq.false,is_admin.is.null')
-        .order('level', { ascending: false });
-      
+        .order('level', { ascending: false })
+        .range(from, to);
+
       if (error) throw error;
       setUsers(data || []);
-      
-      // Briefly show success if it's a manual refresh
+      if (count !== null) setTotalCount(count);
+
       if (isManual) {
-        const btn = document.querySelector('.abc-sync-btn');
-        if (btn) {
-          const originalText = btn.innerHTML;
-          btn.innerHTML = 'DATABASE SYNCED ✓';
-          setTimeout(() => {
-            btn.innerHTML = originalText;
-          }, 2000);
-        }
+        setSyncFlash(true);
+        setTimeout(() => setSyncFlash(false), 2000);
       }
     } catch (err: any) {
       console.error('Error fetching users:', err);
@@ -78,8 +81,15 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    fetchUsers(false, page);
+  };
+
   useEffect(() => {
-    fetchUsers(false);
+    fetchUsers(false, 0);
   }, []);
 
   const handleAction = async () => {
@@ -150,7 +160,9 @@ const UserManagement: React.FC = () => {
     <div className="admin-section">
       <div className="abc-controls">
         <h2 className="abc-h1" style={{ fontSize: '1.5rem', margin: 0 }}>Registered <span>Operatives</span></h2>
-        <button className="abc-sync-btn" onClick={() => fetchUsers(true)}>REFRESH DATABASE</button>
+        <button className="abc-sync-btn" onClick={() => fetchUsers(true)}>
+          {syncFlash ? 'DATABASE SYNCED ✓' : 'REFRESH DATABASE'}
+        </button>
       </div>
 
       {error && <div className="abc-error-banner">{error}</div>}
@@ -207,6 +219,39 @@ const UserManagement: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {!loading && totalPages > 1 && (
+        <div className="abc-pagination">
+          <button
+            className="abc-page-btn"
+            disabled={currentPage === 0}
+            onClick={() => goToPage(currentPage - 1)}
+          >
+            ◄ PREV
+          </button>
+          <div className="abc-page-numbers">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`abc-page-num ${currentPage === i ? 'active' : ''}`}
+                onClick={() => goToPage(i)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+          <button
+            className="abc-page-btn"
+            disabled={currentPage >= totalPages - 1}
+            onClick={() => goToPage(currentPage + 1)}
+          >
+            NEXT ►
+          </button>
+          <span className="abc-page-info">
+            {currentPage * PAGE_SIZE + 1}–{Math.min((currentPage + 1) * PAGE_SIZE, totalCount)} OF {totalCount}
+          </span>
         </div>
       )}
 
