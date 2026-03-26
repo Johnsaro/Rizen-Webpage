@@ -39,8 +39,9 @@ export const builds: Build[] = [
     image: '/assets/builds/rizen-mobile.png',
     created_date: '2026-03-08',
     intel: {
-      brief: 'The official v1.0.0 release of the Rizen mobile cultivator interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI trial generation, and real-time synchronization.',
+      brief: 'The official v2.2.0 release of the Rizen mobile cultivator interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI trial generation, real-time synchronization, and a local-only Merchant\'s Log for expense tracking.',
       patchNotes: [
+        'v2.2.0: Introduced Merchant\'s Log (local SQLite expense tracker) with Coin Purse & Ledger tabs. Earn Qi for logging expenses.',
         'v1.0.0: Official production release. Stability pass and final asset integration.',
         'v0.4.0: Heavenly Merit system implemented.',
         'v0.3.5: Combat system Phase 1-4 completed.',

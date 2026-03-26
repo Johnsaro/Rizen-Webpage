@@ -1555,7 +1555,6 @@
     font-size: 0.85rem;
     flex-grow: 1;
     outline: none;
-    caret-color: transparent;
     text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
     padding: 0;
     margin: 0;

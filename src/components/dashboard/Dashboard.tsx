@@ -2,12 +2,14 @@
  * Owner: Alex | Last updated by: Gemini, 2026-03-14 
  */
 import './dashboard.css';
+import './cultivation-v2.css';
 import PlayerCard from './PlayerCard';
-import QuestBoard from './QuestBoard';
-import ArsenalGrid from './ArsenalGrid';
-import AchievementGrid from './AchievementGrid';
-import CombatPreview from './CombatPreview';
-import PersonalRecordsTeaser from './PersonalRecordsTeaser';
+import RealmProgression from './RealmProgression';
+import DaoHeartPanel from './DaoHeartPanel';
+import ArtifactPillPanel from './ArtifactPillPanel';
+import EventFeed from './EventFeed';
+import TrialChamber from './TrialChamber';
+import SectTransmissions from './SectTransmissions';
 import SystemLog from './SystemLog';
 import ActiveBounties from './ActiveBounties';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
@@ -53,38 +55,29 @@ const Dashboard = ({ user: legacyUser, isPreview, onInteract }: DashboardProps) 
                 </>
             )}
 
-            <div className="dashboard-bento" style={isPreview ? { filter: 'saturate(0.8)', cursor: 'pointer' } : {}} onClick={isPreview ? onInteract : undefined}>
-                {/* Left Column (Main Stats & Intel) */}
+            <div className="v2-dashboard-grid" style={isPreview ? { filter: 'saturate(0.8)', cursor: 'pointer' } : {}} onClick={isPreview ? onInteract : undefined}>
+                {/* Left Column: Trial Chamber & Transmissions */}
                 <div className="dashboard-col-left">
-                    <PlayerCard profile={profile} delay={0.1} />
-                    <ActiveBounties bounties={bounties} delay={0.2} />
-                    <QuestBoard quests={quests} delay={0.3} onQuestClick={isPreview ? onInteract : undefined} />
+                    <TrialChamber quests={quests} delay={0.1} />
+                    <SectTransmissions playerName={profile.name} delay={0.2} />
                 </div>
 
-                {/* Middle Column (Arsenal & Combat) */}
-                <div className="dashboard-col-middle">
-                    <ArsenalGrid 
-                        inventory={profile.inventory} 
-                        equippedWeapon={profile.equipped_weapon} 
-                        delay={0.4} 
-                        onItemClick={isPreview ? onInteract : undefined}
-                    />
-                    <CombatPreview delay={0.5} onCombatClick={isPreview ? onInteract : undefined} />
+                {/* Center Column: Realm, Stats, Dao Heart, Artifacts */}
+                <div className="v2-center-col">
+                    <RealmProgression realm={profile.main_class || "Mortal"} rank={profile.level || 1} delay={0.3} />
+                    <PlayerCard profile={profile} delay={0.4} />
+                    <DaoHeartPanel streak={profile.streak || 0} delay={0.5} />
+                    <ArtifactPillPanel profile={profile} delay={0.6} />
                 </div>
 
-                {/* Right Column (Personal Records & Achievements) */}
+                {/* Right Column: Event Feed, Bounties, Log */}
                 <div className="dashboard-col-right">
-                    <PersonalRecordsTeaser profile={profile} delay={0.6} onRecordClick={isPreview ? onInteract : undefined} />
-                    <AchievementGrid 
-                        achievements={profile.achievements} 
-                        featuredAchievement={profile.featured_achievement} 
-                        delay={0.7} 
-                        onAchievementClick={isPreview ? onInteract : undefined}
-                    />
+                    <EventFeed notifications={notifications} delay={0.7} />
+                    <ActiveBounties bounties={bounties} delay={0.8} />
                     <SystemLog 
                         notifications={notifications} 
                         playerName={profile.name} 
-                        delay={0.8} 
+                        delay={0.9} 
                     />
                 </div>
             </div>

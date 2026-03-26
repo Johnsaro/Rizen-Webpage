@@ -4,12 +4,14 @@ import './Navbar.css';
 interface NavbarProps {
   setAuthModalOpen: (open: boolean) => void;
   setIsHovering: (hover: boolean) => void;
-  currentView: 'home' | 'builds' | 'community' | 'community-event' | 'admin-console';
-  setCurrentView: (view: 'home' | 'builds' | 'community' | 'community-event') => void;
+  currentView: 'home' | 'dashboard' | 'builds' | 'community' | 'community-event' | 'admin-console';
+  setCurrentView: (view: 'home' | 'dashboard' | 'builds' | 'community' | 'community-event') => void;
   isLoggedIn: boolean;
   user: unknown;
   onLogout: () => void;
   navigateTo: (hash: string) => void;
+  activeSection: string;
+  setActiveSection: (section: string) => void;
 }
 
 const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
@@ -43,11 +45,10 @@ const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
   );
 };
 
-const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout, navigateTo }) => {
+const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout, navigateTo, activeSection, setActiveSection }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
     const sections = isLoggedIn
-      ? ['dashboard-home', 'dashboard-quests', 'dashboard-arsenal', 'dashboard-combat', 'dashboard-achievements', 'dashboard-records']
+      ? ['dashboard-home', 'dashboard-quests', 'dashboard-arsenal', 'dashboard-achievements', 'dashboard-records']
       : ['hero', 'stakes', 'disciplines', 'records', 'arsenal', 'manifesto'];
 
     sections.forEach(id => {
@@ -91,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, [isLoggedIn]);
+  }, [isLoggedIn, setActiveSection]);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
@@ -113,7 +114,7 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
 
   const handleLogoClick = () => {
     if (isLoggedIn) {
-      navigateTo('#dashboard-home');
+      navigateTo('#/dashboard');
     } else {
       navigateTo('#/');
       window.scrollTo({ top: 0, behavior: 'smooth' });

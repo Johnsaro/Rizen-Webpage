@@ -21,6 +21,7 @@ const AdminOverview: React.FC = () => {
   const [activityFeed, setActivityFeed] = useState<any[]>([]);
   const [operationalQueue, setOperationalQueue] = useState<any[]>([]);
   const [recentSignups, setRecentSignups] = useState<any[]>([]);
+  const [expandedSignupId, setExpandedSignupId] = useState<string | null>(null);
   const [signupVelocity, setSignupVelocity] = useState({ today: 0, avg7d: 0 });
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const [longTermMetrics, setLongTermMetrics] = useState({
@@ -109,7 +110,8 @@ const AdminOverview: React.FC = () => {
       const todaySignups = profiles.filter(p => new Date(p.created_at) >= todayStart);
       const last7dSignups = profiles.filter(p => new Date(p.created_at) >= sevenDaysAgo);
       
-      setRecentSignups(profiles.slice(0, 10));
+      const sortedSignups = [...profiles].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setRecentSignups(sortedSignups);
       setSignupVelocity({
         today: todaySignups.length,
         avg7d: Math.round(last7dSignups.length / 7)
@@ -492,7 +494,7 @@ const AdminOverview: React.FC = () => {
               <span>AVG: {signupVelocity.avg7d}</span>
             </div>
           </div>
-          <div className="card-content">
+          <div className="card-content scroll-y-large">
             <table className="signup-table">
               <thead>
                 <tr>
@@ -503,13 +505,44 @@ const AdminOverview: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {recentSignups.map((s, i) => (
-                  <tr key={i}>
-                    <td>{s.name}</td>
-                    <td>{s.main_class}</td>
-                    <td>{s.level}</td>
-                    <td>{new Date(s.created_at).toLocaleDateString()}</td>
-                  </tr>
+                {recentSignups.map((s) => (
+                  <React.Fragment key={s.id || s.user_id}>
+                    <tr 
+                      onClick={() => setExpandedSignupId(expandedSignupId === (s.id || s.user_id) ? null : (s.id || s.user_id))}
+                      style={{ cursor: 'pointer', backgroundColor: expandedSignupId === (s.id || s.user_id) ? 'rgba(0, 255, 170, 0.05)' : 'transparent' }}
+                    >
+                      <td>{s.name}</td>
+                      <td>{s.main_class}</td>
+                      <td>{s.level}</td>
+                      <td>{new Date(s.created_at).toLocaleDateString()}</td>
+                    </tr>
+                    {expandedSignupId === (s.id || s.user_id) && (
+                      <tr className="expanded-row">
+                        <td colSpan={4} style={{ padding: '1rem', backgroundColor: 'rgba(0, 0, 0, 0.3)', borderTop: '1px solid rgba(0, 255, 170, 0.1)' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.85rem' }}>
+                            <div>
+                              <strong style={{ color: 'var(--hk-cyan)', display: 'block', marginBottom: '4px' }}>EXACT JOIN TIME:</strong>
+                              {new Date(s.created_at).toLocaleString()}
+                            </div>
+                            <div>
+                              <strong style={{ color: 'var(--hk-cyan)', display: 'block', marginBottom: '4px' }}>PLATFORM / ORIGIN:</strong>
+                              <span style={{ opacity: s.origin_platform ? 1 : 0.7 }}>
+                                {s.origin_platform ? s.origin_platform.toUpperCase() : 'Unknown (Not tracked by backend)'}
+                              </span>
+                            </div>
+                            <div>
+                              <strong style={{ color: 'var(--hk-cyan)', display: 'block', marginBottom: '4px' }}>OPERATIVE ID:</strong>
+                              <span style={{ opacity: 0.7, fontFamily: 'monospace' }}>{s.user_id}</span>
+                            </div>
+                            <div>
+                              <strong style={{ color: 'var(--hk-cyan)', display: 'block', marginBottom: '4px' }}>LAST SEEN:</strong>
+                              {new Date(s.updated_at || s.created_at).toLocaleString()}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

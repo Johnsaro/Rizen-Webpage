@@ -61,7 +61,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
 
     const handleJoinClick = () => {
         if (!user) {
-            window.location.hash = '#/login';
+            window.dispatchEvent(new Event('open-auth-modal'));
             return;
         }
 
@@ -167,7 +167,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                         </div>
 
                         {!user ? (
-                            <button className="bb-hero-btn" onClick={() => window.location.hash = '#/login'}>
+                            <button className="bb-hero-btn" onClick={() => window.dispatchEvent(new Event('open-auth-modal'))}>
                                 LOGIN TO START HUNTING
                             </button>
                         ) : !hasJoined ? (

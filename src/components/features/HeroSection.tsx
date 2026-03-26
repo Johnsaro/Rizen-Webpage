@@ -2,6 +2,7 @@
  * Owner: Alex | Last updated by: Gemini, 2026-03-14 
  */
 import { useEffect, useState, useRef } from 'react'
+import { supabase } from '../../lib/supabase'
 import Terminal from './Terminal'
 import PhoneMockup from './PhoneMockup'
 import ScannerOverlay from '../layout/ScannerOverlay'
@@ -36,8 +37,29 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const [scanned, setScanned] = useState(false);
   const [typedText, setTypedText] = useState("");
+  const [appVersion, setAppVersion] = useState("v2.2.0"); // Default fallback
   const phoneRef = useRef<HTMLDivElement>(null);
   const fullText = "Rise or Stagnate. The choice is yours, Cultivator.";
+
+  // Fetch dynamic version from Supabase
+  useEffect(() => {
+    const fetchVersion = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('app_config')
+          .select('app_version')
+          .eq('id', 1)
+          .maybeSingle();
+          
+        if (data && data.app_version) {
+          setAppVersion(data.app_version);
+        }
+      } catch (err) {
+        console.error("Error fetching app version:", err);
+      }
+    };
+    fetchVersion();
+  }, []);
 
   // 1. SCAN COMPLETION
   const onScanComplete = () => {
@@ -127,7 +149,7 @@ const HeroSection = ({
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             Get the App
-            <span className="hero-apk-chip">APK · Android</span>
+            <span className="hero-apk-chip">APK · Android · {appVersion}</span>
           </a>
         </div>
 

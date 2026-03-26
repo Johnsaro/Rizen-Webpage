@@ -8,12 +8,11 @@ import { supabase } from '../../lib/supabase';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess?: () => void;
+  onLoginSuccess: () => void;
   initialClass?: string;
-  isTrialRewardMode?: boolean;
 }
 
-const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewardMode }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalProps) => {
   const { signIn, signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,18 +31,15 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewar
   // Handle initialClass or isTrialRewardMode changes when modal is opened
   useEffect(() => {
     if (isOpen) {
-      if (isTrialRewardMode || initialClass) {
-        setMode('register');
-      }
-      
       if (initialClass) {
+        setMode('register');
         setFormData(prev => ({
           ...prev,
           class: initialClass
         }));
       }
     }
-  }, [isOpen, initialClass, isTrialRewardMode]);
+  }, [isOpen, initialClass]);
 
   // Clear timeouts on unmount (W09)
   useEffect(() => {
@@ -133,17 +129,39 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewar
       } else {
         const result = await signUp(formData.email, formData.password, {
           full_name: sanitizedName,
-          class: formData.class
+          class: formData.class,
+          origin_platform: 'browser'
         });
         if (result.error) throw result.error;
 
+        // Map sect display names → internal class names used by Flutter app
+        const sectToClass: Record<string, string> = {
+          'Shadow Arts': 'Sec Analyst',
+          'Realm Architect': 'Game Developer',
+          'Formation Master': 'Web Developer',
+          'Artifact Refiner': 'Mobile Developer',
+          // Lifestyle sects keep their sect name as class (no Flutter mapping yet)
+          'Body Cultivator': 'Body Cultivator',
+          'Scripture Keeper': 'Scripture Keeper',
+          'Inscription Master': 'Inscription Master',
+        };
+        const resolvedClass = sectToClass[formData.class] || formData.class;
+
         // Create profile row so dashboard + Flutter app see real data immediately
         if (result.user) {
-          await supabase.from('profiles').upsert({
+          console.log('[AuthModal] Creating profile for new user:', {
             user_id: result.user.id,
             name: sanitizedName,
-            main_class: formData.class,
+            sect: formData.class,
+            main_class: resolvedClass,
+          });
+
+          const { error: profileError } = await supabase.from('profiles').upsert({
+            user_id: result.user.id,
+            name: sanitizedName,
+            main_class: resolvedClass,
             side_class: '',
+            sect: formData.class,
             level: 1,
             current_xp: 0,
             rep: 0,
@@ -163,8 +181,17 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewar
             monsters_killed: 0,
             equipped_cosmetics: {},
             onboarding_complete: false,
+            origin_platform: 'browser',
             updated_at: new Date().toISOString(),
           }, { onConflict: 'user_id' });
+
+          if (profileError) {
+            console.error('[AuthModal] Profile creation FAILED:', profileError);
+          } else {
+            console.log('[AuthModal] Profile created successfully');
+          }
+        } else {
+          console.warn('[AuthModal] signUp succeeded but no user object returned');
         }
       }
 
@@ -217,25 +244,8 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass, isTrialRewar
           <span className="close-icon-text">×</span>
         </button>
         <div className="manifesto-glitch auth-title">
-          {isTrialRewardMode ? 'CLAIM YOUR SPOILS' : (mode === 'login' ? 'NODE ACCESS' : 'REQUEST INVITATION')}
+          {mode === 'login' ? 'NODE ACCESS' : 'REQUEST INVITATION'}
         </div>
-
-        {isTrialRewardMode && (
-          <div className="auth-highlight" style={{ 
-            color: 'var(--accent-cyan)', 
-            fontSize: '0.75rem', 
-            textAlign: 'center', 
-            marginBottom: '1.5rem',
-            fontFamily: 'Fira Code',
-            letterSpacing: '1px',
-            border: '1px solid var(--accent-cyan)',
-            padding: '0.5rem',
-            background: 'rgba(0, 243, 255, 0.05)',
-            animation: 'pulse 2s infinite'
-          }}>
-            VICTORY DETECTED. INITIALIZE LINK TO CLAIM +1,500 SPIRIT STONES.
-          </div>
-        )}
 
         <form onSubmit={handleAuth} style={{ width: '100%' }}>
           {mode === 'register' && (

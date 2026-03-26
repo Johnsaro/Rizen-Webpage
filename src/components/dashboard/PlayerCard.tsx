@@ -26,7 +26,7 @@ const PlayerCard = ({ profile, delay = 0.1 }: { profile: PlayerProfile, delay?: 
                 </div>
                 <div className="player-info">
                     <h2 className="player-name">{profile.name}</h2>
-                    <div className="player-class-badge">{profile.main_class}</div>
+                    <div className="player-class-badge">{profile.main_class || 'Unclassified'}</div>
                 </div>
                 <div className="player-rep">
                     <div className="rep-label">SPIRIT STONES</div>

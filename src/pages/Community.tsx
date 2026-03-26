@@ -4,13 +4,21 @@ import Blog from './Blog';
 import Docs from './Docs';
 import CommunityEvents from './CommunityEvents';
 import CommunityEventDetail from './CommunityEventDetail';
+import Roadmap from './Roadmap';
 
 interface CommunityProps {
-    subView: 'hub' | 'docs' | 'events' | 'blog' | 'discord';
+    subView: 'hub' | 'docs' | 'events' | 'blog' | 'discord' | 'roadmap';
 }
 
 const CommunityHub: React.FC = () => {
     const cards = [
+        {
+            id: 'roadmap',
+            title: 'Roadmap (Upcoming Updates)',
+            desc: 'See what features and updates are currently in development for Rizen.',
+            icon: '🚀',
+            activity: 'Now, Next, Later'
+        },
         {
             id: 'docs',
             title: 'Docs',
@@ -111,8 +119,9 @@ const Community: React.FC<CommunityProps> = ({ subView }) => {
             {subView === 'hub' ? <CommunityHub /> :
                 subView === 'blog' ? <Blog /> :
                     subView === 'docs' ? <Docs /> :
-                        subView === 'events' ? <CommunityEvents /> :
-                            <CommunitySubpage subView={subView} />}
+                        subView === 'roadmap' ? <Roadmap /> :
+                            subView === 'events' ? <CommunityEvents /> :
+                                <CommunitySubpage subView={subView} />}
         </>
     );
 };

@@ -1,12 +1,11 @@
 /* 
- * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-19 
  */
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import AnnouncementBar from './components/AnnouncementBar'
 import HeroSection from './components/features/HeroSection'
-import CombatSimulator from './components/features/CombatSimulator'
 import AuthModal from './components/features/AuthModal'
 import VaultReader from './components/features/VaultReader'
 import BuildDetail from './components/features/BuildDetail'
@@ -20,7 +19,6 @@ import AdminBountyConsole from './pages/AdminBountyConsole'
 import { useAuth } from './context/AuthContext'
 import { usePlayerProfile } from './hooks/usePlayerProfile'
 import type { PlayerProfile } from './hooks/usePlayerProfile'
-import { useCombatSim } from './hooks/useCombatSim'
 import { useTerminal } from './hooks/useTerminal'
 import { useInitiation } from './hooks/useInitiation'
 import { vaultContent } from './data/vaultContent'
@@ -85,11 +83,11 @@ function App() {
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
   const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [isTrialRewardMode, setIsTrialRewardMode] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'builds' | 'community' | 'community-event' | 'admin-console' | 'command-center'>('home');
-  const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord'>('hub');
+  const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'builds' | 'community' | 'community-event' | 'admin-console' | 'command-center'>('home');
+  const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord' | 'roadmap'>('hub');
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
+  const [activeSection, setActiveSection] = useState('hero');
 
   // Centralized Navigation Logic (Task #4)
   const navigateTo = useCallback((hash: string) => {
@@ -109,31 +107,36 @@ function App() {
       window.location.hash = hash;
     }
   }, [currentView]);
+const handleLoginSuccess = () => {
+  setAuthModalOpen(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const handleLoginSuccess = () => {
-    setAuthModalOpen(false);
-    setIsTrialRewardMode(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Admin routing fork after login success (Task #1)
-    if (isAdmin) {
-      navigateTo('#/command-center');
-    }
-  };
+  // Admin routing fork after login success (Task #1)
+  if (isAdmin) {
+    navigateTo('#/command-center');
+  } else {
+    navigateTo('#/dashboard');
+  }
+};
 
-  const handleLogout = () => {
-    signOut();
-    setCurrentView('home');
-    navigateTo('#/');
-  };
-
+const handleLogout = () => {
+  signOut();
+  setCurrentView('home');
+  navigateTo('#/');
+};
   // Simple Hash-based Router
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash || '#/';
       
       // Fix state pollution (W03)
-      if (hash === '#/admin/bounty-console' || hash.startsWith('#/command-center')) {
+      if (hash === '#/dashboard') {
+        if (!isLoggedIn) {
+          navigateTo('#/');
+          return;
+        }
+        setCurrentView('dashboard');
+      } else if (hash === '#/admin/bounty-console' || hash.startsWith('#/command-center')) {
         if (!isLoggedIn || !isAdmin) {
           navigateTo('#/');
           return;
@@ -169,6 +172,8 @@ function App() {
             setCommunitySubView('blog');
           } else if (subId.startsWith('discord')) {
             setCommunitySubView('discord');
+          } else if (subId.startsWith('roadmap')) {
+            setCommunitySubView('roadmap');
           } else {
             setCommunitySubView('hub');
           }
@@ -200,10 +205,14 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [isLoggedIn, isAdmin, navigateTo]);
 
-  // Auto-redirect admin on home view (Task #1)
+  // Auto-redirect logged-in users on home view (Task #1)
   useEffect(() => {
-    if (isLoggedIn && isAdmin && currentView === 'home') {
-      navigateTo('#/command-center');
+    if (isLoggedIn && currentView === 'home') {
+      if (isAdmin) {
+        navigateTo('#/command-center');
+      } else {
+        navigateTo('#/dashboard');
+      }
     }
   }, [isLoggedIn, isAdmin, currentView, navigateTo]);
 
@@ -216,19 +225,6 @@ function App() {
   };
 
   const {
-    combatState,
-    playerHP,
-    monsterHP,
-    currentQuestionIndex,
-    combatMessage,
-    isCombatAnimating,
-    shakeTarget,
-    combatQuestions,
-    startCombat,
-    handleCombatAnswer
-  } = useCombatSim();
-
-  const {
     systemLog,
     setSystemLog,
     inputValue,
@@ -238,16 +234,28 @@ function App() {
     handleReportTask
   } = useTerminal();
 
+  // Ensure window starts at top on view change or refresh (Task #4)
+  useEffect(() => {
+    // Disable browser's automatic scroll restoration immediately
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+    
+    // For longer pages like the dashboard, a double-check helps if content renders staggard
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [currentView, authLoading]);
+
   // Dynamic Browser Tab Titles (Task #1)
   useEffect(() => {
-    if (combatState === 'active') {
-      document.title = "⚠️ SYSTEM BREACH // Combat Active";
-    } else if (combatState === 'victory') {
-      document.title = "✨ CULTIVATION SUCCESSFUL";
-    } else {
-      document.title = "RIZEN // Rise or Stagnate";
-    }
-  }, [combatState]);
+    document.title = "RIZEN // Rise or Stagnate";
+  }, []);
 
   const {
     step,
@@ -332,17 +340,6 @@ function App() {
     }
   }, [step, assignedClass, setSystemLog]);
 
-  // Auto-open AuthModal on combat victory for guest users (Task #1)
-  useEffect(() => {
-    if (combatState === 'victory' && !isLoggedIn) {
-      const timer = setTimeout(() => {
-        setIsTrialRewardMode(true);
-        setAuthModalOpen(true);
-      }, 2000); // 2s delay to let victory message play
-      return () => clearTimeout(timer);
-    }
-  }, [combatState, isLoggedIn]);
-
   // 2. SCROLL REVEAL OBSERVER
   useEffect(() => {
     let observer: IntersectionObserver | null = null;
@@ -395,7 +392,7 @@ function App() {
       {currentView !== 'command-center' && (
         <AnnouncementBar
           label="LATEST RELEASE"
-          message={`${rizenMobile.title} v1.0.0 is now Live`}
+          message={`${rizenMobile.title} v2.2.0 is now Live`}
           ctaText="View Intel"
           ctaLink={`#/builds/${rizenMobile.id}`}
         />
@@ -411,12 +408,23 @@ function App() {
           user={operativeData}
           onLogout={handleLogout}
           navigateTo={navigateTo}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
         />
       )}
 
       {currentView === 'command-center' ? (
         <ProtectedRoute requireAdmin>
           <CommandCenter />
+        </ProtectedRoute>
+      ) : currentView === 'dashboard' ? (
+        <ProtectedRoute>
+          <div style={{ paddingTop: '5rem' }}>
+            <Dashboard 
+              user={operativeData} 
+              isPreview={false} 
+            />
+          </div>
         </ProtectedRoute>
       ) : currentView === 'home' ? (
         <>
@@ -551,27 +559,6 @@ function App() {
                 </div>
               ))}
             </div>
-          </section>
-
-          {/* COMBAT SIMULATOR */}
-          <section className="section-padding threat-bg" id="combat">
-            <div className="centered-header reveal">
-              <span className="status-tag">TRIBULATION_CHAMBER</span>
-              <h2 className="title-large">ENLIGHTENMENT TRIAL</h2>
-              <p className="p-large" style={{ marginTop: '1rem' }}>Rizen is not a passive tracker. To authorize level progression, you must survive the Heavenly Tribulation through proven comprehension.</p>
-            </div>
-            <CombatSimulator
-              state={combatState}
-              playerHP={playerHP}
-              monsterHP={monsterHP}
-              currentQuestionIndex={currentQuestionIndex}
-              message={combatMessage}
-              isAnimating={isCombatAnimating}
-              shakeTarget={shakeTarget}
-              questions={combatQuestions}
-              onStart={startCombat}
-              onAnswer={handleCombatAnswer}
-            />
           </section>
 
           {/* PERSONAL RECORDS SECTION */}
@@ -718,11 +705,9 @@ function App() {
         isOpen={authModalOpen}
         onClose={() => {
           setAuthModalOpen(false);
-          setIsTrialRewardMode(false);
         }}
         onLoginSuccess={handleLoginSuccess}
         initialClass={assignedClass || undefined}
-        isTrialRewardMode={isTrialRewardMode}
       />
       <VaultReader item={selectedVaultItem} onClose={() => setSelectedVaultItem(null)} />
     </div >

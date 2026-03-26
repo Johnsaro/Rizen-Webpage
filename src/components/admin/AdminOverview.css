@@ -192,6 +192,11 @@
     overflow-y: auto;
 }
 
+.scroll-y-large {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 /* ── SIGNUP TABLE ────────────────────────────────────────── */
 .signup-table {
     width: 100%;

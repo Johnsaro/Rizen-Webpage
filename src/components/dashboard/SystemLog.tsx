@@ -97,7 +97,7 @@ const SystemLog: React.FC<SystemLogProps> = ({ notifications, playerName = 'fran
           
           {history.length === 0 && (
             <div className="log-empty-state">
-              &gt; AWAITING_NEW_ENTRIES...<span className="log-cursor">_</span>
+              &gt; AWAITING_NEW_ENTRIES...
             </div>
           )}
         </div>
@@ -115,7 +115,6 @@ const SystemLog: React.FC<SystemLogProps> = ({ notifications, playerName = 'fran
             spellCheck={false}
             autoComplete="off"
           />
-          {inputValue === '' && <span className="log-cursor">_</span>}
         </form>
       </div>
 
