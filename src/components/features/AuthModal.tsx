@@ -134,18 +134,8 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalP
         });
         if (result.error) throw result.error;
 
-        // Map sect display names → internal class names used by Flutter app
-        const sectToClass: Record<string, string> = {
-          'Shadow Arts': 'Sec Analyst',
-          'Realm Architect': 'Game Developer',
-          'Formation Master': 'Web Developer',
-          'Artifact Refiner': 'Mobile Developer',
-          // Lifestyle sects keep their sect name as class (no Flutter mapping yet)
-          'Body Cultivator': 'Body Cultivator',
-          'Scripture Keeper': 'Scripture Keeper',
-          'Inscription Master': 'Inscription Master',
-        };
-        const resolvedClass = sectToClass[formData.class] || formData.class;
+        // V2 uses sect names directly as path names — no mapping needed
+        const resolvedPath = formData.class || 'Formation Master';
 
         // Create profile row so dashboard + Flutter app see real data immediately
         if (result.user) {
@@ -153,31 +143,31 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalP
             user_id: result.user.id,
             name: sanitizedName,
             sect: formData.class,
-            main_class: resolvedClass,
+            main_path: resolvedPath,
           });
 
           const { error: profileError } = await supabase.from('profiles').upsert({
             user_id: result.user.id,
             name: sanitizedName,
-            main_class: resolvedClass,
-            side_class: '',
+            main_path: resolvedPath,
+            side_path: 'Shadow Arts',
             sect: formData.class,
             level: 1,
-            current_xp: 0,
-            rep: 0,
-            class_xp: {},
-            class_level: {},
+            qi: 0,
+            spirit_stones: 0,
+            path_qi: {},
+            path_level: {},
             inventory: {},
-            streak: 0,
-            shields: 0,
+            dao_heart_streak: 0,
+            talismans: 0,
             title: '',
             hp: 100,
             max_hp: 100,
             equipped_weapon: '',
-            active_buffs: {},
+            active_pills: {},
             achievements: {},
             featured_achievement: '',
-            quests_completed: 0,
+            trials_completed: 0,
             monsters_killed: 0,
             equipped_cosmetics: {},
             onboarding_complete: false,

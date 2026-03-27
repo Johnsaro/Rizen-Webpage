@@ -64,9 +64,9 @@ const Dashboard = ({ user: legacyUser, isPreview, onInteract }: DashboardProps) 
 
                 {/* Center Column: Realm, Stats, Dao Heart, Artifacts */}
                 <div className="v2-center-col">
-                    <RealmProgression realm={profile.main_class || "Mortal"} rank={profile.level || 1} delay={0.3} />
+                    <RealmProgression realm={profile.realm || "Mortal"} rank={profile.realm_rank || 1} delay={0.3} />
                     <PlayerCard profile={profile} delay={0.4} />
-                    <DaoHeartPanel streak={profile.streak || 0} delay={0.5} />
+                    <DaoHeartPanel streak={profile.dao_heart_streak || 0} delay={0.5} />
                     <ArtifactPillPanel profile={profile} delay={0.6} />
                 </div>
 

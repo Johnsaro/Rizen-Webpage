@@ -32,11 +32,11 @@ import CommandCenter from './pages/CommandCenter'
 
 const DEFAULT_OPERATIVE: Partial<PlayerProfile> = {
   name: 'CULTIVATOR',
-  main_class: 'Shadow Arts',
+  main_path: 'Shadow Arts',
   level: 1,
-  current_xp: 0,
-  rep: 0,
-  streak: 0,
+  qi: 0,
+  spirit_stones: 0,
+  dao_heart_streak: 0,
   hp: 100,
   max_hp: 100,
 };
@@ -62,7 +62,7 @@ function App() {
     return {
       id: user?.id || 'usr_new_cultivator',
       name: profile?.name || user?.user_metadata?.full_name || user?.email?.split('@')[0].toUpperCase() || DEFAULT_OPERATIVE.name,
-      class: profile?.main_class || user?.user_metadata?.class || DEFAULT_OPERATIVE.main_class,
+      class: profile?.main_path || user?.user_metadata?.class || DEFAULT_OPERATIVE.main_path,
       level: profile?.level || DEFAULT_OPERATIVE.level,
       stats: {
         hp: {
@@ -70,12 +70,12 @@ function App() {
           max: profile?.max_hp || DEFAULT_OPERATIVE.max_hp
         },
         xp: {
-          current: profile?.current_xp || 0,
+          current: profile?.qi || 0,
           max: 1000 // Hardcoded max for demo visualization
         },
-        rep: profile?.rep || 0,
-        streak: profile?.streak || 0,
-        classXP: profile?.class_xp || { recon: 0, exploitation: 0, enumeration: 0 }
+        rep: profile?.spirit_stones || 0,
+        streak: profile?.dao_heart_streak || 0,
+        classXP: profile?.path_qi || {}
       }
     };
   }, [user, profile]);
@@ -205,16 +205,18 @@ const handleLogout = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [isLoggedIn, isAdmin, navigateTo]);
 
-  // Auto-redirect logged-in users on home view (Task #1)
+  // Auto-redirect logged-in users based on role (Task #1)
+  // Also catches the race condition where handleLoginSuccess routes admin to dashboard
+  // before profile has loaded with is_admin flag
   useEffect(() => {
-    if (isLoggedIn && currentView === 'home') {
-      if (isAdmin) {
-        navigateTo('#/command-center');
-      } else {
-        navigateTo('#/dashboard');
-      }
+    if (!isLoggedIn || !profile) return;
+
+    if (isAdmin && currentView === 'dashboard') {
+      navigateTo('#/command-center');
+    } else if (currentView === 'home') {
+      navigateTo(isAdmin ? '#/command-center' : '#/dashboard');
     }
-  }, [isLoggedIn, isAdmin, currentView, navigateTo]);
+  }, [isLoggedIn, isAdmin, profile, currentView, navigateTo]);
 
   const openBuildDetail = (build: Build) => {
     navigateTo(`#/builds/${build.id}`);

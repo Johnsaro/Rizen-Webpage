@@ -9,11 +9,12 @@ export interface PlayerProfile {
   user_id: string;
   name: string;
   level: number;
-  main_class: string;
-  side_classes: string[];
-  current_xp: number;
-  rep: number;
-  streak: number;
+  main_path: string;
+  side_path: string;
+  sect: string;
+  qi: number;
+  spirit_stones: number;
+  dao_heart_streak: number;
   hp: number;
   max_hp: number;
   onboarding_complete: boolean;
@@ -21,12 +22,22 @@ export interface PlayerProfile {
   account_status?: 'active' | 'banned' | 'suspended';
   ban_reason?: string;
   suspended_until?: string;
-  achievements?: Record<string, string>; // ID: Date unlocked
+  achievements?: Record<string, string>;
   featured_achievement?: string;
-  class_xp?: Record<string, number>;
-  inventory?: Record<string, number>; // ItemID: Count
+  path_qi?: Record<string, number>;
+  path_level?: Record<string, number>;
+  inventory?: Record<string, number>;
   equipped_weapon?: string;
   equipped_cosmetics?: Record<string, string>;
+  talismans?: number;
+  title?: string;
+  realm?: string;
+  realm_rank?: number;
+  dao_heart_state?: string;
+  trials_completed?: number;
+  monsters_killed?: number;
+  active_pills?: Record<string, string>;
+  origin_platform?: string;
 }
 
 export interface Quest {
@@ -64,11 +75,12 @@ export const GUEST_PREVIEW_PROFILE: PlayerProfile = {
   user_id: 'guest_preview',
   name: 'PREVIEW_CULTIVATOR',
   level: 15,
-  main_class: 'Core Formation',
-  side_classes: ['Shadow Arts', 'Formation Master'],
-  current_xp: 850,
-  rep: 4500,
-  streak: 12,
+  main_path: 'Shadow Arts',
+  side_path: 'Formation Master',
+  sect: 'Shadow Arts',
+  qi: 850,
+  spirit_stones: 4500,
+  dao_heart_streak: 12,
   hp: 100,
   max_hp: 100,
   onboarding_complete: true,
@@ -84,10 +96,10 @@ export const GUEST_PREVIEW_PROFILE: PlayerProfile = {
     'focus_pill': 10
   },
   equipped_weapon: 'legendary_artifact_01',
-  class_xp: {
-    'recon': 1200,
-    'exploitation': 800,
-    'enumeration': 1500
+  path_qi: {
+    'Shadow Arts': 1200,
+    'Formation Master': 800,
+    'Artifact Refiner': 1500
   }
 };
 

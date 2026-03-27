@@ -119,13 +119,13 @@ const AdminOverview: React.FC = () => {
 
       // 5. Long Term Metrics
       const classDist = profiles.reduce((acc, p) => {
-        const cls = p.main_class || 'UNKNOWN';
+        const cls = p.main_path || 'UNKNOWN';
         acc[cls] = (acc[cls] || 0) + 1;
         return acc;
       }, {} as Record<string, number>);
 
       setLongTermMetrics({
-        totalRep: profiles.reduce((acc, p) => acc + (p.rep || 0), 0),
+        totalRep: profiles.reduce((acc, p) => acc + (p.spirit_stones || 0), 0),
         classDist,
         questCompletion: 85, // Mocked
         economyHealth: 'OPTIMAL'
@@ -512,7 +512,7 @@ const AdminOverview: React.FC = () => {
                       style={{ cursor: 'pointer', backgroundColor: expandedSignupId === (s.id || s.user_id) ? 'rgba(0, 255, 170, 0.05)' : 'transparent' }}
                     >
                       <td>{s.name}</td>
-                      <td>{s.main_class}</td>
+                      <td>{s.main_path}</td>
                       <td>{s.level}</td>
                       <td>{new Date(s.created_at).toLocaleDateString()}</td>
                     </tr>

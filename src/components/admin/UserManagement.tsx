@@ -292,7 +292,7 @@ const UserManagement: React.FC = () => {
                   <span className="abc-user-id">ID: {user.user_id.slice(0, 8)}</span>
                 </div>
                 <div className="abc-user-cell abc-user-class-cell">
-                  <span className={`abc-user-class-pill ${!user.main_class ? 'unassigned' : ''}`}>{user.main_class || 'UNASSIGNED'}</span>
+                  <span className={`abc-user-class-pill ${!user.main_path ? 'unassigned' : ''}`}>{user.main_path || 'UNASSIGNED'}</span>
                 </div>
                 <div className="abc-user-cell abc-user-lvl-cell">
                   <span className="abc-user-lvl">{user.level}</span>

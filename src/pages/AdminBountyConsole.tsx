@@ -268,7 +268,7 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
             const achievements = profileData?.achievements || {};
 
             const updates: any = {
-                rep: (profileData?.rep || 0) + finalReward
+                spirit_stones: (profileData?.spirit_stones || 0) + finalReward
             };
 
             let isFirstBlood = false;
@@ -277,7 +277,7 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                 achievements['first_blood'] = new Date().toISOString();
                 updates.achievements = achievements;
                 firstBloodBonus = 500;
-                updates.rep += firstBloodBonus;
+                updates.spirit_stones += firstBloodBonus;
                 isFirstBlood = true;
             }
 

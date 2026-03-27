@@ -65,7 +65,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
             return;
         }
 
-        const currentXP = profile?.current_xp || 0;
+        const currentXP = profile?.qi || 0;
         if (currentXP < MIN_QI_THRESHOLD) {
             setShowClearanceDenied(true);
             return;
@@ -388,7 +388,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                         </p>
                         <div className="guard-code-block" style={{ background: 'rgba(245, 158, 11, 0.05)', color: 'var(--accent-amber)' }}>
                             <span className="guard-code-prefix">&gt;&nbsp;</span>
-                            qi_level.verify(<span className="guard-code-hl" style={{ color: 'var(--accent-amber)' }}>{profile?.current_xp || 0}</span>) → <span className="guard-code-status" style={{ color: 'var(--accent-crimson)' }}>FAILED</span>
+                            qi_level.verify(<span className="guard-code-hl" style={{ color: 'var(--accent-amber)' }}>{profile?.qi || 0}</span>) → <span className="guard-code-status" style={{ color: 'var(--accent-crimson)' }}>FAILED</span>
                         </div>
                         <div className="guard-actions">
                             <button className="guard-btn-ghost" onClick={() => setShowClearanceDenied(false)}>Return</button>
