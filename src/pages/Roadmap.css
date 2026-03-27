@@ -28,12 +28,18 @@
 
 .roadmap-board {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     margin-bottom: 4rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+    .roadmap-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
     .roadmap-board {
         grid-template-columns: 1fr;
     }
@@ -69,14 +75,18 @@
 }
 
 .roadmap-column:nth-child(1) .column-header h2 {
-    color: var(--accent-emerald);
+    color: var(--accent-gold, #fbbf24);
 }
 
 .roadmap-column:nth-child(2) .column-header h2 {
-    color: var(--accent-cyan);
+    color: var(--accent-emerald);
 }
 
 .roadmap-column:nth-child(3) .column-header h2 {
+    color: var(--accent-cyan);
+}
+
+.roadmap-column:nth-child(4) .column-header h2 {
     color: var(--text-dim);
 }
 
@@ -99,6 +109,11 @@
 .roadmap-card:hover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
+}
+
+.done-card {
+    border-left: 3px solid var(--accent-gold, #fbbf24);
+    opacity: 0.85;
 }
 
 .now-card {
