@@ -1,3 +1,6 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -5,10 +8,11 @@ import { supabase } from '../../lib/supabase';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess?: () => void;
+  onLoginSuccess: () => void;
+  initialClass?: string;
 }
 
-const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalProps) => {
   const { signIn, signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +25,21 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
     name: '',
     email: '',
     password: '',
-    class: 'Shadow Arts'
+    class: initialClass || 'Shadow Arts'
   });
+
+  // Handle initialClass or isTrialRewardMode changes when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      if (initialClass) {
+        setMode('register');
+        setFormData(prev => ({
+          ...prev,
+          class: initialClass
+        }));
+      }
+    }
+  }, [isOpen, initialClass]);
 
   // Clear timeouts on unmount (W09)
   useEffect(() => {
@@ -39,13 +56,13 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
           name: '',
           email: '',
           password: '',
-          class: 'Shadow Arts'
+          class: initialClass || 'Shadow Arts'
         });
         setErrorMessage('');
         setStatus('idle');
       }
     }
-  }, [isOpen, status]);
+  }, [isOpen, status, initialClass]);
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -112,38 +129,59 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }: AuthModalProps) => {
       } else {
         const result = await signUp(formData.email, formData.password, {
           full_name: sanitizedName,
-          class: formData.class
+          class: formData.class,
+          origin_platform: 'browser'
         });
         if (result.error) throw result.error;
 
+        // V2 uses sect names directly as path names — no mapping needed
+        const resolvedPath = formData.class || 'Formation Master';
+
         // Create profile row so dashboard + Flutter app see real data immediately
         if (result.user) {
-          await supabase.from('profiles').upsert({
+          console.log('[AuthModal] Creating profile for new user:', {
             user_id: result.user.id,
             name: sanitizedName,
-            main_class: formData.class,
-            side_class: '',
+            sect: formData.class,
+            main_path: resolvedPath,
+          });
+
+          const { error: profileError } = await supabase.from('profiles').upsert({
+            user_id: result.user.id,
+            name: sanitizedName,
+            main_path: resolvedPath,
+            side_path: 'Shadow Arts',
+            sect: formData.class,
             level: 1,
-            current_xp: 0,
-            rep: 0,
-            class_xp: {},
-            class_level: {},
+            qi: 0,
+            spirit_stones: 0,
+            path_qi: {},
+            path_level: {},
             inventory: {},
-            streak: 0,
-            shields: 0,
+            dao_heart_streak: 0,
+            talismans: 0,
             title: '',
             hp: 100,
             max_hp: 100,
             equipped_weapon: '',
-            active_buffs: {},
+            active_pills: {},
             achievements: {},
             featured_achievement: '',
-            quests_completed: 0,
+            trials_completed: 0,
             monsters_killed: 0,
             equipped_cosmetics: {},
             onboarding_complete: false,
+            origin_platform: 'browser',
             updated_at: new Date().toISOString(),
           }, { onConflict: 'user_id' });
+
+          if (profileError) {
+            console.error('[AuthModal] Profile creation FAILED:', profileError);
+          } else {
+            console.log('[AuthModal] Profile created successfully');
+          }
+        } else {
+          console.warn('[AuthModal] signUp succeeded but no user object returned');
         }
       }
 

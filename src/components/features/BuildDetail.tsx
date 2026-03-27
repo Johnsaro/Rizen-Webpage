@@ -81,7 +81,7 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                     </svg>
                     <span className="apk-dl-label">
                       <span className="apk-dl-title">DOWNLOAD APK</span>
-                      <span className="apk-dl-sub">v1.0.0 · Android</span>
+                      <span className="apk-dl-sub">v2.2.0 · Android</span>
                     </span>
                     <span className="apk-dl-badge">FREE</span>
                   </a>

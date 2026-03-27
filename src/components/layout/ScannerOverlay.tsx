@@ -10,11 +10,11 @@ const ScannerOverlay = ({ onScanComplete }: ScannerOverlayProps) => {
   useEffect(() => {
     const fadeTimer = setTimeout(() => {
       setScannerFade(true);
-    }, 1500);
+    }, 600);
 
     const removeTimer = setTimeout(() => {
       onScanComplete();
-    }, 2300);
+    }, 1000);
 
     return () => {
       clearTimeout(fadeTimer);

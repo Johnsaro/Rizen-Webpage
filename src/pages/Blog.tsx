@@ -99,21 +99,28 @@ const Blog: React.FC = () => {
 
     // Reading progress calculation
     useEffect(() => {
+        let rafId: number;
         const handleScroll = () => {
-            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-            if (totalHeight <= 0) {
-                setScrollProgress(0);
-                return;
-            }
-            const progress = (window.scrollY / totalHeight) * 100;
-            setScrollProgress(Math.min(100, Math.max(0, progress)));
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                if (totalHeight <= 0) {
+                    setScrollProgress(0);
+                    return;
+                }
+                const progress = (window.scrollY / totalHeight) * 100;
+                setScrollProgress(Math.min(100, Math.max(0, progress)));
+            });
         };
-        
+
         window.addEventListener('scroll', handleScroll);
         // Initial check
         handleScroll();
-        
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, [selectedPostId]);
 
     const handlePostClick = (id: string) => {

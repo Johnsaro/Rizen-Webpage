@@ -1,6 +1,6 @@
-import type { DemoPlayer } from '../../data/demoPlayer';
+import type { PlayerProfile } from '../../hooks/usePlayerProfile';
 
-const PersonalRecordsTeaser = ({ delay = 0.5 }: { currentUser: DemoPlayer, delay?: number }) => {
+const PersonalRecordsTeaser = ({ profile, delay = 0.5, onRecordClick }: { profile: PlayerProfile, delay?: number, onRecordClick?: () => void }) => {
     // Mock Personal Records data
     const personalBests = [
         { label: 'Best Daily Spirit Stones', value: '1,240 SS', date: '2026-03-08', icon: '🏆' },
@@ -23,7 +23,13 @@ const PersonalRecordsTeaser = ({ delay = 0.5 }: { currentUser: DemoPlayer, delay
         <div id="dashboard-records" className="dash-card personal-records-teaser fade-in-up" style={{ animationDelay: `${delay}s` }}>
             <div className="card-header">
                 <h3 className="card-title">PERSONAL RECORDS</h3>
-                <div className="header-action">VIEW ALL</div>
+                <button 
+                    className="header-action" 
+                    onClick={onRecordClick}
+                    style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'inherit', cursor: 'pointer' }}
+                >
+                    VIEW_ALL
+                </button>
             </div>
 
             <div className="records-sections">
@@ -31,14 +37,30 @@ const PersonalRecordsTeaser = ({ delay = 0.5 }: { currentUser: DemoPlayer, delay
                     <div className="group-label">PERSONAL BESTS</div>
                     <div className="bests-list">
                         {personalBests.map((best, index) => (
-                            <div key={index} className="best-item premium-hover">
+                            <button 
+                                key={index} 
+                                className="best-item premium-hover" 
+                                onClick={onRecordClick} 
+                                style={{ 
+                                    cursor: onRecordClick ? 'pointer' : 'default',
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '0.8rem',
+                                    textAlign: 'left',
+                                    display: 'flex',
+                                    gap: '1rem',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    color: 'inherit'
+                                }}
+                            >
                                 <div className="best-icon">{best.icon}</div>
                                 <div className="best-info">
                                     <div className="best-label">{best.label}</div>
                                     <div className="best-value">{best.value}</div>
                                     <div className="best-detail">{best.date || best.detail}</div>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </div>

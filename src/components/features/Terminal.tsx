@@ -7,10 +7,12 @@ interface TerminalProps {
   inputValue: string;
   setInputValue: (val: string) => void;
   isProcessing: boolean;
+  isQiSurging?: boolean;
   onReportTask: (e: React.FormEvent) => void;
   initiationStep: InitiationStep;
   initiationQuestions: InitiationQuestion[];
   onInitiationAnswer: (answer: string) => void;
+  isScanned?: boolean;
 }
 
 const Terminal = ({
@@ -18,18 +20,22 @@ const Terminal = ({
   inputValue,
   setInputValue,
   isProcessing,
+  isQiSurging,
   onReportTask,
   initiationStep,
   initiationQuestions,
-  onInitiationAnswer
+  onInitiationAnswer,
+  isScanned
 }: TerminalProps) => {
   const logEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [sessionID] = useState(() => Math.floor(Math.random() * 90000) + 10000);
 
   const rawQuizQuestion = initiationQuestions.find(q => q.id === initiationStep);
   const isQuestionLogged = rawQuizQuestion ? log.some(entry => entry.text === rawQuizQuestion.text) : false;
   const currentQuizQuestion = isQuestionLogged ? rawQuizQuestion : null;
   const isInitiating = initiationStep !== 'IDLE' && initiationStep !== 'COMPLETE';
+
   useEffect(() => {
     if (logEndRef.current && logEndRef.current.parentElement) {
       const parent = logEndRef.current.parentElement;
@@ -40,13 +46,19 @@ const Terminal = ({
     }
   }, [log]);
 
+  useEffect(() => {
+    if (isScanned && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isScanned]);
+
   // Helper to identify if a system message is a main prompt/question (to make it stand out)
   const isPrompt = (text: string) => {
     return text.includes('?') || text.includes('ACTIVATED') || text.includes('WELCOME');
   };
 
   return (
-    <div className="guild-master-terminal reveal">
+    <div className={`guild-master-terminal reveal ${isQiSurging ? 'qi-surge' : ''}`}>
       <div className="terminal-header">
         <div className="terminal-header-left">
           <div className="terminal-signal">
@@ -100,6 +112,7 @@ const Terminal = ({
           <form className="terminal-input-form" onSubmit={onReportTask}>
             <span className="input-prefix">&gt;</span>
             <input
+              ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

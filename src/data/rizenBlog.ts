@@ -12,6 +12,56 @@ export interface BlogPost {
 
 export const rizenBlogPosts: BlogPost[] = [
     {
+        id: 'showcase-v2-milestone',
+        title: 'Showcase V2: Real Auth, Real Data, Real Dashboard',
+        summary: 'The Rizen Showcase has crossed the 65% V2 completion mark. Real Supabase authentication, 11 live dashboard panels, and a fully functional community hub are now online.',
+        content: `The Showcase portal has been quietly leveling up — and it just hit a major milestone.
+
+## What Changed
+
+This update brings four key upgrades that push the Showcase from a static preview into a **live, data-driven cultivator portal**:
+
+### 1. Real Authentication
+Mock auth is gone. The Showcase now runs on **real Supabase authentication** — sign up, sign in, session persistence, and admin role detection all work against production infrastructure. Guest visitors still get a preview profile, but authenticated cultivators see their actual data.
+
+### 2. V2 Dashboard — All 11 Panels Live
+The dashboard has been completely rebuilt with V2 cultivation theming:
+- **PlayerCard** — Your core stats and realm rank
+- **RealmProgression** — Visual cultivation realm tracker
+- **DaoHeartPanel** — Streak stability and consistency metrics
+- **ArtifactPillPanel** — Equipped artifacts and active pills
+- **TrialChamber** — Your current quest board
+- **EventFeed** — Real-time notifications
+- **SectTransmissions** — Announcements from the System
+- **SystemLog** — Full activity history
+- **ActiveBounties** — Bug bounty submissions
+- **AchievementGrid** — Heavenly Merits display
+- **ArsenalGrid** — Full inventory view
+
+All panels pull real data via Supabase realtime subscriptions.
+
+### 3. V1 → V2 Schema Migration
+Every component has been migrated from V1 column names to the V2 cultivation schema. No more legacy field references — the codebase now speaks the language of the Dao natively.
+
+### 4. Community Hub & Admin Overhaul
+The Community Hub now includes **Blog, Docs, Events, Roadmap, and Discord** sections. The Admin Command Center has been overhauled with an Overview dashboard, User Management console, and Bug Bounty tracker.
+
+## Performance
+Blog scroll handling now uses requestAnimationFrame throttling, and the combat simulator — a V1 holdover — has been removed to reduce bundle weight.
+
+## What Remains
+The Showcase is functionally complete for V2 but still needs architectural polish: React Router migration for proper SEO, skeleton loaders to replace the glitch screen, and accessibility improvements. These are Phase 3 priorities.
+
+**Current completion: ~65-70%.**
+
+The portal is ready for cultivator testing. Enter the Sect.`,
+        category: 'Update',
+        version: 'v2.0.0',
+        date: '2026-03-27',
+        icon: '🏛️',
+        featured: true
+    },
+    {
         id: 'rizen-v2-cultivation-rework',
         title: 'Rizen V2: The Cultivation System Awakens',
         summary: 'Rizen is no longer a generic RPG tracker. V2 transforms the entire identity into a xianxia-inspired cultivation system — complete with Dao Paths, Cultivation Realms, Heavenly Tribulations, and a System that binds to you.',
@@ -70,7 +120,7 @@ Rise or Stagnate. The System is watching.`,
         version: 'v2.0.0',
         date: '2026-03-13',
         icon: '🔮',
-        featured: true
+        featured: false
     },
     {
         id: 'session-41-bug-sweep',

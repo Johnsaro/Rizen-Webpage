@@ -1,0 +1,346 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-19 
+ * Cultivation V2 Styles for Sect Command Center
+ */
+
+.v2-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* Center Column Specifics */
+.v2-center-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* Realm Progression Circular Ring */
+.realm-ring-container {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.realm-ring-svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.realm-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.03);
+    stroke-width: 12;
+}
+
+.realm-segment {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: butt;
+    transition: stroke 0.3s ease;
+}
+
+.realm-segment.filled {
+    stroke: var(--accent-cyan);
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+}
+
+.realm-segment.empty {
+    stroke: rgba(255, 255, 255, 0.05);
+}
+
+.realm-info-center {
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.realm-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+}
+
+.realm-rank {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Dao Heart Aura */
+.dao-heart-card {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    text-align: center;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.dao-aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, var(--aura-color) 0%, transparent 60%);
+    opacity: 0.15;
+    pointer-events: none;
+    animation: aura-pulse 4s infinite ease-in-out;
+}
+
+@keyframes aura-pulse {
+    0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.25; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.dao-state-label {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.dao-state-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.dao-streak {
+    margin-top: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+}
+
+/* Artifact Slots */
+.artifact-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+}
+
+.artifact-slot {
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.artifact-slot.equipped {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 243, 255, 0.02);
+}
+
+.artifact-slot.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.artifact-slot.locked::after {
+    content: 'LOCKED';
+    position: absolute;
+    font-size: 0.5rem;
+    bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.artifact-grade {
+    font-size: 0.5rem;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-bottom: 5px;
+}
+
+.grade-spirit { color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+
+.durability-bar-container {
+    width: 60%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-top: 8px;
+}
+
+.durability-bar-fill {
+    height: 100%;
+    background: var(--accent-emerald);
+}
+
+/* Pill Inventory */
+.pill-inventory {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.pill-item {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.pill-item:hover {
+    border-color: var(--accent-cyan);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pill-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--accent-cyan);
+    color: #000;
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+/* Event Feed */
+.event-feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-height: 400px;
+    overflow-y: hidden;
+}
+
+.event-entry {
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 2px solid var(--accent-cyan);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    animation: slide-in-left 0.4s ease-out;
+}
+
+.event-entry.pulse {
+    animation: entry-pulse 2s infinite;
+}
+
+@keyframes entry-pulse {
+    0%, 100% { border-left-color: var(--accent-cyan); }
+    50% { border-left-color: #fff; }
+}
+
+.event-timestamp {
+    font-size: 0.6rem;
+    opacity: 0.4;
+    margin-bottom: 4px;
+}
+
+/* Trial Chamber */
+.trial-card {
+    background: rgba(2, 6, 23, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.trial-card:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.trial-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.trial-difficulty {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+}
+
+.diff-hard { color: var(--accent-crimson); }
+.diff-normal { color: var(--accent-cyan); }
+.diff-extreme { color: #f43f5e; font-weight: bold; }
+
+.trial-rewards {
+    font-size: 0.65rem;
+    color: var(--accent-cyan);
+    margin: 0.5rem 0;
+}
+
+.trial-penalty {
+    font-size: 0.65rem;
+    color: var(--accent-crimson);
+    opacity: 0.7;
+}
+
+.launch-btn {
+    width: 100%;
+    margin-top: 1rem;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-dim);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    cursor: not-allowed;
+    border-radius: 4px;
+}
+
+/* Sect Transmissions */
+.sect-transmission {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    padding: 1rem;
+    background: rgba(0, 243, 255, 0.02);
+    border: 1px dashed rgba(0, 243, 255, 0.1);
+    border-radius: 8px;
+}
+
+.v2-card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+}

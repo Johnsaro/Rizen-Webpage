@@ -25,8 +25,8 @@ export const rizenDocs: DocSection[] = [
       {
         id: 'installation',
         title: 'Installation',
-        content: 'Rizen v1.0.0 is distributed as an Android APK. Cultivators must download the package and side-load it onto their mobile device.',
-        code: `// 1. Download the v1.0.0 APK from the Builds board\n// 2. Enable "Install Unknown Apps" in Android Settings\n// 3. Open the APK file to initiate installation`,
+        content: 'Rizen v2.2.0 is distributed as an Android APK. Cultivators must download the package and side-load it onto their mobile device.',
+        code: `// 1. Download the v2.2.0 APK from the Builds board\n// 2. Enable "Install Unknown Apps" in Android Settings\n// 3. Open the APK file to initiate installation`,
         language: 'bash',
         items: [
           'Android 10+ recommended',

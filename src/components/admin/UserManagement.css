@@ -1,0 +1,318 @@
+/* ============================================================
+   USER MANAGEMENT — OPERATIVE ROSTER TABLE
+   Grid-based tactical roster with command-center aesthetics
+   ============================================================ */
+
+.admin-section {
+    min-height: calc(100vh - 120px);
+}
+
+/* ── HEADER ROW ─────────────────────────────────────────── */
+.abc-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 2rem;
+}
+
+.abc-title-area {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.abc-count-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(0, 255, 200, 0.05);
+    border: 1px solid var(--hk-border);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-family: var(--hk-mono);
+}
+
+.abc-count-badge .count-val {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.abc-count-badge .count-label {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--hk-dim);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 0.8rem;
+}
+
+/* ── STICKY CONTROLS ────────────────────────────────────── */
+.abc-sticky-controls {
+    position: sticky;
+    top: 73px; /* Offset for AdminNavbar */
+    z-index: 100;
+    background: var(--hk-panel);
+    border: 1px solid var(--hk-border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+/* Search Area */
+.abc-search-container {
+    flex: 1;
+    position: relative;
+    max-width: 500px;
+}
+
+.abc-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+    font-size: 0.9rem;
+}
+
+.abc-search-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--hk-border);
+    border-radius: 6px;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    color: #fff;
+    font-family: var(--hk-mono);
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.abc-search-input:focus {
+    outline: none;
+    border-color: var(--hk-cyan);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 200, 0.1);
+}
+
+/* Sort Group */
+.abc-sort-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.abc-select-wrapper {
+    position: relative;
+}
+
+.abc-select-minimal {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--hk-border);
+    border-radius: 6px;
+    color: var(--hk-cyan);
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    font-family: var(--hk-mono);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    transition: all 0.2s;
+}
+
+.abc-select-minimal:hover {
+    border-color: var(--hk-border-glow);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Fix dropdown menu items appearance */
+.abc-select-minimal option {
+    background: #0d1117; /* Dark background for options */
+    color: #fff;
+    padding: 10px;
+}
+
+.abc-select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%) scale(0.7);
+    font-size: 0.6rem;
+    color: var(--hk-dim);
+    pointer-events: none;
+}
+
+.abc-sort-toggle-btn {
+    background: rgba(0, 255, 200, 0.05);
+    border: 1px solid var(--hk-border);
+    color: var(--hk-cyan);
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-family: var(--hk-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 80px;
+}
+
+.abc-sort-toggle-btn:hover {
+    background: rgba(0, 255, 200, 0.15);
+    border-color: var(--hk-cyan);
+}
+
+/* ── TABLE CONTAINER ──────────────────────────────────────── */
+.abc-user-table {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--hk-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--hk-panel);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ── ROW GRID ─────────────────────────────────────────────── */
+.abc-user-row {
+    display: grid;
+    grid-template-columns: 2.2fr 2fr 1fr 1fr 2fr;
+    align-items: center;
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+}
+
+.abc-user-row.header {
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--hk-border);
+    padding: 0.7rem 1.5rem;
+}
+
+.abc-user-row.header .abc-user-cell {
+    font-family: var(--hk-mono);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--hk-dim);
+    text-transform: uppercase;
+}
+
+.abc-user-row:not(.header):hover {
+    background: rgba(0, 255, 200, 0.03);
+    box-shadow: inset 4px 0 0 var(--hk-cyan);
+}
+
+.abc-user-row.restricted {
+    background: rgba(255, 59, 92, 0.02);
+    border-left: 4px solid var(--hk-red);
+}
+
+/* ── CELLS ────────────────────────────────────────────────── */
+.abc-user-cell {
+    font-family: var(--hk-mono);
+    font-size: 0.85rem;
+    color: var(--hk-text);
+}
+
+.abc-user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    display: block;
+}
+
+.abc-user-id {
+    font-size: 0.65rem;
+    color: var(--hk-dim);
+    letter-spacing: 1px;
+}
+
+.abc-user-class-pill {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.7rem;
+    background: rgba(59, 158, 255, 0.08);
+    border: 1px solid rgba(59, 158, 255, 0.2);
+    border-radius: 4px;
+    color: var(--hk-blue);
+    letter-spacing: 0.5px;
+}
+
+.abc-user-lvl {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--hk-cyan);
+}
+
+.abc-status-indicator {
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.abc-status-indicator.active {
+    color: var(--hk-green);
+    background: rgba(57, 217, 138, 0.1);
+    border: 1px solid rgba(57, 217, 138, 0.2);
+}
+
+.abc-status-indicator.suspended {
+    color: var(--hk-amber);
+    background: rgba(255, 184, 0, 0.1);
+    border: 1px solid rgba(255, 184, 0, 0.2);
+}
+
+.abc-status-indicator.banned {
+    color: var(--hk-red);
+    background: rgba(255, 59, 92, 0.1);
+    border: 1px solid rgba(255, 59, 92, 0.2);
+}
+
+/* ── PAGINATION ───────────────────────────────────────────── */
+.abc-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    background: var(--hk-panel);
+    border: 1px solid var(--hk-border);
+    border-radius: 8px;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .abc-sticky-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .abc-search-container {
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .abc-user-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 0.5rem;
+    }
+    
+    .abc-user-row.header {
+        display: none;
+    }
+}

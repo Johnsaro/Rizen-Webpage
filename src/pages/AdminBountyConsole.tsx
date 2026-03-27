@@ -9,6 +9,7 @@ interface PatchIntel {
     app_version: string;
     fixed_at: string;
     fixed_by: string;
+    reward_amount?: number;
 }
 
 interface Submission {
@@ -45,7 +46,7 @@ const ShieldIcon = () => (
 );
 
 const STATUS_FILTERS = ['all', 'Critical', 'High', 'Medium', 'Low', 'fixed'];
-const STATUS_OPTIONS = ['received', 'confirmed', 'fixed', 'rewarded', 'rejected'];
+const STATUS_OPTIONS = ['received', 'confirmed', 'fixed', 'rejected'];
 
 const getLocalISODateTime = () => {
     const now = new Date();
@@ -79,6 +80,10 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
 
     // Expanded patch detail
     const [expandedPatch, setExpandedPatch] = useState<string | null>(null);
+
+    // Pagination
+    const ITEMS_PER_PAGE = 10;
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Get unique app versions from existing patches
     const availableVersions = useMemo(() => {
@@ -218,12 +223,39 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
     };
 
     const handleAssignRep = async (sub: Submission) => {
+        if (sub.status !== 'fixed') {
+            setError('INVALID_STATE: Rewards can only be assigned to fixed bugs.');
+            return;
+        }
+
+        // Calculate base reward based on severity
+        let baseReward = 0;
+        switch (sub.severity) {
+            case 'Critical': baseReward = 15000; break;
+            case 'High': baseReward = 7500; break;
+            case 'Medium': baseReward = 3500; break;
+            case 'Low': baseReward = 1500; break;
+            default: baseReward = 1000; break;
+        }
+
+        const promptInput = window.prompt(`Enter reward amount in Spirit Stones for this ${sub.severity} bug:`, baseReward.toString());
+        if (promptInput === null) return; // User canceled
+        const finalReward = parseInt(promptInput, 10);
+        if (isNaN(finalReward) || finalReward < 0) {
+            setError('INVALID_REWARD: Please enter a valid positive number.');
+            return;
+        }
+
         setRepLoading(prev => ({ ...prev, [sub.id]: true }));
         setError(null);
         try {
+            const newPatchIntel = sub.patch_intel 
+                ? { ...sub.patch_intel, reward_amount: finalReward }
+                : { ...DEFAULT_PATCH, reward_amount: finalReward };
+
             const { error } = await supabase
                 .from('bug_bounty_submissions')
-                .update({ status: 'rewarded' })
+                .update({ status: 'rewarded', patch_intel: newPatchIntel })
                 .eq('id', sub.id);
             if (error) throw error;
 
@@ -234,15 +266,18 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                 .single();
 
             const achievements = profileData?.achievements || {};
+
             const updates: any = {
-                rep: (profileData?.rep || 0) + 1000
+                spirit_stones: (profileData?.spirit_stones || 0) + finalReward
             };
 
             let isFirstBlood = false;
+            let firstBloodBonus = 0;
             if (!achievements['first_blood']) {
                 achievements['first_blood'] = new Date().toISOString();
                 updates.achievements = achievements;
-                updates.rep += 500;
+                firstBloodBonus = 500;
+                updates.spirit_stones += firstBloodBonus;
                 isFirstBlood = true;
             }
 
@@ -256,12 +291,12 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                 .insert([{
                     user_id: (sub as any).user_id,
                     message: isFirstBlood 
-                        ? `ACHIEVEMENT: FIRST BLOOD! Bounty #${sub.id.slice(0, 6)} reward + Badge issued. +1500 Total Spirit Stones.`
-                        : `REWARD: Mission Complete: Bounty #${sub.id.slice(0, 6)} reward issued. +1000 Spirit Stones assigned.`,
+                        ? `ACHIEVEMENT: FIRST BLOOD! Bounty #${sub.id.slice(0, 6)} reward + Badge issued. +${finalReward + firstBloodBonus} Total Spirit Stones.`
+                        : `REWARD: Mission Complete: Bounty #${sub.id.slice(0, 6)} reward issued. +${finalReward} Spirit Stones assigned.`,
                     type: 'reward'
                 }]);
 
-            setSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, status: 'rewarded' } : s));
+            setSubmissions(prev => prev.map(s => s.id === sub.id ? { ...s, status: 'rewarded', patch_intel: newPatchIntel } : s));
         } catch (err: any) {
             console.error('Reward error:', err);
             setError(`REWARD_FAILURE: ${err.message || 'CREDIT TRANSFER FAILED'}`);
@@ -270,6 +305,40 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
         }
     };
 
+    const handleClearResolved = async () => {
+        const resolvedCount = submissions.filter(s => s.status === 'fixed' || s.status === 'rewarded').length;
+        if (resolvedCount === 0) {
+            setError('NO_RESOLVED_BUGS: Nothing to clear.');
+            return;
+        }
+
+        if (!window.confirm(`WARNING: You are about to permanently delete ${resolvedCount} resolved bugs. Active bugs will not be affected. Proceed?`)) {
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            const { error } = await supabase
+                .from('bug_bounty_submissions')
+                .delete()
+                .in('status', ['fixed', 'rewarded']);
+
+            if (error) throw error;
+            
+            // Optimistically update the UI
+            setSubmissions(prev => prev.filter(s => s.status !== 'fixed' && s.status !== 'rewarded'));
+        } catch (err: any) {
+            console.error('Clear resolved error:', err);
+            setError(`CLEAR_FAILURE: ${err.message || 'DATABASE PURGE REJECTED'}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Reset page when filter changes
+    useEffect(() => { setCurrentPage(1); }, [filter]);
+
     // Updated Filtering: Severity tabs only show ACTIVE bugs. Fixed tab shows RESOLVED bugs.
     const filteredSubmissions = filter === 'fixed'
         ? submissions.filter(s => s.status === 'fixed' || s.status === 'rewarded')
@@ -277,9 +346,24 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
             ? submissions
             : submissions.filter(s => s.severity === filter && s.status !== 'fixed' && s.status !== 'rewarded');
 
+    const totalPages = Math.max(1, Math.ceil(filteredSubmissions.length / ITEMS_PER_PAGE));
+    const paginatedSubmissions = filteredSubmissions.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
     const statCritical = submissions.filter(s => s.severity === 'Critical' && s.status !== 'fixed' && s.status !== 'rewarded').length;
     const statOpen = submissions.filter(s => s.status === 'received' || s.status === 'confirmed').length;
     const statFixed = submissions.filter(s => s.status === 'fixed' || s.status === 'rewarded').length;
+
+    const filterCounts: Record<string, number> = {
+        all: submissions.length,
+        Critical: statCritical,
+        High: submissions.filter(s => s.severity === 'High' && s.status !== 'fixed' && s.status !== 'rewarded').length,
+        Medium: submissions.filter(s => s.severity === 'Medium' && s.status !== 'fixed' && s.status !== 'rewarded').length,
+        Low: submissions.filter(s => s.severity === 'Low' && s.status !== 'fixed' && s.status !== 'rewarded').length,
+        fixed: statFixed,
+    };
 
     if (profileLoading && !isIntegrated) return (
         <div className="abc-gate">SYNCHRONIZING ADMIN CLEARANCE...</div>
@@ -328,12 +412,18 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                             onClick={() => setFilter(f)}
                         >
                             {f === 'all' ? 'ALL' : f === 'fixed' ? '✓ RESOLVED' : f.toUpperCase()}
+                            <span className="abc-filter-count">{filterCounts[f] ?? 0}</span>
                         </button>
                     ))}
                 </div>
-                <button className="abc-sync-btn" onClick={fetchSubmissions}>
-                    <SyncIcon /> SYNC FEED
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button className="abc-sync-btn" onClick={handleClearResolved} style={{ borderColor: 'var(--hk-red)', color: 'var(--hk-red)' }}>
+                        ✕ CLEAR RESOLVED
+                    </button>
+                    <button className="abc-sync-btn" onClick={fetchSubmissions}>
+                        <SyncIcon /> SYNC FEED
+                    </button>
+                </div>
             </div>
 
             {error && (
@@ -351,12 +441,16 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                     {filteredSubmissions.length === 0 ? (
                         <div className="abc-empty">// NO FINDINGS DETECTED IN THIS SECTOR //</div>
                     ) : (
-                        filteredSubmissions.map(sub => (
+                        paginatedSubmissions.map(sub => (
                             <div className={`abc-card status-${sub.status}`} key={sub.id}>
                                 <div className="abc-card-header">
                                     <span className={`abc-severity ${sub.severity.toLowerCase()}`}>{sub.severity}</span>
                                     <span className="abc-card-id">#{sub.id.slice(0, 8)}</span>
-                                    <span className={`abc-status-indicator ${sub.status}`}>{sub.status}</span>
+                                    <span className={`abc-status-indicator ${sub.status}`}>
+                                        {sub.status === 'rewarded' && sub.patch_intel?.reward_amount 
+                                            ? `REWARDED +${sub.patch_intel.reward_amount >= 1000 ? (sub.patch_intel.reward_amount/1000).toFixed(sub.patch_intel.reward_amount % 1000 === 0 ? 0 : 1) + 'k' : sub.patch_intel.reward_amount}`
+                                            : sub.status}
+                                    </span>
                                     <span className="abc-card-date">{new Date(sub.created_at).toLocaleString()}</span>
                                 </div>
                                 <div className="abc-card-body">
@@ -378,7 +472,7 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                                     </div>
 
                                     {sub.status === 'fixed' || sub.status === 'rewarded' ? (
-                                        sub.patch_intel && (
+                                        sub.patch_intel && sub.patch_intel.app_version && (
                                             <div className="patch-intel-panel">
                                                 <button className="patch-intel-toggle" onClick={() => setExpandedPatch(expandedPatch === sub.id ? null : sub.id)}>
                                                     <ShieldIcon /> PATCH INTEL
@@ -421,18 +515,53 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
                                         onChange={(e) => updateStatus(sub.id, e.target.value)}
                                         disabled={sub.status === 'fixed' || sub.status === 'rewarded'}
                                     >
+                                        {!STATUS_OPTIONS.includes(sub.status) && <option value={sub.status}>{sub.status.toUpperCase()}</option>}
                                         {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt.toUpperCase()}</option>)}
                                     </select>
                                     <button 
                                         className="abc-rep-btn" 
                                         onClick={() => handleAssignRep(sub)} 
-                                        disabled={repLoading[sub.id] || sub.status === 'rewarded'}
+                                        disabled={repLoading[sub.id] || sub.status !== 'fixed'}
                                     >
                                         <RepIcon /> {repLoading[sub.id] ? 'ASSIGNING...' : 'ASSIGN SPIRIT STONES'}
                                     </button>
                                 </div>
                             </div>
                         ))
+                    )}
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div className="abc-pagination">
+                            <button
+                                className="abc-page-btn"
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                            >
+                                ◄ PREV
+                            </button>
+                            <div className="abc-page-numbers">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        className={`abc-page-num ${currentPage === page ? 'active' : ''}`}
+                                        onClick={() => setCurrentPage(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                            <span className="abc-page-info">
+                                {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredSubmissions.length)} of {filteredSubmissions.length}
+                            </span>
+                            <button
+                                className="abc-page-btn"
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                            >
+                                NEXT ►
+                            </button>
+                        </div>
                     )}
                 </div>
             )}

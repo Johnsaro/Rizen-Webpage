@@ -14,7 +14,7 @@ const ALL_ACHIEVEMENTS = [
     { id: 'dao_heart_master', name: 'Dao Heart Master', icon: '👑' },
 ];
 
-const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 0.6 }: { achievements?: Record<string, string>, featuredAchievement?: string, delay?: number }) => {
+const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 0.6, onAchievementClick }: { achievements?: Record<string, string>, featuredAchievement?: string, delay?: number, onAchievementClick?: () => void }) => {
 
     const unlockedCount = Object.keys(achievements).length;
     const totalCount = ALL_ACHIEVEMENTS.length;
@@ -36,25 +36,77 @@ const AchievementGrid = ({ achievements = {}, featuredAchievement = '', delay = 
             </div>
 
             {featured && (
-                <div className="featured-achievement premium-glow-gold">
+                <button 
+                    className="featured-achievement premium-glow-gold" 
+                    onClick={onAchievementClick} 
+                    style={{ 
+                        cursor: onAchievementClick ? 'pointer' : 'default',
+                        background: 'none',
+                        border: '1px solid var(--accent-yellow)',
+                        padding: '1rem',
+                        textAlign: 'left',
+                        display: 'flex',
+                        gap: '1rem',
+                        width: '100%',
+                        alignItems: 'center',
+                        color: 'inherit'
+                    }}
+                >
                     <div className="feat-icon">{featured.icon}</div>
                     <div className="feat-info">
                         <div className="feat-title">{featured.name.toUpperCase()}</div>
                         <div className="feat-desc">Featured Cultivator Merit</div>
                     </div>
-                </div>
+                </button>
             )}
 
             <div className="achievement-grid">
                 {achievementItems.map((item, index) => (
                     item.isUnlocked ? (
-                        <div key={item.id} className="ach-badge unlocked premium-hover" title={`${item.name} - Unlocked ${new Date(item.unlockDate!).toLocaleDateString()}`} style={{ animationDelay: `${delay + 0.1 + (index * 0.05)}s` }}>
+                        <button 
+                            key={item.id} 
+                            className="ach-badge unlocked premium-hover" 
+                            title={`${item.name} - Unlocked ${new Date(item.unlockDate!).toLocaleDateString()}`} 
+                            style={{ 
+                                animationDelay: `${delay + 0.1 + (index * 0.05)}s`, 
+                                cursor: onAchievementClick ? 'pointer' : 'default',
+                                background: 'none',
+                                border: '1px solid var(--accent-cyan)',
+                                borderRadius: '50%',
+                                width: '40px',
+                                height: '40px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: 0
+                            }} 
+                            onClick={onAchievementClick}
+                        >
                             <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
-                        </div>
+                        </button>
                     ) : (
-                        <div key={item.id} className="ach-badge locked premium-locked" title="???" style={{ animationDelay: `${delay + 0.1 + (index * 0.05)}s` }}>
+                        <button 
+                            key={item.id} 
+                            className="ach-badge locked premium-locked" 
+                            title="???" 
+                            style={{ 
+                                animationDelay: `${delay + 0.1 + (index * 0.05)}s`, 
+                                cursor: onAchievementClick ? 'pointer' : 'default',
+                                background: 'rgba(255,255,255,0.02)',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                borderRadius: '50%',
+                                width: '40px',
+                                height: '40px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: 0,
+                                color: 'inherit'
+                            }} 
+                            onClick={onAchievementClick}
+                        >
                             {index === 2 ? <span style={{ fontSize: '0.6rem', lineHeight: 1, textAlign: 'center', opacity: 0.5 }}>RLM<br />20</span> : '?'}
-                        </div>
+                        </button>
                     )
                 ))}
             </div>

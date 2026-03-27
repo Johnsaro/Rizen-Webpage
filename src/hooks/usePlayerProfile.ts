@@ -1,15 +1,20 @@
+/* 
+ * Owner: Alex | Last updated by: Gemini, 2026-03-14 
+ */
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 export interface PlayerProfile {
+  user_id: string;
   name: string;
   level: number;
-  main_class: string;
-  side_classes: string[];
-  current_xp: number;
-  rep: number;
-  streak: number;
+  main_path: string;
+  side_path: string;
+  sect: string;
+  qi: number;
+  spirit_stones: number;
+  dao_heart_streak: number;
   hp: number;
   max_hp: number;
   onboarding_complete: boolean;
@@ -17,12 +22,22 @@ export interface PlayerProfile {
   account_status?: 'active' | 'banned' | 'suspended';
   ban_reason?: string;
   suspended_until?: string;
-  achievements?: Record<string, string>; // ID: Date unlocked
+  achievements?: Record<string, string>;
   featured_achievement?: string;
-  class_xp?: Record<string, number>;
-  inventory?: Record<string, number>; // ItemID: Count
+  path_qi?: Record<string, number>;
+  path_level?: Record<string, number>;
+  inventory?: Record<string, number>;
   equipped_weapon?: string;
   equipped_cosmetics?: Record<string, string>;
+  talismans?: number;
+  title?: string;
+  realm?: string;
+  realm_rank?: number;
+  dao_heart_state?: string;
+  trials_completed?: number;
+  monsters_killed?: number;
+  active_pills?: Record<string, string>;
+  origin_platform?: string;
 }
 
 export interface Quest {
@@ -56,6 +71,90 @@ export interface BountySubmission {
   created_at: string;
 }
 
+export const GUEST_PREVIEW_PROFILE: PlayerProfile = {
+  user_id: 'guest_preview',
+  name: 'PREVIEW_CULTIVATOR',
+  level: 15,
+  main_path: 'Shadow Arts',
+  side_path: 'Formation Master',
+  sect: 'Shadow Arts',
+  qi: 850,
+  spirit_stones: 4500,
+  dao_heart_streak: 12,
+  hp: 100,
+  max_hp: 100,
+  onboarding_complete: true,
+  achievements: {
+    'heavenly_merit_1': '2026-03-01',
+    'sect_founder': '2026-02-15',
+    'anomaly_purger': '2026-03-10'
+  },
+  featured_achievement: 'heavenly_merit_1',
+  inventory: {
+    'legendary_artifact_01': 1,
+    'spirit_stone_pouch': 5,
+    'focus_pill': 10
+  },
+  equipped_weapon: 'legendary_artifact_01',
+  path_qi: {
+    'Shadow Arts': 1200,
+    'Formation Master': 800,
+    'Artifact Refiner': 1500
+  }
+};
+
+export const GUEST_PREVIEW_QUESTS: Quest[] = [
+  {
+    id: 'preview_q1',
+    title: 'Purge the Kernel Anomaly',
+    description: 'A deep-seated corruption is spreading through the system core.',
+    rank: 'RANK S',
+    type: 'Infiltration',
+    xp_reward: 500,
+    class_tag: 'Shadow Arts',
+    is_completed: false,
+    current_step: 2,
+    total_steps: 5
+  },
+  {
+    id: 'preview_q2',
+    title: 'Refine the Void Array',
+    description: 'Construct a multi-layered formation to stabilize the sector.',
+    rank: 'RANK A',
+    type: 'Architecture',
+    xp_reward: 350,
+    class_tag: 'Formation Master',
+    is_completed: false
+  }
+];
+
+export const GUEST_PREVIEW_NOTIFICATIONS: PlayerNotification[] = [
+  {
+    id: 'n1',
+    message: 'HEAVENLY TRIBULATION SURVIVED: +1,500 QI',
+    type: 'system',
+    created_at: new Date().toISOString(),
+    is_read: false
+  },
+  {
+    id: 'n2',
+    message: 'NEW ARTIFACT DETECTED IN INVENTORY',
+    type: 'item',
+    created_at: new Date(Date.now() - 3600000).toISOString(),
+    is_read: true
+  }
+];
+
+export const GUEST_PREVIEW_BOUNTIES: BountySubmission[] = [
+  {
+    id: 'b1',
+    title: 'Buffer Overflow in Sect Gate',
+    status: 'Validating',
+    severity: 'CRITICAL',
+    created_at: new Date().toISOString()
+  }
+];
+
 export function usePlayerProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
@@ -67,10 +166,10 @@ export function usePlayerProfile() {
 
   useEffect(() => {
     if (!user) {
-      setProfile(null);
-      setQuests([]);
-      setNotifications([]);
-      setBounties([]);
+      setProfile(GUEST_PREVIEW_PROFILE);
+      setQuests(GUEST_PREVIEW_QUESTS);
+      setNotifications(GUEST_PREVIEW_NOTIFICATIONS);
+      setBounties(GUEST_PREVIEW_BOUNTIES);
       setLoading(false);
       return;
     }
