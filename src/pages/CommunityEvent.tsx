@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './CommunityEvent.css';
 
 const CommunityEvent: React.FC = () => {
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <div className="event-page">
+        <div className={`event-page ${visible ? 'entered' : ''}`}>
             {/* HERO SECTION */}
             <section className="event-hero">
                 <div className="status-tag pulse-border">MISSION BRIEFING</div>
@@ -29,41 +36,34 @@ const CommunityEvent: React.FC = () => {
                     <p className="p-large" style={{ marginTop: '1rem' }}>Ascension brings privileges. Prove your consistency.</p>
                 </div>
                 <div className="reward-grid">
-                    <div className="reward-card tilt-card">
-                        <div className="reward-icon mock-rank-f" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem', borderColor: 'var(--text-dim)' }}>
-                            MTL
+                    {[
+                        {
+                            abbr: 'MTL', name: 'Mortal', tier: 'base',
+                            desc: 'Entry level participation in the challenge.',
+                            perks: ['Community recognition', 'Sect Access']
+                        },
+                        {
+                            abbr: 'FND', name: 'Foundation', tier: 'mid',
+                            desc: 'Consistent progress and active tracking.',
+                            perks: ['Leaderboard ranking visibility', 'Verified status', 'Beta feature access']
+                        },
+                        {
+                            abbr: 'NAS', name: 'Nascent Soul', tier: 'elite',
+                            desc: 'Top 5% on the global leaderboard.',
+                            perks: ['Exclusive Discord Role', 'Custom Neon Cloak cosmetic', 'Direct line to The System']
+                        }
+                    ].map((t, idx) => (
+                        <div key={idx} className={`reward-card ${t.tier === 'elite' ? 'elite' : ''}`} style={{ '--card-idx': idx } as React.CSSProperties}>
+                            <div className={`reward-icon mock-rank-${t.tier === 'elite' ? 's' : t.tier === 'mid' ? 'a' : 'f'}`}>
+                                {t.abbr}
+                            </div>
+                            <h3>{t.name}</h3>
+                            <p className="tier-desc">{t.desc}</p>
+                            <ul className="reward-list">
+                                {t.perks.map((p, i) => <li key={i}>{p}</li>)}
+                            </ul>
                         </div>
-                        <h3>Mortal</h3>
-                        <p className="tier-desc">Entry level participation in the challenge.</p>
-                        <ul className="reward-list">
-                            <li>Community recognition</li>
-                            <li>Sect Access</li>
-                        </ul>
-                    </div>
-                    <div className="reward-card tilt-card">
-                        <div className="reward-icon mock-rank-a" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem' }}>
-                            FND
-                        </div>
-                        <h3>Foundation</h3>
-                        <p className="tier-desc">Consistent progress and active tracking.</p>
-                        <ul className="reward-list">
-                            <li>Leaderboard ranking visibility</li>
-                            <li>Verified status</li>
-                            <li>Beta feature access</li>
-                        </ul>
-                    </div>
-                    <div className="reward-card tilt-card elite">
-                        <div className="reward-icon mock-rank-s" style={{ width: '48px', height: '48px', margin: '0 0 1.5rem', fontSize: '1.2rem' }}>
-                            NAS
-                        </div>
-                        <h3>Nascent Soul</h3>
-                        <p className="tier-desc">Top 5% on the global leaderboard.</p>
-                        <ul className="reward-list">
-                            <li>Exclusive Discord Role</li>
-                            <li>Custom Neon Cloak cosmetic</li>
-                            <li>Direct line to The System</li>
-                        </ul>
-                    </div>
+                    ))}
                 </div>
             </section>
 
@@ -74,37 +74,23 @@ const CommunityEvent: React.FC = () => {
                     <p className="p-large" style={{ marginTop: '1rem' }}>The path is simple. Execution is the separator.</p>
                 </div>
                 <div className="steps-container">
-                    <div className="step-row">
-                        <div className="step-number">01</div>
-                        <div className="step-content">
-                            <h3>Join the Sect</h3>
-                            <p>Create a Rizen account and enter the community challenge. Select your initial Dao Path.</p>
-                        </div>
-                    </div>
-                    <div className="step-line"></div>
-                    <div className="step-row">
-                        <div className="step-number">02</div>
-                        <div className="step-content">
-                            <h3>Track Your Progress</h3>
-                            <p>Use the Rizen system to log builds, track productivity sessions, and hit daily personal milestones.</p>
-                        </div>
-                    </div>
-                    <div className="step-line"></div>
-                    <div className="step-row">
-                        <div className="step-number">03</div>
-                        <div className="step-content">
-                            <h3>Earn Spirit Stones</h3>
-                            <p>Your validated progress contributes to your overall Spirit Stones and VLD rate.</p>
-                        </div>
-                    </div>
-                    <div className="step-line"></div>
-                    <div className="step-row">
-                        <div className="step-number">04</div>
-                        <div className="step-content">
-                            <h3>Rise in Rank</h3>
-                            <p>The most consistent builders climb the global leaderboard ranks and earn community-wide recognition.</p>
-                        </div>
-                    </div>
+                    {[
+                        { num: '01', title: 'Join the Sect', desc: 'Create a Rizen account and enter the community challenge. Select your initial Dao Path.' },
+                        { num: '02', title: 'Track Your Progress', desc: 'Use the Rizen system to log builds, track productivity sessions, and hit daily personal milestones.' },
+                        { num: '03', title: 'Earn Spirit Stones', desc: 'Your validated progress contributes to your overall Spirit Stones and VLD rate.' },
+                        { num: '04', title: 'Rise in Rank', desc: 'The most consistent builders climb the global leaderboard ranks and earn community-wide recognition.' }
+                    ].map((step, idx) => (
+                        <React.Fragment key={idx}>
+                            <div className="step-row" style={{ '--step-idx': idx } as React.CSSProperties}>
+                                <div className="step-number">{step.num}</div>
+                                <div className="step-content">
+                                    <h3>{step.title}</h3>
+                                    <p>{step.desc}</p>
+                                </div>
+                            </div>
+                            {idx < 3 && <div className="step-line"></div>}
+                        </React.Fragment>
+                    ))}
                 </div>
             </section>
 
@@ -126,9 +112,11 @@ const CommunityEvent: React.FC = () => {
                         { rank: 1, user: 'V0idWalker', level: 'S', class: 'Shadow Arts', vld: '98.2%', rep: '94,200', active: true },
                         { rank: 2, user: 'NeoConstruct', level: 'S', class: 'Formation Master', vld: '96.5%', rep: '89,450' },
                         { rank: 3, user: 'GhostWire', level: 'A', class: 'Shadow Arts', vld: '94.1%', rep: '82,100' },
-                    ].map((op) => (
-                        <div key={op.rank} className={`ranking-row rank-top`}>
-                            <div className="rank-num">{op.rank}</div>
+                    ].map((op, idx) => (
+                        <div key={op.rank} className="ranking-row rank-top" style={{ '--row-idx': idx } as React.CSSProperties}>
+                            <div className="rank-num">
+                                {idx < 3 ? <span className="rank-medal">{['🥇', '🥈', '🥉'][idx]}</span> : op.rank}
+                            </div>
                             <div className="rank-user">
                                 <span className={`mock-rank-${op.level.toLowerCase()}`}>{op.level}</span>
                                 {op.user}
@@ -145,7 +133,7 @@ const CommunityEvent: React.FC = () => {
             </section>
 
             {/* COMMUNITY LINKS SECTION */}
-            <section className="event-section" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: '4rem', paddingTop: '6rem' }}>
+            <section className="event-section community-links-section">
                 <div className="centered-header">
                     <h2 className="title-large" style={{ fontSize: '2.5rem' }}>COMMUNITY HUB</h2>
                     <p className="p-large" style={{ marginTop: '1rem', maxWidth: '500px' }}>
@@ -153,23 +141,19 @@ const CommunityEvent: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="community-grid" style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                    <a href="#/community/docs" className="community-card compact-card">
-                        <div className="community-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>📚</div>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', letterSpacing: '1px' }}>Docs</h3>
-                    </a>
-                    <a href="#/community/events" className="community-card compact-card">
-                        <div className="community-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>🗓️</div>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', letterSpacing: '1px' }}>Events</h3>
-                    </a>
-                    <a href="#/community/blog" className="community-card compact-card">
-                        <div className="community-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>✍️</div>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', letterSpacing: '1px' }}>Blog</h3>
-                    </a>
-                    <a href="#/community/discord" className="community-card compact-card">
-                        <div className="community-icon" style={{ fontSize: '2rem', marginBottom: '1rem' }}>💬</div>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', letterSpacing: '1px' }}>Discord</h3>
-                    </a>
+                <div className="community-links-grid">
+                    {[
+                        { id: 'docs', icon: '📚', label: 'Docs' },
+                        { id: 'events', icon: '🗓️', label: 'Events' },
+                        { id: 'blog', icon: '✍️', label: 'Blog' },
+                        { id: 'discord', icon: '💬', label: 'Discord' },
+                    ].map((link, idx) => (
+                        <a key={link.id} href={`#/community/${link.id}`} className="community-link-card" style={{ '--link-idx': idx } as React.CSSProperties}>
+                            <div className="clc-icon">{link.icon}</div>
+                            <h3>{link.label}</h3>
+                            <span className="clc-arrow">→</span>
+                        </a>
+                    ))}
                 </div>
             </section>
         </div>
