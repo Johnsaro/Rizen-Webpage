@@ -8,6 +8,7 @@ import Roadmap from './Roadmap';
 
 interface CommunityProps {
     subView: 'hub' | 'docs' | 'events' | 'blog' | 'discord' | 'roadmap';
+    roadmapBuild?: string;
 }
 
 const CommunityHub: React.FC = () => {
@@ -88,7 +89,7 @@ const CommunitySubpage: React.FC<{ subView: string }> = ({ subView }) => {
     );
 };
 
-const Community: React.FC<CommunityProps> = ({ subView }) => {
+const Community: React.FC<CommunityProps> = ({ subView, roadmapBuild }) => {
 
     // Hash parsing to determine if a specific EVENT detail is loaded
     const [selectedEventSlug, setSelectedEventSlug] = useState<string | null>(null);
@@ -119,7 +120,7 @@ const Community: React.FC<CommunityProps> = ({ subView }) => {
             {subView === 'hub' ? <CommunityHub /> :
                 subView === 'blog' ? <Blog /> :
                     subView === 'docs' ? <Docs /> :
-                        subView === 'roadmap' ? <Roadmap /> :
+                        subView === 'roadmap' ? <Roadmap initialBuild={roadmapBuild} /> :
                             subView === 'events' ? <CommunityEvents /> :
                                 <CommunitySubpage subView={subView} />}
         </>

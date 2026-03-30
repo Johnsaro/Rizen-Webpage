@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Build } from '../../data/builds';
+import { supabase } from '../../lib/supabase';
 import RizenMarketingVideo from './RizenMarketingVideo';
 import PulseMarketingVideo from './PulseMarketingVideo';
 import PhantomMarketingVideo from './PhantomMarketingVideo';
@@ -11,6 +12,31 @@ interface BuildDetailProps {
 }
 
 const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
+  const [appVersion, setAppVersion] = useState("v2.3.2");
+
+  useEffect(() => {
+    if (build.links.download !== 'dynamic') return;
+    const fetchVersion = async () => {
+      try {
+        const { data } = await supabase
+          .from('app_config')
+          .select('app_version')
+          .eq('id', 1)
+          .maybeSingle();
+        if (data?.app_version) setAppVersion(data.app_version);
+      } catch (err) {
+        console.error("Error fetching app version:", err);
+      }
+    };
+    fetchVersion();
+  }, [build.links.download]);
+
+  const getDownloadUrl = () => {
+    if (build.links.download === 'dynamic') {
+      return `https://github.com/Johnsaro/Rizen/releases/download/${appVersion}/app-release.apk`;
+    }
+    return build.links.download;
+  };
   return (
     <div className="build-detail-overlay">
       <div className="build-detail-container">
@@ -69,7 +95,7 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
               {build.links.download && (
                 <div className="brief-download-wrap">
                   <a
-                    href={build.links.download}
+                    href={getDownloadUrl()}
                     className="apk-download-btn"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -81,7 +107,7 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                     </svg>
                     <span className="apk-dl-label">
                       <span className="apk-dl-title">DOWNLOAD APK</span>
-                      <span className="apk-dl-sub">v2.2.0 · Android</span>
+                      <span className="apk-dl-sub">{build.links.download === 'dynamic' ? `${appVersion} · Android` : 'Android'}</span>
                     </span>
                     <span className="apk-dl-badge">FREE</span>
                   </a>
@@ -101,6 +127,9 @@ const BuildDetail: React.FC<BuildDetailProps> = ({ build, onClose }) => {
                 VIEW REPOSITORY
               </a>
             )}
+            <a href={`#/community/roadmap?build=${build.id}`} className="btn-secondary">
+              VIEW ROADMAP →
+            </a>
           </div>
 
           {/* ZONE 3: PROOF / MEDIA */}
