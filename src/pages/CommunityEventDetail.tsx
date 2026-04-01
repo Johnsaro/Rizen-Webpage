@@ -9,18 +9,22 @@ interface Props {
     slug: string;
 }
 
+const RANK_MEDALS = ['🥇', '🥈', '🥉'];
+
 const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
     const { user } = useAuth();
     const { profile } = usePlayerProfile();
     const event = rizenEvents.find(e => e.slug === slug);
     const [hasJoined, setHasJoined] = useState(false);
     const [showSubmitModal, setShowSubmitModal] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     const [showClearanceDenied, setShowClearanceDenied] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
-    // New: Report Mode
+    // Report Mode
     const [reportMode, setReportMode] = useState<'basic' | 'technical'>('basic');
 
     const MIN_QI_THRESHOLD = 500;
@@ -33,6 +37,11 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
         description: '',
         steps: ''
     });
+
+    useEffect(() => {
+        const timer = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Check if user has already joined/participated
     useEffect(() => {
@@ -52,9 +61,12 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
     if (!event) {
         return (
             <div className="event-detail-page reveal visible" style={{ textAlign: 'center', paddingTop: '10rem' }}>
-                <h1>Event Archive Not Found</h1>
-                <p>The requested operation protocol does not exist or has been redacted.</p>
-                <a href="#/community/events" className="btn-secondary" style={{ marginTop: '2rem' }}>Return to Hub</a>
+                <div className="edp-not-found">
+                    <div className="nf-icon">∅</div>
+                    <h1>Event Archive Not Found</h1>
+                    <p>The requested operation protocol does not exist or has been redacted.</p>
+                    <a href="#/community/events" className="btn-secondary" style={{ marginTop: '2rem' }}>Return to Hub</a>
+                </div>
             </div>
         );
     }
@@ -75,7 +87,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
 
         setHasJoined(true);
         localStorage.setItem(`joined_event_${event.id}_${user.id}`, 'true');
-        setToastMessage('✅ Participant Badge Unlocked. Welcome to the Hunt.');
+        setToastMessage('Participant Badge Unlocked. Welcome to the Hunt.');
     };
 
     const handleReportSubmit = async (e: React.FormEvent) => {
@@ -84,7 +96,6 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
 
         setIsSubmitting(true);
 
-        // Auto-capture metadata for the developer (the "Ghost Script")
         const metadata = {
             ua: navigator.userAgent,
             res: `${window.innerWidth}x${window.innerHeight}`,
@@ -113,25 +124,26 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
             if (error) throw error;
 
             setShowSubmitModal(false);
-            setToastMessage('🛡️ Transmission Successful. Tech Spirits are investigating.');
+            setToastMessage('Transmission Successful. Tech Spirits are investigating.');
             setFormData({ title: '', severity: 'Medium', component: '', description: '', steps: '' });
         } catch (err: any) {
             console.error('Submission error:', err);
-            setToastMessage('❌ Transmission Failed. Signal jam detected.');
+            setToastMessage('Transmission Failed. Signal jam detected.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const startDate = new Date(event.startDate).toLocaleDateString();
-    const endDate = new Date(event.endDate).toLocaleDateString();
+    const startDate = new Date(event.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    const endDate = new Date(event.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
     const isBugBounty = event.id === 'bb-v1';
 
     return (
-        <div className={`event-detail-page ${isBugBounty ? 'bug-bounty-theme' : ''} reveal visible`}>
+        <div className={`event-detail-page ${isBugBounty ? 'bug-bounty-theme' : ''} ${visible ? 'entered' : ''}`}>
             {toastMessage && (
                 <div className={`toast-notification ${toastMessage ? 'show' : ''}`}>
+                    <span className="toast-icon">◆</span>
                     {toastMessage}
                 </div>
             )}
@@ -150,7 +162,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                         </div>
                         <h1 className="bb-title">Project Zero <span>// Bug Bounty</span></h1>
                         <p className="bb-tagline">Identify vulnerabilities. Secure the protocol. Be rewarded in Spirit Stones.</p>
-                        
+
                         <div className="bb-stats-grid">
                             <div className="bb-stat-box">
                                 <span className="bb-stat-label">MAX BOUNTY</span>
@@ -196,42 +208,59 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                     </div>
                 </header>
             ) : (
+                /* ── GENERAL EVENT HEADER (improved) ── */
                 <header className="event-detail-header">
-                    <div className="event-meta">
+                    <div className="edh-top">
                         <span className="event-icon-large">{event.icon}</span>
                         <div className={`event-status status-${event.status}`} style={{ position: 'relative', top: 'auto', right: 'auto' }}>
+                            {event.status === 'live' && <span className="status-dot-inline"></span>}
                             {event.status}
                         </div>
                     </div>
-                    <h1>{event.title}</h1>
-                    <div className="event-tagline-large">{event.tagline}</div>
+                    <h1 className="edh-title">{event.title}</h1>
+                    <div className="edh-tagline">{event.tagline}</div>
 
-                    <div className="event-timeline">
-                        <div className="timeline-item">
-                            <span className="timeline-label">Launch Sequence</span>
-                            <span className="timeline-date">{startDate}</span>
+                    <div className="edh-timeline">
+                        <div className="edh-timeline-item">
+                            <span className="edh-tl-label">Launch Sequence</span>
+                            <span className="edh-tl-date">{startDate}</span>
                         </div>
-                        <span style={{ color: 'var(--text-dim)' }}>→</span>
-                        <div className="timeline-item">
-                            <span className="timeline-label">Operation End</span>
-                            <span className="timeline-date">{endDate}</span>
+                        <div className="edh-timeline-arrow">→</div>
+                        <div className="edh-timeline-item">
+                            <span className="edh-tl-label">Operation End</span>
+                            <span className="edh-tl-date">{endDate}</span>
                         </div>
                     </div>
+
+                    {event.status === 'live' && !isBugBounty && (
+                        <div className="edh-actions">
+                            {!user ? (
+                                <button className="edh-cta-btn" onClick={() => window.dispatchEvent(new Event('open-auth-modal'))}>
+                                    Login to Participate
+                                </button>
+                            ) : (
+                                <button className="edh-cta-btn" onClick={handleJoinClick}>
+                                    {hasJoined ? 'Already Enlisted' : 'Join Operation'}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </header>
             )}
 
             <div className="bb-layout">
                 <div className="bb-main-content">
-                    <section className="event-detail-section">
+                    {/* Briefing Section */}
+                    <section className="event-detail-section eds-animate" style={{ '--section-delay': '0s' } as React.CSSProperties}>
                         <h2>Briefing</h2>
                         <div className="event-body-text">{event.description}</div>
-                        
+
                         {isBugBounty && (
                             <div className="bb-how-it-works">
                                 <h3>Operational Protocol</h3>
                                 <div className="bb-steps-grid">
                                     {event.howItWorks?.map((step, idx) => (
-                                        <div key={idx} className="bb-step-card">
+                                        <div key={idx} className="bb-step-card" style={{ '--step-delay': `${idx * 0.08}s` } as React.CSSProperties}>
                                             <div className="bb-step-number">{step.step}</div>
                                             <h4>{step.title}</h4>
                                             <p>{step.desc}</p>
@@ -244,7 +273,8 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
 
                     {isBugBounty && (
                         <>
-                            <section className="event-detail-section">
+                            {/* Rewards Structure */}
+                            <section className="event-detail-section eds-animate" style={{ '--section-delay': '0.1s' } as React.CSSProperties}>
                                 <h2>Rewards Structure</h2>
                                 <div className="bb-rewards-table">
                                     <div className="bb-reward-row critical">
@@ -270,7 +300,8 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                 </div>
                             </section>
 
-                            <section className="event-detail-section">
+                            {/* Program Scope */}
+                            <section className="event-detail-section eds-animate" style={{ '--section-delay': '0.2s' } as React.CSSProperties}>
                                 <h2>Program Scope</h2>
                                 <div className="bb-scope-grid">
                                     <div className="bb-scope-item">
@@ -308,13 +339,20 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                         </>
                     )}
 
-                    <section className="event-detail-section">
+                    {/* Hall of Fame (Leaderboard) */}
+                    <section className="event-detail-section eds-animate" style={{ '--section-delay': '0.3s' } as React.CSSProperties}>
                         <h2>Hall of Fame</h2>
                         <div className="bb-leaderboard">
                             {mockBugSubmissions.length > 0 ? (
                                 mockBugSubmissions.map((sub, idx) => (
-                                    <div key={sub.id} className="bb-leaderboard-item">
-                                        <div className="bb-rank">{idx + 1}</div>
+                                    <div key={sub.id} className={`bb-leaderboard-item ${idx < 3 ? `lb-top-${idx + 1}` : ''}`}>
+                                        <div className="bb-rank">
+                                            {idx < 3 ? (
+                                                <span className="lb-medal">{RANK_MEDALS[idx]}</span>
+                                            ) : (
+                                                <span className="lb-num">{idx + 1}</span>
+                                            )}
+                                        </div>
                                         <div className="bb-hunter">
                                             <span className="bb-hunter-name">{sub.userId}</span>
                                             <span className="bb-hunter-bug">{sub.title}</span>
@@ -327,9 +365,10 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                 ))
                             ) : (
                                 <div className="leaderboard-empty-state">
-                                    <div className="radar-sweep-wrap">
-                                        <div className="radar-circle-outer"></div>
-                                        <div className="radar-sweep"></div>
+                                    <div className="les-radar">
+                                        <div className="les-radar-ring"></div>
+                                        <div className="les-radar-sweep"></div>
+                                        <div className="les-radar-dot"></div>
                                     </div>
                                     <h3>Sector Status: SECURE</h3>
                                     <p>No vulnerabilities currently identified. Be the first to breach the perimeter.</p>
@@ -339,7 +378,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                     </section>
 
                     {isBugBounty && (
-                        <section className="event-detail-section">
+                        <section className="event-detail-section eds-animate" style={{ '--section-delay': '0.4s' } as React.CSSProperties}>
                             <h2>Rules of Engagement</h2>
                             <ul className="bb-rules-list">
                                 {event.rules.map((rule, idx) => (
@@ -351,13 +390,23 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                 </div>
 
                 <aside className="bb-sidebar">
+                    {/* FAQ with accordion */}
                     <div className="bb-sidebar-card">
                         <h3>Program FAQ</h3>
                         <div className="bb-faq-list">
                             {event.faqs?.map((faq, idx) => (
-                                <div key={idx} className="bb-faq-item">
-                                    <div className="bb-faq-q">{faq.q}</div>
-                                    <div className="bb-faq-a">{faq.a}</div>
+                                <div
+                                    key={idx}
+                                    className={`bb-faq-item ${expandedFaq === idx ? 'expanded' : ''}`}
+                                    onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+                                >
+                                    <div className="bb-faq-q">
+                                        <span>{faq.q}</span>
+                                        <span className="faq-chevron">{expandedFaq === idx ? '−' : '+'}</span>
+                                    </div>
+                                    <div className="bb-faq-a-wrap">
+                                        <div className="bb-faq-a">{faq.a}</div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -477,8 +526,8 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     />
-                                    <div className="sm-meta-hint" style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
-                                        🛡️ Sect Ghost-Script active. Browser and system metadata will be automatically attached to this report for the engineers.
+                                    <div className="sm-meta-hint">
+                                        Sect Ghost-Script active. Browser and system metadata will be automatically attached for the engineers.
                                     </div>
                                 </div>
                             )}
@@ -486,7 +535,7 @@ const CommunityEventDetail: React.FC<Props> = ({ slug }) => {
                             <div className="sm-footer">
                                 <button type="button" className="sm-btn-ghost" onClick={() => setShowSubmitModal(false)}>Discard</button>
                                 <button type="submit" className="sm-btn-transmit" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Transmitting...' : '⚡ Transmit Package'}
+                                    {isSubmitting ? 'Transmitting...' : 'Transmit Package'}
                                 </button>
                             </div>
                         </form>
