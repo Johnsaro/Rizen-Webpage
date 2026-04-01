@@ -1,30 +1,142 @@
 /* ==========================================================================
-   COMMUNITY EVENTS HUB
+   COMMUNITY EVENTS HUB — Overhauled
    ========================================================================== */
 
 .events-hub {
     padding-bottom: 6rem;
 }
 
-/* Event Hero */
+/* ── Entrance animation ── */
+.events-hub .event-hub-hero,
+.events-hub .events-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.events-hub.entered .event-hub-hero {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.events-hub.entered .events-section {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.15s;
+}
+
+.events-hub.entered .events-section:nth-child(3) {
+    transition-delay: 0.25s;
+}
+
+/* ── Back link ── */
+.events-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    transition: color 0.3s;
+}
+
+.events-back-link:hover {
+    color: var(--accent-cyan);
+}
+
+/* ── Event Hero ── */
 .event-hub-hero {
     text-align: center;
-    padding: 6rem 5% 4rem;
+    padding: 5rem 5% 3rem;
     max-width: 900px;
     margin: 0 auto;
 }
 
+.events-title {
+    margin: 0.5rem 0 1.5rem;
+}
+
+.et-main {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.et-sub {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+    opacity: 0.5;
+}
+
 .event-hub-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--text-dim);
     line-height: 1.6;
-    margin-bottom: 2rem;
-    max-width: 700px;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Section Containers */
+/* ── Event Stats Strip ── */
+.event-stats-strip {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50px;
+    padding: 0.6rem 2rem;
+}
+
+.ess-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.ess-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.ess-value.ess-live {
+    color: var(--accent-cyan);
+}
+
+.ess-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ess-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Section Containers ── */
 .events-section {
     max-width: 1200px;
     margin: 0 auto 4rem;
@@ -34,135 +146,228 @@
 .section-header {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sh-icon {
+    color: var(--accent-cyan);
+    font-size: 0.75rem;
+    opacity: 0.6;
 }
 
 .section-header h2 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #fff;
     margin: 0;
     white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
 .header-line {
     height: 1px;
     flex-grow: 1;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
 }
 
-/* Event List Grid */
+/* ── Filter Tabs ── */
+.events-filter-tabs {
+    display: flex;
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+.eft-btn {
+    padding: 0.35rem 0.85rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.eft-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.eft-btn.active {
+    background: rgba(0, 228, 255, 0.1);
+    color: var(--accent-cyan);
+}
+
+/* ── Event Cards ── */
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
 }
 
-/* Event Cards */
 .event-card {
-    background: var(--bg-card);
+    background: rgba(10, 12, 20, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 14px;
+    padding: 2rem 1.75rem;
     text-decoration: none;
     color: var(--text-main);
     display: flex;
     flex-direction: column;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
     height: 100%;
+    /* Staggered entrance */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
 }
 
-.event-card::before {
-    content: '';
+.entered .event-card {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--card-idx, 0) * 0.08s + 0.2s);
+}
+
+/* Accent stripe (top edge) */
+.ec-accent-stripe {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 2px;
-    background: transparent;
-    transition: background 0.3s;
+    background: var(--accent-cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-card:hover .ec-accent-stripe {
+    transform: scaleX(1);
 }
 
 .event-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(0, 210, 224, 0.3);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(0, 210, 224, 0.1);
-}
-
-.event-card:hover::before {
-    background: var(--accent-cyan);
-    box-shadow: 0 0 10px var(--accent-cyan-glow);
-}
-
-/* Featured Modifier */
-.event-card.featured {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 3rem;
-    align-items: center;
-    background: linear-gradient(135deg, rgba(13, 13, 15, 0.95) 0%, rgba(20, 25, 40, 0.9) 100%);
     border-color: rgba(0, 210, 224, 0.2);
-    padding: 3rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(0, 210, 224, 0.08);
 }
 
-/* Event Status Badges */
+/* ── Featured Modifier ── */
+.event-card.featured {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(10, 12, 20, 0.9) 0%, rgba(15, 20, 40, 0.85) 100%);
+    border-color: rgba(0, 210, 224, 0.15);
+    padding: 2.5rem;
+}
+
+/* ── Event Status Badges ── */
 .event-status {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 1.25rem;
+    right: 1.25rem;
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
     border: 1px solid;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    z-index: 2;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    animation: statusDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusDotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.4; }
 }
 
 .status-live {
     color: var(--accent-cyan);
     border-color: rgba(0, 210, 224, 0.3);
-    background: rgba(0, 210, 224, 0.05);
+    background: rgba(0, 210, 224, 0.08);
 }
 
 .status-upcoming {
-    color: var(--accent-violet);
-    border-color: rgba(188, 19, 254, 0.3);
-    background: rgba(188, 19, 254, 0.05);
+    color: var(--accent-purple);
+    border-color: rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.08);
 }
 
 .status-ended {
     color: var(--text-dim);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
 }
 
-/* Card Content */
+/* ── Card Content ── */
 .event-icon-wrapper {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
     filter: drop-shadow(0 0 10px rgba(0, 210, 224, 0.3));
 }
 
-.featured .event-icon-wrapper {
-    font-size: 6rem;
+.event-icon-wrapper.featured-icon {
+    font-size: 5rem;
     text-align: center;
-    margin: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+}
+
+.event-icon-ring {
+    position: absolute;
+    inset: -15px;
+    border: 1px solid rgba(0, 210, 224, 0.1);
+    border-radius: 50%;
+    animation: iconRingPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconRingPulse {
+    0%, 100% { transform: scale(0.95); opacity: 0.3; }
+    50% { transform: scale(1.08); opacity: 0.1; }
+}
+
+.event-icon-wrapper.compact-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
 }
 
 .event-card h3 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     color: #fff;
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.4rem;
     line-height: 1.2;
-    /* Title clamp */
+    font-weight: 700;
+    letter-spacing: -0.3px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -171,24 +376,26 @@
 }
 
 .featured h3 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     -webkit-line-clamp: unset;
     line-clamp: unset;
+    letter-spacing: -1px;
 }
 
 .event-tagline {
     color: var(--accent-cyan);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-family: 'Fira Code', monospace;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
 }
 
 .event-desc {
     color: var(--text-dim);
-    line-height: 1.6;
-    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
     flex-grow: 1;
-    /* Summary clamp */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
@@ -197,37 +404,137 @@
 }
 
 .featured .event-desc {
-    font-size: 1.1rem;
+    font-size: 1rem;
     -webkit-line-clamp: unset;
     line-clamp: unset;
 }
 
-/* Card Footer */
+/* ── Card Footer ── */
 .event-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 1.25rem;
     margin-top: auto;
+}
+
+.event-date-range {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .event-dates {
     font-family: 'Fira Code', monospace;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-dim);
+}
+
+.date-sep {
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 0.7rem;
 }
 
 .event-cta {
     color: var(--accent-cyan);
     font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    transition: gap 0.3s ease;
+}
+
+.cta-arrow {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+}
+
+.event-card:hover .cta-arrow {
+    transform: translateX(3px);
+}
+
+.event-card:hover .event-cta {
+    gap: 0.6rem;
+}
+
+/* ── Empty Filter State ── */
+.events-empty-filter {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-dim);
+    border: 1px dashed rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+}
+
+.eef-icon {
+    display: block;
+    font-size: 2rem;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+.events-empty-filter p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ── Empty State (no events at all) ── */
+.events-empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ees-radar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ees-radar-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(0, 228, 255, 0.15);
+    border-radius: 50%;
+}
+
+.ees-radar-sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(0, 228, 255, 0.15) 25%, transparent 30%);
+    animation: radarSweep 3s linear infinite;
+}
+
+@keyframes radarSweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.events-empty-state h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-dim);
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.events-empty-state p {
+    font-family: 'Fira Code', monospace;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.85rem;
+    margin: 0;
 }
 
 /* ==========================================================================
@@ -240,15 +547,19 @@
     }
 
     .event-card.featured {
+        grid-column: 1 / -1;
         grid-template-columns: 1fr;
         gap: 1.5rem;
-        padding: 2.5rem;
         text-align: center;
     }
 
+    .featured-icon {
+        margin: 0 auto;
+    }
+
     .event-card.featured .event-card-footer {
-        flex-direction: column;
-        gap: 1rem;
+        justify-content: center;
+        gap: 2rem;
     }
 }
 
@@ -269,8 +580,29 @@
         padding: 2rem 1.5rem;
     }
 
-    /* Minimal tap target size for all interactive elements */
     .event-card {
         min-height: 120px;
+    }
+
+    .section-header {
+        flex-wrap: wrap;
+    }
+
+    .events-filter-tabs {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    .event-stats-strip {
+        gap: 1rem;
+        padding: 0.5rem 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .et-main {
+        font-size: 2.5rem;
+        letter-spacing: -1px;
     }
 }

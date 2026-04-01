@@ -12,59 +12,98 @@ interface CommunityProps {
 }
 
 const CommunityHub: React.FC = () => {
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     const cards = [
         {
             id: 'roadmap',
-            title: 'Roadmap (Upcoming Updates)',
+            title: 'Roadmap',
             desc: 'See what features and updates are currently in development for Rizen.',
             icon: '🚀',
-            activity: 'Now, Next, Later'
+            activity: 'Now, Next, Later',
+            accent: 'violet',
+            live: false
         },
         {
             id: 'docs',
             title: 'Docs',
             desc: 'Technical documentation, APIs, and implementation guides.',
             icon: '📚',
-            activity: 'Updated Today'
+            activity: 'Updated Today',
+            accent: 'emerald',
+            live: false
         },
         {
             id: 'events',
             title: 'Events',
-            desc: 'Join upcoming project sharing sessions and builder meetups.',
+            desc: 'Join operations, hunt vulnerabilities, and climb the ranks.',
             icon: '🗓️',
-            activity: 'Live: Bug Bounty'
+            activity: 'Bug Bounty Live',
+            accent: 'cyan',
+            live: true
         },
         {
             id: 'blog',
             title: 'Blog',
             desc: 'Updates, build logs, and comprehensive patch notes.',
             icon: '✍️',
-            activity: 'Latest: v2.0 Release'
+            activity: 'Latest: v2.0 Release',
+            accent: 'amber',
+            live: false
         },
         {
             id: 'discord',
             title: 'Discord',
             desc: 'Connect with cultivators. Coordinate, learn, and ascend together.',
             icon: '💬',
-            activity: '1,204 Online'
+            activity: '1,204 Online',
+            accent: 'indigo',
+            live: true
         }
     ];
 
     return (
-        <div className="community-page reveal visible">
-            <div className="community-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className={`community-page ${visible ? 'entered' : ''}`}>
+            {/* Atmospheric background grid */}
+            <div className="community-atmosphere">
+                <div className="atmo-grid"></div>
+                <div className="atmo-glow atmo-glow-1"></div>
+                <div className="atmo-glow atmo-glow-2"></div>
+            </div>
+
+            <div className="community-header">
                 <div className="status-tag pulse-border">SECT NETWORK</div>
                 <h1 className="glitch-title" data-text="COMMUNITY" style={{ marginBottom: '1.5rem', marginTop: '0.5rem' }}>COMMUNITY</h1>
-                <p>A rising tide lifts all cultivators. Share tactics, collaborate on builds, and ascend together.</p>
+                <p className="community-subtitle">
+                    A rising tide lifts all cultivators. Share tactics, collaborate on builds, and ascend together.
+                </p>
             </div>
 
             <div className="community-grid">
-                {cards.map(card => (
-                    <a key={card.id} href={`#/community/${card.id}`} className="community-card">
-                        <div className="community-icon">{card.icon}</div>
+                {cards.map((card, idx) => (
+                    <a
+                        key={card.id}
+                        href={`#/community/${card.id}`}
+                        className={`community-card accent-${card.accent}`}
+                        style={{ '--card-delay': `${idx * 0.08}s` } as React.CSSProperties}
+                    >
+                        <div className="cc-glow-orb"></div>
+                        <div className="cc-top">
+                            <div className="community-icon">{card.icon}</div>
+                            <div className={`community-activity ${card.live ? 'activity-live' : ''}`}>
+                                {card.live && <span className="activity-pulse"></span>}
+                                {card.activity}
+                            </div>
+                        </div>
                         <h2>{card.title}</h2>
                         <p>{card.desc}</p>
-                        <div className="community-activity">{card.activity}</div>
+                        <div className="cc-footer">
+                            <span className="cc-enter">Enter <span className="cc-arrow">→</span></span>
+                        </div>
                     </a>
                 ))}
             </div>
@@ -76,7 +115,6 @@ const CommunitySubpage: React.FC<{ subView: string }> = ({ subView }) => {
     const titles: Record<string, string> = {
         discord: 'Discord Server'
     };
-
 
     return (
         <div className="community-subpage reveal visible">
