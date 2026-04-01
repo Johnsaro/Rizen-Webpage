@@ -4,6 +4,8 @@ export interface BuildMedia {
   caption: string;
 }
 
+export type BuildDevStatus = 'live' | 'maintenance' | 'stable';
+
 export interface Build {
   id: string;
   title: string;
@@ -12,6 +14,10 @@ export interface Build {
   tags: string[];
   status: 'Live' | 'Beta' | 'Upcoming' | 'Archived' | 'WIP';
   systemStatus?: 'online' | 'maintenance' | 'down' | 'degraded' | 'archived';
+  version: string;
+  accentRgb: string;
+  devStatus: BuildDevStatus;
+  flagship?: boolean;
   image: string;
   created_date: string;
   intel: {
@@ -36,11 +42,16 @@ export const builds: Build[] = [
     tags: ['Flutter', 'Supabase', 'Dart'],
     status: 'Live',
     systemStatus: 'online',
+    version: 'v2.3.2',
+    accentRgb: '16, 185, 129',
+    devStatus: 'live',
+    flagship: true,
     image: '/assets/builds/rizen-mobile.png',
     created_date: '2026-03-08',
     intel: {
-      brief: 'The official v2.2.0 release of the Rizen mobile cultivator interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI trial generation, real-time synchronization, and a local-only Merchant\'s Log for expense tracking.',
+      brief: 'The official v2.3.2 release of the Rizen mobile cultivator interface. A cross-platform mobile application built with Flutter that gamifies life, featuring a full combat system, AI trial generation, real-time synchronization, and a local-only Merchant\'s Log for expense tracking.',
       patchNotes: [
+        'v2.3.2: Latest stable release with bug fixes and refinements.',
         'v2.2.0: Introduced Merchant\'s Log (local SQLite expense tracker) with Coin Purse & Ledger tabs. Earn Qi for logging expenses.',
         'v1.0.0: Official production release. Stability pass and final asset integration.',
         'v0.4.0: Heavenly Merit system implemented.',
@@ -61,21 +72,25 @@ export const builds: Build[] = [
       { type: 'image', url: '/assets/builds/rizen-ss4.png', caption: 'Spiritual Artifacts & Loadout' }
     ],
     links: {
-      download: 'https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf'
+      repo: 'https://github.com/Johnsaro/Rizen',
+      download: 'dynamic'
     }
   },
   {
     id: 'pulse-agent',
     title: 'Pulse Agent 2.0',
-    oneLineSummary: 'Autonomous desktop enforcer and health-monitoring agent for the Rizen ecosystem.',
-    description: 'A professional desktop utility that acts as a resident agent, enforcing cultivator health protocols and productivity focus through real-time analytics.',
+    oneLineSummary: 'Autonomous desktop enforcer and health-monitoring agent.',
+    description: 'A desktop utility that monitors activity, enforces health protocols, and provides productivity analytics through a Guardian mascot system.',
     tags: ['Python', 'PyQt6', 'Win32 API', 'Automation'],
     status: 'Live',
     systemStatus: 'online',
+    version: 'v2.0',
+    accentRgb: '0, 228, 255',
+    devStatus: 'stable',
     image: '/assets/builds/pulse-agent.png',
     created_date: '2026-03-04',
     intel: {
-      brief: 'Pulse Agent 2.0 is the desktop-side extension of the Rizen Mobile Protocol. It functions as an autonomous "Guardian" that monitors cultivator activity, enforces hydration/posture breaks, and provides a centralized Hub for productivity analytics.',
+      brief: 'Pulse Agent 2.0 is a desktop productivity guardian. It monitors cultivator activity, enforces hydration and posture breaks, tracks active window time and idle periods, and provides a centralized Dashboard Hub for real-time analytics.',
       patchNotes: [
         'v2.0: Full PyQt6 Dashboard Hub integration with Live Sync.',
         'v1.5: Activity Pulse engine for background monitoring.',
@@ -85,7 +100,7 @@ export const builds: Build[] = [
       lessons: [
         'Resident agents require minimal CPU footprint to remain non-intrusive.',
         'PyQt6 provides a professional, hardware-accelerated interface for complex data visualization.',
-        'Integrating with the Rizen brand identity (Pulse) creates a cohesive multi-platform experience.'
+        'Win32 API integration enables deep system-level monitoring without elevated privileges.'
       ]
     },
     media: [
@@ -105,6 +120,9 @@ export const builds: Build[] = [
     tags: ['Python', 'Cybersecurity', 'Forensics', 'Win32 API'],
     status: 'Live',
     systemStatus: 'online',
+    version: 'v1.1',
+    accentRgb: '244, 63, 94',
+    devStatus: 'stable',
     image: '/assets/builds/phantom-peel.png',
     created_date: '2026-02-26',
     intel: {

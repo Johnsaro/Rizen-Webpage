@@ -1,12 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import './Roadmap.css';
-import { roadmapData, buildMeta, buildOrder, type BuildId } from '../data/rizenRoadmap';
+import { roadmapData, buildMeta, buildOrder, type BuildId, type DevStatus } from '../data/rizenRoadmap';
 
 interface RoadmapProps {
     initialBuild?: string;
 }
 
 const SHIPPED_PREVIEW_COUNT = 4;
+
+const DEV_STATUS_CONFIG: Record<DevStatus, { label: string; icon: string }> = {
+    live: { label: 'LIVE', icon: '▶' },
+    maintenance: { label: 'MAINTENANCE', icon: '◆' },
+    stable: { label: 'STABLE', icon: '■' },
+};
 
 const Roadmap: React.FC<RoadmapProps> = ({ initialBuild }) => {
     const defaultBuild: BuildId = buildOrder.includes(initialBuild as BuildId)
@@ -88,6 +94,7 @@ const Roadmap: React.FC<RoadmapProps> = ({ initialBuild }) => {
                             } as React.CSSProperties}
                             onClick={() => handleTabChange(id)}
                         >
+                            <span className={`tab-status-dot tab-status-dot--${m.devStatus}`} title={DEV_STATUS_CONFIG[m.devStatus].label} />
                             <span className="tab-name">
                                 {m.shortName}
                                 {m.flagship && <span className="flagship-mark" title="Flagship product">&#9733;</span>}
@@ -111,6 +118,20 @@ const Roadmap: React.FC<RoadmapProps> = ({ initialBuild }) => {
                         {meta.flagship && <span className="identity-flagship">FLAGSHIP</span>}
                     </div>
                     <p className="identity-subtitle">{meta.subtitle}</p>
+
+                    {/* ── Dev Status Beacon ── */}
+                    <div className={`dev-status-beacon dev-status-beacon--${meta.devStatus}`}>
+                        <span className="beacon-glow" />
+                        <span className="beacon-core" />
+                        <span className="beacon-label">
+                            <span className="beacon-icon">{DEV_STATUS_CONFIG[meta.devStatus].icon}</span>
+                            {DEV_STATUS_CONFIG[meta.devStatus].label}
+                        </span>
+                        {meta.devStatusNote && (
+                            <span className="beacon-note">{meta.devStatusNote}</span>
+                        )}
+                    </div>
+
                     <div className="identity-tags">
                         {meta.tags.map(t => (
                             <span key={t} className="identity-tag">{t}</span>

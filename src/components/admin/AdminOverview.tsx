@@ -19,7 +19,7 @@ const AdminOverview: React.FC = () => {
   });
 
   const [activityFeed, setActivityFeed] = useState<any[]>([]);
-  const [operationalQueue, setOperationalQueue] = useState<any[]>([]);
+  const [_operationalQueue, _setOperationalQueue] = useState<any[]>([]);
   const [recentSignups, setRecentSignups] = useState<any[]>([]);
   const [expandedSignupId, setExpandedSignupId] = useState<string | null>(null);
   const [signupVelocity, setSignupVelocity] = useState({ today: 0, avg7d: 0 });
@@ -87,7 +87,7 @@ const AdminOverview: React.FC = () => {
       const inactiveHighLevel = profiles.filter(p => p.level >= 10 && new Date(p.updated_at || p.created_at) < sevenDaysAgo);
       
       // Pending Moderation: (Mocked for now as we don't have a content table yet)
-      const pendingMod = []; 
+      const pendingMod: any[] = [];
 
       // Active Bugs
       const activeBugs = bounties.filter(b => b.status === 'open' || b.status === 'investigating');
@@ -177,12 +177,12 @@ const AdminOverview: React.FC = () => {
       }
 
       // 2. Perform the update
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('app_config')
-        .upsert({ 
-          id: 1, 
+        .upsert({
+          id: 1,
           maintenance_mode: newState,
-          maintenance_message: 'SYSTEM UNDERGOING CORE MAINTENANCE. STAND BY.' 
+          maintenance_message: 'SYSTEM UNDERGOING CORE MAINTENANCE. STAND BY.'
         })
         .select();
       
@@ -202,11 +202,11 @@ const AdminOverview: React.FC = () => {
   };
 
   const buildAudienceQuery = () => {
-    let query = supabase.from('profiles').select('user_id, level, main_class');
+    let query = supabase.from('profiles').select('user_id, level, main_path');
     if (audienceType === 'level') {
       query = query.gt('level', 3);
     } else if (audienceType === 'class' && classFilter) {
-      query = query.eq('main_class', classFilter);
+      query = query.eq('main_path', classFilter);
     }
     return query;
   };

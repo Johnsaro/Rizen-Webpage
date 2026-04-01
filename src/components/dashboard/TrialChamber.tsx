@@ -1,4 +1,4 @@
-import React from 'react';
+import {} from 'react';
 import type { Quest } from '../../hooks/usePlayerProfile';
 
 interface TrialChamberProps {

@@ -10,6 +10,8 @@ export interface RoadmapItem {
     category: 'Core' | 'Feature' | 'Expansion' | 'System';
 }
 
+export type DevStatus = 'live' | 'maintenance' | 'stable';
+
 export interface BuildRoadmapMeta {
     name: string;
     shortName: string;
@@ -19,6 +21,8 @@ export interface BuildRoadmapMeta {
     version: string;
     tags: string[];
     flagship?: boolean;
+    devStatus: DevStatus;
+    devStatusNote?: string;
 }
 
 export const buildMeta: Record<BuildId, BuildRoadmapMeta> = {
@@ -31,15 +35,19 @@ export const buildMeta: Record<BuildId, BuildRoadmapMeta> = {
         version: 'v2.3.2',
         tags: ['Flutter', 'Supabase', 'Dart'],
         flagship: true,
+        devStatus: 'live',
+        devStatusNote: 'Active development — V2 in progress',
     },
     'pulse-agent': {
         name: 'Pulse Agent 2.0',
         shortName: 'Pulse',
         accent: 'var(--accent-cyan)',
         accentRgb: '0, 228, 255',
-        subtitle: 'Desktop guardian — shipped and stable.',
+        subtitle: 'Desktop guardian — shipped and operational.',
         version: 'v2.0',
         tags: ['Python', 'PyQt6', 'Win32'],
+        devStatus: 'stable',
+        devStatusNote: 'Feature-complete — no active development',
     },
     'phantom-peel': {
         name: 'Phantom Peel Forensics',
@@ -49,6 +57,8 @@ export const buildMeta: Record<BuildId, BuildRoadmapMeta> = {
         subtitle: 'Forensics layer — shipped and stable.',
         version: 'v1.1',
         tags: ['Python', 'Forensics', 'Win32'],
+        devStatus: 'stable',
+        devStatusNote: 'Feature-complete — no active development',
     },
 };
 
@@ -263,24 +273,6 @@ export const roadmapData: RoadmapItem[] = [
         description: 'Real-time data bridge between Pulse Agent desktop and the Rizen Mobile ecosystem for cross-platform cultivator analytics.',
         status: 'done',
         category: 'Feature'
-    },
-
-    // LATER
-    {
-        id: 'pa-later-1',
-        buildId: 'pulse-agent',
-        title: 'Focus Session Orchestrator',
-        description: 'Deep work mode that blocks distracting apps, enforces timed sessions, and feeds results back to Rizen Mobile as cultivation progress.',
-        status: 'later',
-        category: 'Feature'
-    },
-    {
-        id: 'pa-later-2',
-        buildId: 'pulse-agent',
-        title: 'Cross-Platform Agent',
-        description: 'Expand Pulse Agent beyond Windows to macOS and Linux with a platform-agnostic monitoring core.',
-        status: 'later',
-        category: 'Expansion'
     },
 
     // ═══════════════════════════════════════

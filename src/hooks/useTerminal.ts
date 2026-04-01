@@ -9,7 +9,8 @@ export type LogEntry = {
 
 export const useTerminal = () => {
   const [systemLog, setSystemLog] = useState<LogEntry[]>([
-    { sender: 'system', text: 'THE SYSTEM IS ONLINE. IDENTIFY YOURSELF, CULTIVATOR. WHAT TRIAL DID YOU OVERCOME TODAY?' }
+    { sender: 'system', text: 'SYSTEM LINK ESTABLISHED. WELCOME TO THE RIZEN PROTOCOL.' },
+    { sender: 'system', text: 'Report a real-world task you completed today — studying, training, building, anything. The System will evaluate your effort and award Qi.' }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);

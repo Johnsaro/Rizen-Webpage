@@ -234,8 +234,200 @@
 .identity-subtitle {
     font-size: 0.85rem;
     color: var(--text-dim);
-    margin: 0 0 0.65rem;
+    margin: 0 0 0.55rem;
     line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Dev Status Beacon — project lifecycle indicator
+   ═══════════════════════════════════════════════════════ */
+
+.dev-status-beacon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem;
+    border-radius: 100px;
+    margin-bottom: 0.65rem;
+    position: relative;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Shared beacon dot structure */
+.beacon-glow,
+.beacon-core {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.beacon-glow {
+    width: 18px;
+    height: 18px;
+    opacity: 0.25;
+    position: absolute;
+    left: 8px;
+    filter: blur(4px);
+}
+
+.beacon-core {
+    width: 8px;
+    height: 8px;
+    z-index: 1;
+}
+
+.beacon-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.beacon-icon {
+    font-size: 0.55rem;
+    line-height: 1;
+}
+
+.beacon-note {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    opacity: 0.5;
+    white-space: nowrap;
+}
+
+/* ── LIVE — pulsing emerald ── */
+.dev-status-beacon--live {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.15);
+}
+
+.dev-status-beacon--live .beacon-glow {
+    background: rgb(16, 185, 129);
+    animation: beacon-pulse-live 2s ease-in-out infinite;
+}
+
+.dev-status-beacon--live .beacon-core {
+    background: rgb(16, 185, 129);
+    box-shadow:
+        0 0 6px rgba(16, 185, 129, 0.6),
+        0 0 14px rgba(16, 185, 129, 0.25);
+    animation: beacon-core-pulse 2s ease-in-out infinite;
+}
+
+.dev-status-beacon--live .beacon-label {
+    color: rgb(16, 185, 129);
+}
+
+@keyframes beacon-pulse-live {
+    0%, 100% { opacity: 0.15; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+@keyframes beacon-core-pulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(16, 185, 129, 0.6), 0 0 14px rgba(16, 185, 129, 0.25); }
+    50% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.8), 0 0 20px rgba(16, 185, 129, 0.4); }
+}
+
+/* ── MAINTENANCE — breathing amber ── */
+.dev-status-beacon--maintenance {
+    background: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.12);
+}
+
+.dev-status-beacon--maintenance .beacon-glow {
+    background: rgb(245, 158, 11);
+    animation: beacon-breathe 3.5s ease-in-out infinite;
+}
+
+.dev-status-beacon--maintenance .beacon-core {
+    background: rgb(245, 158, 11);
+    box-shadow:
+        0 0 4px rgba(245, 158, 11, 0.5),
+        0 0 10px rgba(245, 158, 11, 0.15);
+    animation: beacon-core-breathe 3.5s ease-in-out infinite;
+}
+
+.dev-status-beacon--maintenance .beacon-label {
+    color: rgb(245, 158, 11);
+}
+
+@keyframes beacon-breathe {
+    0%, 100% { opacity: 0.1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(1.2); }
+}
+
+@keyframes beacon-core-breathe {
+    0%, 100% { box-shadow: 0 0 4px rgba(245, 158, 11, 0.5), 0 0 10px rgba(245, 158, 11, 0.15); }
+    50% { box-shadow: 0 0 6px rgba(245, 158, 11, 0.65), 0 0 14px rgba(245, 158, 11, 0.25); }
+}
+
+/* ── STABLE — static dim ── */
+.dev-status-beacon--stable {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dev-status-beacon--stable .beacon-glow {
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 0.08;
+    animation: none;
+}
+
+.dev-status-beacon--stable .beacon-core {
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.dev-status-beacon--stable .beacon-label {
+    color: var(--text-dim);
+    opacity: 0.65;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Tab Status Dots — tiny lifecycle indicator per tab
+   ═══════════════════════════════════════════════════════ */
+
+.tab-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: block;
+}
+
+.tab-status-dot--live {
+    background: rgb(16, 185, 129);
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+    animation: tab-dot-pulse 2s ease-in-out infinite;
+}
+
+.tab-status-dot--maintenance {
+    background: rgb(245, 158, 11);
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.35);
+    animation: tab-dot-breathe 3.5s ease-in-out infinite;
+}
+
+.tab-status-dot--stable {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+}
+
+@keyframes tab-dot-pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+@keyframes tab-dot-breathe {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.9; }
 }
 
 .identity-tags {
@@ -812,6 +1004,14 @@
         padding: 1.1rem 1.15rem;
         gap: 1rem;
         margin-bottom: 2rem;
+    }
+
+    .dev-status-beacon {
+        padding: 0.3rem 0.6rem 0.3rem 0.45rem;
+    }
+
+    .beacon-note {
+        display: none;
     }
 
     .identity-name {

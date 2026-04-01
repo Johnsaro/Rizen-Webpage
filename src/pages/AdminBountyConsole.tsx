@@ -261,7 +261,7 @@ const AdminBountyConsole: React.FC<AdminBountyConsoleProps> = ({ isIntegrated = 
 
             const { data: profileData } = await supabase
                 .from('profiles')
-                .select('achievements, rep')
+                .select('achievements, rep, spirit_stones')
                 .eq('user_id', (sub as any).user_id)
                 .single();
 

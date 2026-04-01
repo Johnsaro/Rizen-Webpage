@@ -7,6 +7,7 @@ import Terminal from './Terminal'
 import PhoneMockup from './PhoneMockup'
 import ScannerOverlay from '../layout/ScannerOverlay'
 import ParticlesBackground from '../layout/ParticlesBackground'
+import type { InitiationStep, InitiationQuestion } from '../../hooks/useInitiation'
 
 interface HeroSectionProps {
   onInitiateDiscovery: () => void;
@@ -16,9 +17,9 @@ interface HeroSectionProps {
   setInputValue: (val: string) => void;
   isProcessing: boolean;
   isQiSurging?: boolean;
-  handleReportTask: (task: string) => void;
-  step: string;
-  questions: any[];
+  handleReportTask: (e: React.FormEvent) => void;
+  step: InitiationStep;
+  questions: InitiationQuestion[];
   onInitiationAnswer: (answer: string) => void;
 }
 
@@ -37,7 +38,7 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const [scanned, setScanned] = useState(false);
   const [typedText, setTypedText] = useState("");
-  const [appVersion, setAppVersion] = useState("v2.2.0"); // Default fallback
+  const [appVersion, setAppVersion] = useState("v2.3.2"); // Default fallback
   const phoneRef = useRef<HTMLDivElement>(null);
   const fullText = "Rise or Stagnate. The choice is yours, Cultivator.";
 
@@ -45,7 +46,7 @@ const HeroSection = ({
   useEffect(() => {
     const fetchVersion = async () => {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('app_config')
           .select('app_version')
           .eq('id', 1)
@@ -54,8 +55,8 @@ const HeroSection = ({
         if (data && data.app_version) {
           setAppVersion(data.app_version);
         }
-      } catch (err) {
-        console.error("Error fetching app version:", err);
+      } catch (_err) {
+        console.error("Error fetching app version:", _err);
       }
     };
     fetchVersion();
@@ -139,7 +140,7 @@ const HeroSection = ({
           </div>
           <a
             className="hero-apk-link reveal visible"
-            href="https://drive.google.com/uc?export=download&id=1ZDqUhyvSqRQK1M9MC2p4l-DVlC7siOMf"
+            href={`https://github.com/Johnsaro/Rizen/releases/download/${appVersion}/app-release.apk`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -116,7 +116,7 @@ const Terminal = ({
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="REPORT REAL-WORLD TASK..."
+              placeholder="e.g. studied for 2 hours, ran 5km, fixed a bug..."
               disabled={isProcessing}
               className="terminal-input"
             />

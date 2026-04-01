@@ -1,6 +1,6 @@
 import type { PlayerProfile } from '../../hooks/usePlayerProfile';
 
-const PersonalRecordsTeaser = ({ profile, delay = 0.5, onRecordClick }: { profile: PlayerProfile, delay?: number, onRecordClick?: () => void }) => {
+const PersonalRecordsTeaser = ({ profile: _profile, delay = 0.5, onRecordClick }: { profile: PlayerProfile, delay?: number, onRecordClick?: () => void }) => {
     // Mock Personal Records data
     const personalBests = [
         { label: 'Best Daily Spirit Stones', value: '1,240 SS', date: '2026-03-08', icon: '🏆' },
