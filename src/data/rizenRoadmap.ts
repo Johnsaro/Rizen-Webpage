@@ -1,4 +1,4 @@
-export type BuildId = 'rizen-mobile' | 'pulse-agent' | 'phantom-peel';
+export type BuildId = 'rizen-mobile' | 'gridspace' | 'pulse-agent' | 'phantom-peel';
 
 export interface RoadmapItem {
     id: string;
@@ -10,7 +10,7 @@ export interface RoadmapItem {
     category: 'Core' | 'Feature' | 'Expansion' | 'System';
 }
 
-export type DevStatus = 'live' | 'maintenance' | 'stable';
+export type DevStatus = 'live' | 'maintenance' | 'stable' | 'dev';
 
 export interface BuildRoadmapMeta {
     name: string;
@@ -38,6 +38,17 @@ export const buildMeta: Record<BuildId, BuildRoadmapMeta> = {
         devStatus: 'live',
         devStatusNote: 'Active development — V2 in progress',
     },
+    'gridspace': {
+        name: 'GridSpace',
+        shortName: 'Grid',
+        accent: 'var(--accent-violet, #8b5cf6)',
+        accentRgb: '139, 92, 246',
+        subtitle: 'Vibe coding suite — actively in development.',
+        version: 'v0.1.0',
+        tags: ['Tauri v2', 'React', 'Rust', 'TypeScript'],
+        devStatus: 'dev',
+        devStatusNote: 'Active development — building core features',
+    },
     'pulse-agent': {
         name: 'Pulse Agent 2.0',
         shortName: 'Pulse',
@@ -62,7 +73,7 @@ export const buildMeta: Record<BuildId, BuildRoadmapMeta> = {
     },
 };
 
-export const buildOrder: BuildId[] = ['rizen-mobile', 'pulse-agent', 'phantom-peel'];
+export const buildOrder: BuildId[] = ['rizen-mobile', 'gridspace', 'pulse-agent', 'phantom-peel'];
 
 export const roadmapData: RoadmapItem[] = [
     // ═══════════════════════════════════════
@@ -273,6 +284,114 @@ export const roadmapData: RoadmapItem[] = [
         description: 'Real-time data bridge between Pulse Agent desktop and the Rizen Mobile ecosystem for cross-platform cultivator analytics.',
         status: 'done',
         category: 'Feature'
+    },
+
+    // ═══════════════════════════════════════
+    //  GRIDSPACE — Vibe Coding Suite
+    // ═══════════════════════════════════════
+
+    // DONE
+    {
+        id: 'gs-done-1',
+        buildId: 'gridspace',
+        title: 'Multi-Pane Terminal Grid',
+        description: 'Native PTY terminals with split pane layouts (single, vertical, horizontal, quad) powered by xterm.js and a Rust backend.',
+        status: 'done',
+        category: 'Core'
+    },
+    {
+        id: 'gs-done-2',
+        buildId: 'gridspace',
+        title: 'Grid Launcher & Session Presets',
+        description: 'Configurable session launcher with saved presets, layout picker, working directory selection, and tool permission controls.',
+        status: 'done',
+        category: 'Core'
+    },
+    {
+        id: 'gs-done-3',
+        buildId: 'gridspace',
+        title: 'Command Center & System Pulse',
+        description: 'Central dashboard with system status monitoring and real-time Claude Code token usage tracking via statusline bridge.',
+        status: 'done',
+        category: 'Feature'
+    },
+    {
+        id: 'gs-done-4',
+        buildId: 'gridspace',
+        title: 'Journal Viewer',
+        description: 'Built-in journal reader that displays daily session logs from the local filesystem.',
+        status: 'done',
+        category: 'Feature'
+    },
+    {
+        id: 'gs-done-5',
+        buildId: 'gridspace',
+        title: 'Security Log',
+        description: 'Clipboard secret scanning, git security audit, and sensitive file detection with a CRT-style alert interface.',
+        status: 'done',
+        category: 'Feature'
+    },
+    {
+        id: 'gs-done-6',
+        buildId: 'gridspace',
+        title: 'Settings & Shell Config',
+        description: 'Shell selector (PowerShell, CMD, Git Bash, custom), theme picker, and persistent user preferences.',
+        status: 'done',
+        category: 'Feature'
+    },
+    {
+        id: 'gs-done-7',
+        buildId: 'gridspace',
+        title: 'Session Logging Integration',
+        description: 'Status bar session logger that writes metadata to JSON and injects prompts into Claude Code for automated journal entries.',
+        status: 'done',
+        category: 'Feature'
+    },
+
+    // NOW
+    {
+        id: 'gs-now-1',
+        buildId: 'gridspace',
+        title: 'Stability & Polish Pass',
+        description: 'Fixing terminal rendering issues, PTY lifecycle bugs, and overall UX refinement before daily-driver use.',
+        status: 'now',
+        category: 'Core'
+    },
+
+    // NEXT
+    {
+        id: 'gs-next-1',
+        buildId: 'gridspace',
+        title: 'Project Dashboard Enhancement',
+        description: 'Live project status pulled from local markdown files — version tracking, open bugs, and active tasks.',
+        status: 'next',
+        category: 'Feature'
+    },
+    {
+        id: 'gs-next-2',
+        buildId: 'gridspace',
+        title: 'Flow State Analytics',
+        description: 'Session-level productivity scoring based on focus duration, idle time, and task completion patterns.',
+        status: 'next',
+        category: 'Feature'
+    },
+
+    // LATER
+    {
+        id: 'gs-later-1',
+        buildId: 'gridspace',
+        title: 'Plugin System',
+        description: 'Extensible architecture allowing custom panels, tools, and integrations to be added to the workspace.',
+        status: 'later',
+        category: 'Expansion'
+    },
+    {
+        id: 'gs-later-2',
+        buildId: 'gridspace',
+        title: 'Cross-Platform Support',
+        description: 'Expand beyond Windows to macOS and Linux with platform-agnostic PTY and filesystem handling.',
+        status: 'later',
+        category: 'Expansion'
     },
 
     // ═══════════════════════════════════════

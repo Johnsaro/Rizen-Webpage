@@ -391,6 +391,24 @@
     opacity: 0.65;
 }
 
+.dev-status-beacon--dev {
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+.dev-status-beacon--dev .beacon-glow {
+    background: rgba(139, 92, 246, 0.15);
+    animation: beacon-pulse 2.5s ease-in-out infinite;
+}
+
+.dev-status-beacon--dev .beacon-core {
+    background: rgb(139, 92, 246);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.dev-status-beacon--dev .beacon-label {
+    color: rgb(167, 139, 250);
+}
+
 /* ═══════════════════════════════════════════════════════
    Tab Status Dots — tiny lifecycle indicator per tab
    ═══════════════════════════════════════════════════════ */
@@ -418,6 +436,12 @@
 .tab-status-dot--stable {
     background: rgba(255, 255, 255, 0.25);
     box-shadow: none;
+}
+
+.tab-status-dot--dev {
+    background: rgb(139, 92, 246);
+    box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+    animation: tab-dot-pulse 2s ease-in-out infinite;
 }
 
 @keyframes tab-dot-pulse {

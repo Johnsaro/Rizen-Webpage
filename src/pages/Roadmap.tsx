@@ -12,6 +12,7 @@ const DEV_STATUS_CONFIG: Record<DevStatus, { label: string; icon: string }> = {
     live: { label: 'LIVE', icon: '▶' },
     maintenance: { label: 'MAINTENANCE', icon: '◆' },
     stable: { label: 'STABLE', icon: '■' },
+    dev: { label: 'IN DEV', icon: '◉' },
 };
 
 const Roadmap: React.FC<RoadmapProps> = ({ initialBuild }) => {

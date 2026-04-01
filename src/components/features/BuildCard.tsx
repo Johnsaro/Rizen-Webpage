@@ -12,6 +12,7 @@ const DEV_STATUS_LABEL: Record<BuildDevStatus, string> = {
   live: 'ACTIVE DEV',
   maintenance: 'MAINTENANCE',
   stable: 'STABLE',
+  dev: 'IN DEV',
 };
 
 const BuildCard: React.FC<BuildCardProps> = ({ build, onClick }) => {

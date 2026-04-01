@@ -4,7 +4,7 @@ export interface BuildMedia {
   caption: string;
 }
 
-export type BuildDevStatus = 'live' | 'maintenance' | 'stable';
+export type BuildDevStatus = 'live' | 'maintenance' | 'stable' | 'dev';
 
 export interface Build {
   id: string;
@@ -75,6 +75,37 @@ export const builds: Build[] = [
       repo: 'https://github.com/Johnsaro/Rizen',
       download: 'dynamic'
     }
+  },
+  {
+    id: 'gridspace',
+    title: 'GridSpace',
+    oneLineSummary: 'A vibe coding suite — terminal grid, session tracking, and dev cockpit.',
+    description: 'A Tauri v2 desktop application built for managing coding sessions. Multi-pane terminal grid, project dashboard, journal viewer, security scanning, and Claude Code integration.',
+    tags: ['Tauri v2', 'React', 'Rust', 'TypeScript', 'xterm.js'],
+    status: 'WIP',
+    systemStatus: 'maintenance',
+    version: 'v0.1.0',
+    accentRgb: '139, 92, 246',
+    devStatus: 'dev',
+    image: '',
+    created_date: '2026-03-25',
+    intel: {
+      brief: 'GridSpace is the workspace where everything else gets built. A Tauri v2 desktop app with a Rust backend powering native PTY terminals, filesystem access, and clipboard interception. The React frontend provides a multi-pane terminal grid with configurable layouts, session presets, a project dashboard, journal viewer, security log, and real-time Claude Code usage monitoring.',
+      patchNotes: [
+        'v0.1.0: Core terminal grid with PTY spawn, multi-pane layouts, and tab support.',
+        'v0.1.0: Grid Launcher with session presets, layout picker, and tool permissions.',
+        'v0.1.0: Journal viewer, Project Dashboard, Command Center with System Pulse.',
+        'v0.1.0: Security Log with clipboard secret scanning and git security audit.',
+        'v0.1.0: Settings page with shell config, theme picker, and custom shell support.',
+        'v0.1.0: Session logging integration with Claude Code via status bar.'
+      ],
+      lessons: [
+        'Tauri v2 with Rust backend provides native-level performance for PTY management without Electron overhead.',
+        'Two-phase PTY initialization (spawn → listen → start reader) eliminates output race conditions.',
+        'Building your own tools teaches you what you actually need vs. what looks impressive.'
+      ]
+    },
+    links: {}
   },
   {
     id: 'pulse-agent',

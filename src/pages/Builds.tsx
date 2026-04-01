@@ -13,6 +13,7 @@ const DEV_STATUS_LABEL: Record<BuildDevStatus, { label: string; icon: string }> 
   live: { label: 'ACTIVE DEV', icon: '\u25B6' },
   maintenance: { label: 'MAINTENANCE', icon: '\u25C6' },
   stable: { label: 'STABLE', icon: '\u25A0' },
+  dev: { label: 'IN DEV', icon: '\u25C9' },
 };
 
 const Builds: React.FC<BuildsProps> = ({ onViewBuild }) => {
