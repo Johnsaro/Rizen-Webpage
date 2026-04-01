@@ -20,7 +20,7 @@ interface DashboardProps {
     onInteract?: () => void;
 }
 
-const Dashboard = ({ user: legacyUser, isPreview, onInteract }: DashboardProps) => {
+const Dashboard = ({ user: _legacyUser, isPreview, onInteract }: DashboardProps) => {
     const { profile, quests, notifications, bounties, loading, error } = usePlayerProfile();
 
     if (loading) {

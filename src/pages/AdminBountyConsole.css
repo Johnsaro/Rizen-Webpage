@@ -37,6 +37,25 @@
     overflow-x: clip;
 }
 
+.command-center-content {
+    margin-top: 100px;
+    padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+    .command-center-content {
+        margin-top: 80px;
+        padding: 0 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .command-center-content {
+        margin-top: 70px;
+        padding: 0 0.5rem;
+    }
+}
+
 /* scanline overlay */
 .abc-page::before {
     content: '';

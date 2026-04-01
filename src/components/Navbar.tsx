@@ -14,7 +14,7 @@ interface NavbarProps {
   setActiveSection: (section: string) => void;
 }
 
-const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
+const ScrambledText = ({ text, active: _active }: { text: string, active: boolean }) => {
   const [displayText, setDisplayText] = useState(text);
   const [isScrambling, setIsScrambling] = useState(false);
   const chars = "0123456789ABCDEF!@#$%^&*()_+";
@@ -25,7 +25,7 @@ const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
     let iteration = 0;
     const interval = setInterval(() => {
       setDisplayText(prev => 
-        prev.split("").map((char, index) => {
+        prev.split("").map((_char, index) => {
           if (index < iteration) return text[index];
           return chars[Math.floor(Math.random() * chars.length)];
         }).join("")
@@ -45,10 +45,20 @@ const ScrambledText = ({ text, active }: { text: string, active: boolean }) => {
   );
 };
 
-const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView, isLoggedIn, user, onLogout, navigateTo, activeSection, setActiveSection }) => {
+const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, currentView, setCurrentView: _setCurrentView, isLoggedIn, user, onLogout, navigateTo, activeSection, setActiveSection }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,7 +155,12 @@ const Navbar: React.FC<NavbarProps> = ({ setAuthModalOpen, setIsHovering, curren
           <ScrambledText text="RIZEN" active={false} />
         </button>
 
-        <div className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}>
+        <div
+          className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setMobileMenuOpen(false);
+          }}
+        >
           {!isLoggedIn && (
             <a
               href="#hero"

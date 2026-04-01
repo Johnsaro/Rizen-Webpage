@@ -10,7 +10,6 @@ export interface PlayerProfile {
   name: string;
   level: number;
   main_path: string;
-  side_path: string;
   sect: string;
   qi: number;
   spirit_stones: number;
@@ -76,7 +75,6 @@ export const GUEST_PREVIEW_PROFILE: PlayerProfile = {
   name: 'PREVIEW_CULTIVATOR',
   level: 15,
   main_path: 'Shadow Arts',
-  side_path: 'Formation Master',
   sect: 'Shadow Arts',
   qi: 850,
   spirit_stones: 4500,

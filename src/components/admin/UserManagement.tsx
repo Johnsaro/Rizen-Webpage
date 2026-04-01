@@ -248,7 +248,7 @@ const UserManagement: React.FC = () => {
               onChange={(e) => setSortField(e.target.value)}
             >
               <option value="level">LEVEL (REALM)</option>
-              <option value="main_class">DAO_PATH (CLASS)</option>
+              <option value="main_path">DAO_PATH (CLASS)</option>
               <option value="name">OPERATIVE_NAME</option>
               <option value="created_at">JOIN_DATE</option>
             </select>

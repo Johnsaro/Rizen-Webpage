@@ -9,6 +9,16 @@ interface VaultReaderProps {
 const VaultReader = ({ item, onClose }: VaultReaderProps) => {
   const [decrypting, setDecrypting] = useState(true);
 
+  // Esc key to close
+  useEffect(() => {
+    if (!item) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [item, onClose]);
+
   useEffect(() => {
     let timer1: number;
     let timer2: number;

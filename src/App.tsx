@@ -1,7 +1,7 @@
 /* 
  * Owner: Alex | Last updated by: Gemini, 2026-03-19 
  */
-import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import AnnouncementBar from './components/AnnouncementBar'
@@ -21,6 +21,7 @@ import { usePlayerProfile } from './hooks/usePlayerProfile'
 import type { PlayerProfile } from './hooks/usePlayerProfile'
 import { useTerminal } from './hooks/useTerminal'
 import { useInitiation } from './hooks/useInitiation'
+import { supabase } from './lib/supabase'
 import { vaultContent } from './data/vaultContent'
 import type { VaultItem } from './data/vaultContent'
 import { builds } from './data/builds'
@@ -42,13 +43,13 @@ const DEFAULT_OPERATIVE: Partial<PlayerProfile> = {
 };
 
 const DAO_PATHS = [
-  { name: 'SHADOW ARTS', roles: ['Red Team', 'Sec Admin', 'Cloud Sec'], desc: 'Master the unseen. Infiltrate barriers. Find every weakness.', icon: '🛡️' },
-  { name: 'FORMATION MASTER', roles: ['Backend', 'Systems', 'Architecture'], desc: 'Build the arrays and frameworks that hold worlds together.', icon: '⚙️' },
-  { name: 'ARTIFACT REFINER', roles: ['Frontend', 'Fullstack', 'UI/UX'], desc: 'Craft powerful tools carried by millions.', icon: '🌐' },
-  { name: 'REALM ARCHITECT', roles: ['Engine', 'Tech Art', 'Gameplay'], desc: 'Create entire worlds. Define their rules.', icon: '🎮' },
-  { name: 'BODY CULTIVATOR', roles: ['Fitness', 'Athletics', 'Health'], desc: 'Refine the physical vessel through relentless training.', icon: '💪' },
-  { name: 'SCRIPTURE KEEPER', roles: ['Academics', 'Study', 'Research'], desc: 'Absorb knowledge. Seek to comprehend the Dao.', icon: '📖' },
-  { name: 'INSCRIPTION MASTER', roles: ['Creative', 'Art', 'Music'], desc: 'Channel Qi into art, runes, sound, and creation.', icon: '🎨' }
+  { name: 'SHADOW ARTS', roles: ['Red Team', 'Sec Admin', 'Cloud Sec'], desc: 'Master the unseen. Infiltrate barriers. Find every weakness.', icon: '🛡️', stats: { STR: 40, INT: 80, DEX: 90, VIT: 30 }, starter: 'Recon Suite' },
+  { name: 'FORMATION MASTER', roles: ['Backend', 'Systems', 'Architecture'], desc: 'Build the arrays and frameworks that hold worlds together.', icon: '⚙️', stats: { STR: 50, INT: 90, DEX: 60, VIT: 40 }, starter: 'System Forge' },
+  { name: 'ARTIFACT REFINER', roles: ['Frontend', 'Fullstack', 'UI/UX'], desc: 'Craft powerful tools carried by millions.', icon: '🌐', stats: { STR: 30, INT: 70, DEX: 80, VIT: 50 }, starter: 'Pixel Lens' },
+  { name: 'REALM ARCHITECT', roles: ['Engine', 'Tech Art', 'Gameplay'], desc: 'Create entire worlds. Define their rules.', icon: '🎮', stats: { STR: 60, INT: 85, DEX: 70, VIT: 45 }, starter: 'World Seed' },
+  { name: 'BODY CULTIVATOR', roles: ['Fitness', 'Athletics', 'Health'], desc: 'Refine the physical vessel through relentless training.', icon: '💪', stats: { STR: 95, INT: 30, DEX: 70, VIT: 90 }, starter: 'Iron Will' },
+  { name: 'SCRIPTURE KEEPER', roles: ['Academics', 'Study', 'Research'], desc: 'Absorb knowledge. Seek to comprehend the Dao.', icon: '📖', stats: { STR: 20, INT: 95, DEX: 40, VIT: 50 }, starter: 'Mind Palace' },
+  { name: 'INSCRIPTION MASTER', roles: ['Creative', 'Art', 'Music'], desc: 'Channel Qi into art, runes, sound, and creation.', icon: '🎨', stats: { STR: 30, INT: 60, DEX: 85, VIT: 40 }, starter: 'Soul Brush' }
 ];
 
 function App() {
@@ -80,12 +81,32 @@ function App() {
     };
   }, [user, profile]);
 
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+  const [appVersion, setAppVersion] = useState("v2.2.0");
+
+  // Fetch member count + app version from Supabase
+  useEffect(() => {
+    const fetchMeta = async () => {
+      try {
+        const [countResult, configResult] = await Promise.all([
+          supabase.from('profiles').select('user_id', { count: 'exact', head: true }),
+          supabase.from('app_config').select('app_version').eq('id', 1).maybeSingle()
+        ]);
+        if (countResult.count != null) setMemberCount(countResult.count);
+        if (configResult.data?.app_version) setAppVersion(configResult.data.app_version);
+      } catch { /* silent fallback */ }
+    };
+    fetchMeta();
+  }, []);
+
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
   const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null>(null);
   const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'builds' | 'community' | 'community-event' | 'admin-console' | 'command-center'>('home');
   const [communitySubView, setCommunitySubView] = useState<'hub' | 'docs' | 'events' | 'blog' | 'discord' | 'roadmap'>('hub');
+  const [roadmapBuild, setRoadmapBuild] = useState<string | undefined>(undefined);
   const [selectedBuild, setSelectedBuild] = useState<Build | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
 
@@ -174,6 +195,13 @@ const handleLogout = () => {
             setCommunitySubView('discord');
           } else if (subId.startsWith('roadmap')) {
             setCommunitySubView('roadmap');
+            const qIdx = subId.indexOf('?');
+            if (qIdx !== -1) {
+              const params = new URLSearchParams(subId.slice(qIdx));
+              setRoadmapBuild(params.get('build') || undefined);
+            } else {
+              setRoadmapBuild(undefined);
+            }
           } else {
             setCommunitySubView('hub');
           }
@@ -253,6 +281,15 @@ const handleLogout = () => {
     
     return () => clearTimeout(timer);
   }, [currentView, authLoading]);
+
+  // Back-to-top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 600);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Dynamic Browser Tab Titles (Task #1)
   useEffect(() => {
@@ -394,7 +431,7 @@ const handleLogout = () => {
       {currentView !== 'command-center' && (
         <AnnouncementBar
           label="LATEST RELEASE"
-          message={`${rizenMobile.title} v2.2.0 is now Live`}
+          message={`${rizenMobile.title} ${appVersion} is now Live`}
           ctaText="View Intel"
           ctaLink={`#/builds/${rizenMobile.id}`}
         />
@@ -535,22 +572,31 @@ const handleLogout = () => {
                   <p className="class-desc">{cls.desc}</p>
                   
                   {activeDiscipline === cls.name ? (
-                    <button 
-                      className="btn-primary" 
-                      style={{ 
-                        marginTop: '1.5rem', 
-                        width: '100%', 
-                        fontSize: '0.8rem', 
-                        padding: '0.6rem 1rem',
-                        animation: 'fade-in-up 0.3s forwards'
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setAuthModalOpen(true);
-                      }}
-                    >
-                      SELECT THIS PATH
-                    </button>
+                    <div style={{ marginTop: '1.5rem', animation: 'fade-in-up 0.3s forwards' }}>
+                      <div className="dao-stat-bars" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                        {Object.entries(cls.stats).map(([stat, val]) => (
+                          <div key={stat} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontFamily: 'Fira Code', fontSize: '0.6rem', color: 'var(--accent-cyan)', width: '28px', letterSpacing: '1px' }}>{stat}</span>
+                            <div style={{ flex: 1, height: '3px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div style={{ width: `${val}%`, height: '100%', background: 'var(--accent-cyan)', borderRadius: '2px', transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'Fira Code', marginBottom: '1rem', textAlign: 'center' }}>
+                        STARTER ARTIFACT: <span style={{ color: 'var(--accent-cyan)' }}>{cls.starter}</span>
+                      </div>
+                      <button
+                        className="btn-primary"
+                        style={{ width: '100%', fontSize: '0.8rem', padding: '0.6rem 1rem' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAuthModalOpen(true);
+                        }}
+                      >
+                        SELECT THIS PATH
+                      </button>
+                    </div>
                   ) : (
                     <div className="class-dots" style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '1.5rem' }}>
                       <span style={{ width: '8px', height: '8px', background: 'var(--text-dim)', borderRadius: '50%', opacity: 0.3 }}></span>
@@ -569,31 +615,59 @@ const handleLogout = () => {
               <h2 className="title-large">PERSONAL RECORDS</h2>
               <p className="p-large">Your only rival is yesterday's version of yourself. Track your evolution.</p>
             </div>
-            <div className="rankings-container reveal" style={{ border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(2, 6, 23, 0.4)' }}>
-              <div className="ranking-row header">
-                <div>TYPE</div>
-                <div>METRIC</div>
-                <div>PEAK CULTIVATION</div>
-                <div style={{ textAlign: 'center' }}>TREND</div>
-                <div style={{ textAlign: 'right' }}>DATE</div>
-              </div>
-              {[
-                { type: 'STRENGTH', metric: 'Daily Spirit Stones', best: '1,240 SS', trend: '▲ +15%', date: '2026-03-08' },
-                { type: 'DAO HEART', metric: 'Longest Streak', best: '12 Days', trend: '🔥', date: '2026-03-05' },
-                { type: 'COMPREHENSION', metric: 'Quests/Day', best: '7 Quests', trend: '▲ +2', date: '2026-03-05' },
-                { type: 'VITALITY', metric: 'Sleep Quality', best: '94%', trend: '▲ +4%', date: '2026-03-10' },
-                { type: 'SPIRITUAL SENSE', metric: 'Recall Accuracy', best: '98%', trend: '▲ +2%', date: '2026-03-11' }
-              ].map((rec, i) => (
-                <div key={i} className="ranking-row">
-                  <div className="rank-num">{rec.type}</div>
-                  <div className="rank-user" style={{ color: 'var(--text-primary)' }}>
-                    {rec.metric}
-                  </div>
-                  <div><span className="rank-class" style={{ fontSize: '0.85rem', padding: '0.3rem 0.8rem' }}>{rec.best}</span></div>
-                  <div style={{ textAlign: 'center', fontFamily: 'Fira Code', fontWeight: 600, fontSize: '0.9rem', color: 'var(--accent-emerald)' }}>{rec.trend}</div>
-                  <div className="rank-rep" style={{ textAlign: 'right', opacity: 0.6, fontSize: '0.85rem' }}>{rec.date}</div>
+            <div style={{ position: 'relative' }}>
+              <div className="rankings-container reveal" style={{
+                border: '1px solid rgba(255,255,255,0.05)',
+                background: 'rgba(2, 6, 23, 0.4)',
+                ...(!isLoggedIn ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' } : {})
+              }}>
+                <div className="ranking-row header">
+                  <div>TYPE</div>
+                  <div>METRIC</div>
+                  <div>PEAK CULTIVATION</div>
+                  <div style={{ textAlign: 'center' }}>TREND</div>
+                  <div style={{ textAlign: 'right' }}>DATE</div>
                 </div>
-              ))}
+                {[
+                  { type: 'STRENGTH', metric: 'Daily Spirit Stones', best: '███ SS', trend: '▲ +██%', date: '████-██-██' },
+                  { type: 'DAO HEART', metric: 'Longest Streak', best: '██ Days', trend: '🔥', date: '████-██-██' },
+                  { type: 'COMPREHENSION', metric: 'Quests/Day', best: '█ Quests', trend: '▲ +█', date: '████-██-██' },
+                  { type: 'VITALITY', metric: 'Sleep Quality', best: '██%', trend: '▲ +█%', date: '████-██-██' },
+                  { type: 'SPIRITUAL SENSE', metric: 'Recall Accuracy', best: '██%', trend: '▲ +█%', date: '████-██-██' }
+                ].map((rec, i) => (
+                  <div key={i} className="ranking-row">
+                    <div className="rank-num">{rec.type}</div>
+                    <div className="rank-user" style={{ color: 'var(--text-primary)' }}>
+                      {rec.metric}
+                    </div>
+                    <div><span className="rank-class" style={{ fontSize: '0.85rem', padding: '0.3rem 0.8rem' }}>{rec.best}</span></div>
+                    <div style={{ textAlign: 'center', fontFamily: 'Fira Code', fontWeight: 600, fontSize: '0.9rem', color: 'var(--accent-emerald)' }}>{rec.trend}</div>
+                    <div className="rank-rep" style={{ textAlign: 'right', opacity: 0.6, fontSize: '0.85rem' }}>{rec.date}</div>
+                  </div>
+                ))}
+              </div>
+              {!isLoggedIn && (
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center', zIndex: 2
+                }}>
+                  <div style={{
+                    background: 'rgba(2, 6, 23, 0.85)', border: '1px solid rgba(0, 228, 255, 0.2)',
+                    borderRadius: '12px', padding: '2rem 3rem', textAlign: 'center',
+                    backdropFilter: 'blur(8px)'
+                  }}>
+                    <div style={{ fontFamily: 'Fira Code', fontSize: '0.75rem', color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: '0.75rem' }}>
+                      DATA ENCRYPTED
+                    </div>
+                    <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', marginBottom: '1.25rem', maxWidth: '280px' }}>
+                      Bind the System to unlock your personal cultivation records.
+                    </p>
+                    <button className="btn-primary" style={{ fontSize: '0.8rem', padding: '0.7rem 1.5rem' }} onClick={() => setAuthModalOpen(true)}>
+                      BIND SYSTEM
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </section >
 
@@ -682,7 +756,7 @@ const handleLogout = () => {
       ) : currentView === 'community-event' ? (
         <CommunityEvent />
       ) : currentView === 'community' ? (
-        <Community subView={communitySubView} />
+        <Community subView={communitySubView} roadmapBuild={roadmapBuild} />
       ) : (
         <Builds onViewBuild={openBuildDetail} />
       )}
@@ -696,11 +770,13 @@ const handleLogout = () => {
         <div className="guild-status">
           <span className="dot pulse"></span> SYSTEMS NOMINAL // SECT OPEN
         </div>
-        <div className="footer-online-status">
-          <div className="radar-circle"></div>
-          <span className="online-number">1,204</span>
-          <span className="online-label">CULTIVATORS ONLINE</span>
-        </div>
+        {memberCount != null && (
+          <div className="footer-online-status">
+            <div className="radar-circle"></div>
+            <span className="online-number">{memberCount.toLocaleString()}</span>
+            <span className="online-label">REGISTERED CULTIVATORS</span>
+          </div>
+        )}
       </footer>
 
       <AuthModal
@@ -712,6 +788,18 @@ const handleLogout = () => {
         initialClass={assignedClass || undefined}
       />
       <VaultReader item={selectedVaultItem} onClose={() => setSelectedVaultItem(null)} />
+
+      {showBackToTop && currentView === 'home' && (
+        <button
+          className="back-to-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Back to top"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none">
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+      )}
     </div >
   )
 }

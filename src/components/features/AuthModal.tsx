@@ -48,6 +48,16 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalP
     };
   }, []);
 
+  // Esc key to close
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isLoading) onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isLoading, onClose]);
+
   // Reset form when modal opens/closes (W17)
   useEffect(() => {
     if (!isOpen) {
@@ -150,7 +160,6 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess, initialClass }: AuthModalP
             user_id: result.user.id,
             name: sanitizedName,
             main_path: resolvedPath,
-            side_path: 'Shadow Arts',
             sect: formData.class,
             level: 1,
             qi: 0,

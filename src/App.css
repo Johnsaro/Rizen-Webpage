@@ -2422,3 +2422,42 @@ code {
     display: none;
   }
 }
+
+/* ==========================================================================
+   BACK TO TOP BUTTON
+   ========================================================================== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(2, 6, 23, 0.8);
+  border: 1px solid rgba(0, 228, 255, 0.3);
+  color: var(--accent-cyan);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fade-in-up 0.3s ease-out;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.back-to-top:hover {
+  background: rgba(0, 228, 255, 0.15);
+  border-color: var(--accent-cyan);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 228, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
+}

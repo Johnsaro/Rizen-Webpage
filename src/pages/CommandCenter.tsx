@@ -45,7 +45,7 @@ const CommandCenter: React.FC = () => {
                 onLogout={handleLogout} 
             />
 
-            <div style={{ marginTop: '100px', padding: '0 2rem' }}>
+            <div className="command-center-content">
                 {activeTab === 'overview' && <AdminOverview />}
                 {activeTab === 'bounty' && <AdminBountyConsole isIntegrated={true} />}
                 {activeTab === 'users' && <UserManagement />}
